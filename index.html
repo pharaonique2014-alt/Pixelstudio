@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Pixel Studio – Photographe & Designer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- FOND VIDEO -->
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="fond-v2.mp4" type="video/mp4">
+  </video>
+  <div class="bg-overlay"></div>
+
+  <!-- NAV -->
+  <nav class="main-nav">
+    <div class="burger" id="burger">
+      <span></span><span></span><span></span>
+    </div>
+    <ul class="menu" id="menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <img src="x-pixel.png" class="logo-x" alt="Pixel Studio">
+
+    <div class="logo-slot" id="logoSlot">
+      <span class="gold" data-final="P">P</span>
+      <span class="gold" data-final="I">I</span>
+      <span class="gold" data-final="X">X</span>
+      <span class="gold" data-final="E">E</span>
+      <span class="gold" data-final="L">L</span>
+      <span class="space"> </span>
+      <span data-final="S">S</span>
+      <span data-final="T">T</span>
+      <span data-final="U">U</span>
+      <span data-final="D">D</span>
+      <span data-final="I">I</span>
+      <span data-final="O">O</span>
+    </div>
+
+    <div class="tagline">
+      <span class="line"></span>
+      <span class="text">Photographe & Designer<br>Pros & particuliers</span>
+      <span class="line"></span>
+    </div>
+
+    <a href="services.html" class="btn-hero">Découvrir mes services</a>
+  </header>
+
+  <!-- INTRO -->
+  <section class="home-intro reveal">
+    <div class="container">
+      <h2>Créer. Capturer. Communiquer.</h2>
+      <p>De l'identité visuelle à la photographie professionnelle, chaque projet est pensé sur mesure pour refléter votre image avec précision et caractère.</p>
+    </div>
+  </section>
+
+  <!-- SERVICES APERÇU -->
+  <section class="home-services">
+    <div class="container">
+      <div class="services-grid">
+
+        <a href="services.html#photo" class="service-card reveal left">
+          <div class="service-icon">📸</div>
+          <h3>Photographie</h3>
+          <p>Portraits, événements, produits. Des images qui parlent avant les mots.</p>
+          <span class="card-link">En savoir plus →</span>
+        </a>
+
+        <a href="services.html#print" class="service-card reveal">
+          <div class="service-icon">🎨</div>
+          <h3>Flyers & Print</h3>
+          <p>Flyers, affiches, cartes de visite. Votre communication imprimée, pensée avec soin.</p>
+          <span class="card-link">En savoir plus →</span>
+        </a>
+
+        <a href="services.html#web" class="service-card reveal right">
+          <div class="service-icon">🌐</div>
+          <h3>Web & Digital</h3>
+          <p>Sites vitrines sur mesure, sans templates génériques, pensés pour durer.</p>
+          <span class="card-link">En savoir plus →</span>
+        </a>
+
+        <a href="services.html#drone" class="service-card reveal">
+          <div class="service-icon">🚁</div>
+          <h3>Drone</h3>
+          <p>Prises de vue aériennes pour l'immobilier, clips vidéo, chantiers et bien plus.</p>
+          <span class="card-link">En savoir plus →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="home-cta reveal">
+    <div class="container">
+      <h2>Un projet en tête ?</h2>
+      <p>Discutons-en ensemble. Je réponds personnellement à chaque demande.</p>
+      <a href="contact.html" class="btn-gold">Me contacter</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© Pixel Studio 2026</p>
+    <p><a href="politique-de-confidentialite.html">Politique de confidentialité</a></p>
+  </footer>
+
+  <script src="logo-morph.js"></script>
+  <script src="scroll-slider.js"></script>
+  <script src="menu.js"></script>
+</body>
+</html>
