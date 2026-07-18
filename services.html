@@ -80,8 +80,93 @@
       font-size: 1.3rem; font-weight: 700; color: #d9772b;
       margin-top: 10px;
     }
+
+    /* PACK LANCEMENT */
+    .pack-hero {
+      background: rgba(217,119,43,0.06);
+      border: 1px solid rgba(217,119,43,0.3);
+      border-radius: 14px;
+      padding: 36px 32px;
+      margin: 36px 0 28px;
+      position: relative;
+    }
+    .pack-new-badge {
+      position: absolute;
+      top: -13px; left: 32px;
+      background: #d9772b; color: #111;
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 4px 16px; border-radius: 20px;
+    }
+    .pack-includes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 24px 0;
+    }
+    .pack-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .pack-item-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .pack-item-text { }
+    .pack-item-title {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.8rem; font-weight: 700;
+      color: #d6a060; display: block; margin-bottom: 4px;
+    }
+    .pack-item-desc {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.75rem; color: rgba(228,225,220,0.65);
+      line-height: 1.5;
+    }
+    .pack-pricing-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .pack-valeur {
+      font-family: "Montserrat", sans-serif;
+    }
+    .pack-valeur-label {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(228,225,220,0.45); display: block; margin-bottom: 4px;
+    }
+    .pack-valeur-amount {
+      font-size: 1rem; color: rgba(228,225,220,0.4);
+      text-decoration: line-through;
+    }
+    .pack-price-block { text-align: right; }
+    .pack-price-main {
+      font-family: "Montserrat", sans-serif;
+      font-size: 2rem; font-weight: 700; color: #d9772b;
+    }
+    .pack-price-main small {
+      font-size: 0.8rem; color: rgba(228,225,220,0.45); font-weight: 400;
+    }
+    .pack-price-note {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.72rem; color: rgba(228,225,220,0.4);
+      margin-top: 4px; display: block;
+    }
+
     @media (max-width: 768px) {
       .formule-grid { grid-template-columns: 1fr; }
+      .pack-includes { grid-template-columns: 1fr; }
+      .pack-pricing-row { flex-direction: column; align-items: flex-start; }
+      .pack-price-block { text-align: left; }
     }
   </style>
 </head>
@@ -319,6 +404,68 @@
           </div>
         </div>
         <a href="contact.html" class="btn-gold">Demander un devis</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 06 — PACK LANCEMENT -->
+  <section class="service-section reveal" id="pack-lancement">
+    <div class="container">
+      <div class="service-detail">
+        <div class="service-label">06 — Offre Exclusive</div>
+        <h2>Pack Lancement</h2>
+        <p>Vous vous lancez en tant qu'indépendant ou créez votre société ? Ce pack regroupe tout ce qu'il faut pour démarrer avec une image professionnelle — logo, site, print et photos — géré par un seul interlocuteur, livré clé en main.</p>
+        <p>Fini de courir après 4 prestataires différents. Vous signez une fois, vous recevez tout.</p>
+
+        <div class="pack-hero">
+          <div class="pack-new-badge">Nouveau</div>
+
+          <div class="pack-includes">
+            <div class="pack-item">
+              <div class="pack-item-icon">🎨</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">Logo & Charte Graphique</span>
+                <span class="pack-item-desc">Création de votre identité visuelle complète — logo, couleurs, typographie. Fichiers livrés en tous formats (print & web).</span>
+              </div>
+            </div>
+            <div class="pack-item">
+              <div class="pack-item-icon">🌐</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">Site Vitrine 1–3 pages</span>
+                <span class="pack-item-desc">Codé à la main, mobile-first, optimisé SEO. Rapide, propre, sans abonnement mensuel caché.</span>
+              </div>
+            </div>
+            <div class="pack-item">
+              <div class="pack-item-icon">📇</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">500 Cartes de Visite</span>
+                <span class="pack-item-desc">Design sur mesure aux couleurs de votre charte + impression 500 exemplaires livrés chez vous.</span>
+              </div>
+            </div>
+            <div class="pack-item">
+              <div class="pack-item-icon">📸</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">Séance Photo Professionnelle</span>
+                <span class="pack-item-desc">Portrait personnel branding + photos de votre activité/atelier. Idéal pour LinkedIn, site et réseaux sociaux.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pack-pricing-row">
+            <div class="pack-valeur">
+              <span class="pack-valeur-label">Valeur totale estimée</span>
+              <span class="pack-valeur-amount">~ 3 950 € HTVA</span>
+            </div>
+            <div class="pack-price-block">
+              <div class="pack-price-main">2 750 € <small>HTVA</small></div>
+              <span class="pack-price-note">Paiement en 2 fois · 50% à la commande · 50% à la livraison</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="contact.html" class="btn-gold">Réserver mon Pack Lancement</a>
       </div>
     </div>
   </section>
