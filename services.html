@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Services – Pixel Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .formule-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 36px 0;
+    }
+    .formule-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 28px 22px;
+      text-align: center;
+      position: relative;
+    }
+    .formule-card.featured { border-color: #d9772b; background: rgba(217,119,43,0.07); }
+    .formule-badge {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: #d9772b; color: #111;
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 20px; white-space: nowrap;
+    }
+    .formule-name {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(228,225,220,0.55); margin-bottom: 10px;
+    }
+    .formule-leads {
+      font-size: 1.8rem; font-weight: 700; color: #edeae5; margin-bottom: 6px;
+    }
+    .formule-leads span { font-size: 0.85rem; color: rgba(228,225,220,0.45); font-weight: 400; }
+    .formule-price {
+      font-family: "Montserrat", sans-serif;
+      font-size: 1.4rem; font-weight: 700; color: #d9772b; margin: 12px 0 4px;
+    }
+    .formule-price small { font-size: 0.75rem; color: rgba(228,225,220,0.45); font-weight: 400; }
+    .formule-sub {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.72rem; color: rgba(228,225,220,0.45); margin-bottom: 20px;
+    }
+    .formule-list {
+      list-style: none; text-align: left; margin-bottom: 22px;
+    }
+    .formule-list li {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.77rem; color: rgba(228,225,220,0.7);
+      padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .formule-list li::before { content: "✓"; color: #d9772b; font-weight: 700; }
+    .gestion-box {
+      background: rgba(217,119,43,0.08);
+      border: 1px solid rgba(217,119,43,0.3);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin: 36px 0;
+    }
+    .gestion-box h4 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.82rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #d9772b; margin-bottom: 10px;
+    }
+    .gestion-box p { font-size: 0.88rem; opacity: 0.8; margin: 0; }
+    .gestion-price {
+      font-family: "Montserrat", sans-serif;
+      font-size: 1.3rem; font-weight: 700; color: #d9772b;
+      margin-top: 10px;
+    }
+
+    /* PACK LANCEMENT */
+    .pack-hero {
+      background: rgba(217,119,43,0.06);
+      border: 1px solid rgba(217,119,43,0.3);
+      border-radius: 14px;
+      padding: 36px 32px;
+      margin: 36px 0 28px;
+      position: relative;
+    }
+    .pack-new-badge {
+      position: absolute;
+      top: -13px; left: 32px;
+      background: #d9772b; color: #111;
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 4px 16px; border-radius: 20px;
+    }
+    .pack-includes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 24px 0;
+    }
+    .pack-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .pack-item-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .pack-item-text { }
+    .pack-item-title {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.8rem; font-weight: 700;
+      color: #d6a060; display: block; margin-bottom: 4px;
+    }
+    .pack-item-desc {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.75rem; color: rgba(228,225,220,0.65);
+      line-height: 1.5;
+    }
+    .pack-pricing-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .pack-valeur {
+      font-family: "Montserrat", sans-serif;
+    }
+    .pack-valeur-label {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(228,225,220,0.45); display: block; margin-bottom: 4px;
+    }
+    .pack-valeur-amount {
+      font-size: 1rem; color: rgba(228,225,220,0.4);
+      text-decoration: line-through;
+    }
+    .pack-price-block { text-align: right; }
+    .pack-price-main {
+      font-family: "Montserrat", sans-serif;
+      font-size: 2rem; font-weight: 700; color: #d9772b;
+    }
+    .pack-price-main small {
+      font-size: 0.8rem; color: rgba(228,225,220,0.45); font-weight: 400;
+    }
+    .pack-price-note {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.72rem; color: rgba(228,225,220,0.4);
+      margin-top: 4px; display: block;
+    }
+
+    @media (max-width: 768px) {
+      .formule-grid { grid-template-columns: 1fr; }
+      .pack-includes { grid-template-columns: 1fr; }
+      .pack-pricing-row { flex-direction: column; align-items: flex-start; }
+      .pack-price-block { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="fond-v2.mp4" type="video/mp4">
+  </video>
+  <div class="bg-overlay"></div>
+
+  <nav class="main-nav">
+    <div class="burger" id="burger">
+      <span></span><span></span><span></span>
+    </div>
+    <ul class="menu" id="menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="services.html" class="active">Services</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header reveal">
+    <div class="container">
+      <h1>Nos Services</h1>
+      <div class="tagline">
+        <span class="line"></span>
+        <span class="text">Marketing Digital · Créatif · Résultats mesurables</span>
+        <span class="line"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 — ACQUISITION LEADS -->
+  <section class="service-section reveal" id="leads">
+    <div class="container">
+      <div class="service-detail">
+        <div class="service-label">01 — Service Phare</div>
+        <h2>Acquisition de Leads Qualifiés</h2>
+        <p>Nous créons, gérons et optimisons vos campagnes publicitaires Meta Ads (Facebook & Instagram) pour vous livrer chaque mois des prospects exclusifs qui demandent <strong>activement</strong> un devis dans votre zone géographique.</p>
+        <p>Pas de partage de leads, pas de bases de données achetées. Chaque prospect a rempli un formulaire dédié avec ses coordonnées, son code postal et sa demande de travaux. Vous n'avez plus qu'à décrocher le téléphone.</p>
+
+        <div class="gestion-box">
+          <h4>Frais de Gestion & Pilotage — Obligatoires sur toutes les formules</h4>
+          <p>Optimisation continue des campagnes, A/B testing des visuels, reporting mensuel de performance, maintenance technique (pixel Meta, formulaires, landing page), interlocuteur dédié et support réactif.</p>
+          <div class="gestion-price">400 € HTVA / mois</div>
+        </div>
+
+        <div class="formule-grid">
+
+          <div class="formule-card">
+            <div class="formule-name">Formule Initiale</div>
+            <div class="formule-leads">25 <span>leads/mois</span></div>
+            <div class="formule-price">999 € <small>HTVA/mois</small></div>
+            <div class="formule-sub">+ 400 € gestion</div>
+            <ul class="formule-list">
+              <li>25 prospects qualifiés exclusifs</li>
+              <li>Landing page offerte</li>
+              <li>Campagne Meta Ads dédiée</li>
+              <li>Exclusivité territoriale</li>
+              <li>Remplacement lead sous 48h</li>
+            </ul>
+            <a href="contact.html" class="btn-gold btn-full">Choisir cette formule</a>
+          </div>
+
+          <div class="formule-card featured">
+            <div class="formule-badge">⚡ Le plus populaire</div>
+            <div class="formule-name">Formule Performance</div>
+            <div class="formule-leads">50 <span>leads/mois</span></div>
+            <div class="formule-price">1 998 € <small>HTVA/mois</small></div>
+            <div class="formule-sub">+ 400 € gestion</div>
+            <ul class="formule-list">
+              <li>50 prospects qualifiés exclusifs</li>
+              <li>Landing page offerte</li>
+              <li>Campagnes multi-audiences</li>
+              <li>Exclusivité territoriale élargie</li>
+              <li>Remplacement lead sous 48h</li>
+            </ul>
+            <a href="contact.html" class="btn-gold btn-full">Choisir cette formule</a>
+          </div>
+
+          <div class="formule-card">
+            <div class="formule-name">Formule Intégrale</div>
+            <div class="formule-leads">100 <span>leads/mois</span></div>
+            <div class="formule-price">3 750 € <small>HTVA/mois</small></div>
+            <div class="formule-sub">+ 400 € gestion</div>
+            <ul class="formule-list">
+              <li>100 prospects qualifiés exclusifs</li>
+              <li>Landing page offerte</li>
+              <li>Stratégie omnicanale</li>
+              <li>Exclusivité territoriale maximale</li>
+              <li>Remplacement lead sous 48h</li>
+            </ul>
+            <a href="contact.html" class="btn-gold btn-full">Choisir cette formule</a>
+          </div>
+
+        </div>
+
+        <p style="font-family:'Montserrat',sans-serif; font-size:0.78rem; color:rgba(228,225,220,0.45); text-align:center;">Engagement ferme 6 mois · Résiliable avec préavis 30 jours · TVA 21% non incluse · Landing page incluse et offerte dans toutes les formules</p>
+        <br>
+        <a href="contact.html" class="btn-gold">Demander un devis personnalisé</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 02 — PHOTOGRAPHIE -->
+  <section class="service-section reveal" id="photo">
+    <div class="container">
+      <div class="service-detail">
+        <div class="service-label">02</div>
+        <h2>Photographie Professionnelle</h2>
+        <p>Des images qui travaillent pour vous. Que ce soit pour valoriser vos chantiers, construire votre image de marque ou alimenter vos réseaux sociaux, chaque prise de vue est préparée et réfléchie.</p>
+        <div class="service-items">
+          <div class="service-item">
+            <span class="item-title">Reportage Chantier Avant/Après</span>
+            <span class="item-desc">Mettez en valeur votre savoir-faire pour vos réseaux et supports commerciaux. À partir de 350 € HTVA.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Portraits & Personal Branding</span>
+            <span class="item-desc">Photos professionnelles pour LinkedIn, site web, supports de communication.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Événements</span>
+            <span class="item-desc">Inaugurations, séminaires, soirées corporate, mariages.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Photographie Immobilière</span>
+            <span class="item-desc">Mise en valeur de biens pour agences et particuliers.</span>
+          </div>
+        </div>
+        <a href="contact.html" class="btn-gold">Demander un devis</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 03 — DRONE -->
+  <section class="service-section reveal" id="drone">
+    <div class="container">
+      <div class="service-detail">
+        <div class="service-label">03</div>
+        <h2>Captation Drone 4K</h2>
+        <p>Une perspective que peu de gens voient — celle du ciel. Le drone apporte une dimension professionnelle unique à vos contenus : idéal pour les métiers du bâtiment, l'immobilier ou tout contenu qui doit marquer les esprits.</p>
+        <p>Pilote certifié DGTA. Chaque vol est préparé dans le respect des réglementations belges en vigueur.</p>
+        <div class="service-items">
+          <div class="service-item">
+            <span class="item-title">Suivi de Chantier Aérien</span>
+            <span class="item-desc">Toitures, façades, menuiseries — documentation HD de vos réalisations. À partir de 500 € HTVA.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Immobilier</span>
+            <span class="item-desc">Mise en valeur aérienne de maisons, terrains, propriétés de prestige.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Clips & Contenus Vidéo</span>
+            <span class="item-desc">Prises de vue cinématographiques pour vos réseaux sociaux et publicités.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Sur Mesure</span>
+            <span class="item-desc">Agriculture, tourisme, événements — chaque besoin a une solution.</span>
+          </div>
+        </div>
+        <div class="drone-video-wrap">
+          <video controls poster="drone-poster.jpg">
+            <source src="drone-showreel.mp4" type="video/mp4">
+            Votre navigateur ne supporte pas la lecture vidéo.
+          </video>
+        </div>
+        <a href="contact.html" class="btn-gold">Demander un devis</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 04 — PRINT -->
+  <section class="service-section reveal" id="print">
+    <div class="container">
+      <div class="service-detail">
+        <div class="service-label">04</div>
+        <h2>Flyers, Print & Identité Visuelle</h2>
+        <p>Votre communication imprimée est souvent le premier contact physique avec un client. Pas de templates génériques — chaque support est créé de zéro pour correspondre à votre identité et à votre cible.</p>
+        <div class="service-items">
+          <div class="service-item">
+            <span class="item-title">Flyers & Dépliants</span>
+            <span class="item-desc">Format A4, A5, A6, trifold — recto ou recto/verso.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Cartes de Visite</span>
+            <span class="item-desc">Classiques, premium, vernis sélectif, dorure.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Affiches & Signalétique</span>
+            <span class="item-desc">Événements, promotions, chantiers, vitrine.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Identité Visuelle & Logo</span>
+            <span class="item-desc">Logo, charte graphique, supports cohérents sur tous vos canaux.</span>
+          </div>
+        </div>
+        <a href="contact.html" class="btn-gold">Demander un devis</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 05 — WEB -->
+  <section class="service-section reveal" id="web">
+    <div class="container">
+      <div class="service-detail">
+        <div class="service-label">05</div>
+        <h2>Site Web & Landing Page</h2>
+        <p>Votre site web est votre vitrine 24h/24. Je code chaque site à la main — pas de WordPress, pas de page builder. Du code propre, rapide, optimisé SEO, qui vous appartient vraiment.</p>
+        <p><strong style="color:#d9772b;">La landing page de conversion est incluse et offerte</strong> dans toutes nos formules d'acquisition de leads.</p>
+        <div class="service-items">
+          <div class="service-item">
+            <span class="item-title">Site Vitrine Sur Mesure</span>
+            <span class="item-desc">1 à 5 pages, design sur mesure, mobile-first, optimisé SEO. À partir de 1 800 € HTVA.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Landing Page de Conversion</span>
+            <span class="item-desc">Offerte dans nos formules leads. Disponible en option standalone.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Refonte de Site Existant</span>
+            <span class="item-desc">Modernisation, optimisation vitesse et SEO de votre site actuel.</span>
+          </div>
+          <div class="service-item">
+            <span class="item-title">Visuels Réseaux Sociaux</span>
+            <span class="item-desc">Templates, bannières, posts pour Facebook, Instagram, LinkedIn.</span>
+          </div>
+        </div>
+        <a href="contact.html" class="btn-gold">Demander un devis</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 06 — PACK LANCEMENT -->
+  <section class="service-section reveal" id="pack-lancement">
+    <div class="container">
+      <div class="service-detail">
+        <div class="service-label">06 — Offre Exclusive</div>
+        <h2>Pack Lancement</h2>
+        <p>Vous vous lancez en tant qu'indépendant ou créez votre société ? Ce pack regroupe tout ce qu'il faut pour démarrer avec une image professionnelle — logo, site, print et photos — géré par un seul interlocuteur, livré clé en main.</p>
+        <p>Fini de courir après 4 prestataires différents. Vous signez une fois, vous recevez tout.</p>
+
+        <div class="pack-hero">
+          <div class="pack-new-badge">Nouveau</div>
+
+          <div class="pack-includes">
+            <div class="pack-item">
+              <div class="pack-item-icon">🎨</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">Logo & Charte Graphique</span>
+                <span class="pack-item-desc">Création de votre identité visuelle complète — logo, couleurs, typographie. Fichiers livrés en tous formats (print & web).</span>
+              </div>
+            </div>
+            <div class="pack-item">
+              <div class="pack-item-icon">🌐</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">Site Vitrine 1–3 pages</span>
+                <span class="pack-item-desc">Codé à la main, mobile-first, optimisé SEO. Rapide, propre, sans abonnement mensuel caché.</span>
+              </div>
+            </div>
+            <div class="pack-item">
+              <div class="pack-item-icon">📇</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">500 Cartes de Visite</span>
+                <span class="pack-item-desc">Design sur mesure aux couleurs de votre charte + impression 500 exemplaires livrés chez vous.</span>
+              </div>
+            </div>
+            <div class="pack-item">
+              <div class="pack-item-icon">📸</div>
+              <div class="pack-item-text">
+                <span class="pack-item-title">Séance Photo Professionnelle</span>
+                <span class="pack-item-desc">Portrait personnel branding + photos de votre activité/atelier. Idéal pour LinkedIn, site et réseaux sociaux.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pack-pricing-row">
+            <div class="pack-valeur">
+              <span class="pack-valeur-label">Valeur totale estimée</span>
+              <span class="pack-valeur-amount">~ 3 950 € HTVA</span>
+            </div>
+            <div class="pack-price-block">
+              <div class="pack-price-main">2 750 € <small>HTVA</small></div>
+              <span class="pack-price-note">Paiement en 2 fois · 50% à la commande · 50% à la livraison</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="contact.html" class="btn-gold">Réserver mon Pack Lancement</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© Pixel Studio 2026 — Agence Marketing Digital & Créative —  Belgique</p>
+    <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
+    <p><a href="politique-de-confidentialite.html">Politique de confidentialité</a></p>
+  </footer>
+
+  <script src="scroll-slider.js"></script>
+  <script src="menu.js"></script>
+   <script src="pixie.js"></script>
+</body>
+</html>
