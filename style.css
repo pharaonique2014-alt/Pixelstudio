@@ -1,0 +1,769 @@
+/* =========================
+   RESET
+========================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+/* =========================
+   BASE
+========================= */
+body {
+  background-color: #1a1a1a;
+  font-family: "Playfair Display", serif;
+  color: #e4e1dc;
+  font-weight: 500;
+  min-height: 100vh;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* =========================
+   FOND VIDEO
+========================= */
+.bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  z-index: -1;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+.main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 1000;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+}
+
+.menu {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+
+.menu a {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e4e1dc;
+  transition: color 0.25s;
+}
+
+.menu a:hover,
+.menu a.active {
+  color: #d6a060;
+}
+
+/* Burger */
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 1100;
+  padding: 4px;
+}
+
+.burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #e4e1dc;
+  transition: all 0.3s;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* =========================
+   HERO (accueil)
+========================= */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+}
+
+.logo-x {
+  width: 180px;
+  margin-bottom: 28px;
+  display: block;
+}
+
+/* ===== LOGO SLOT (conservé exact) ===== */
+.logo-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 2.3rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 24px;
+}
+
+.logo-slot span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1ch;
+  height: 1.3em;
+  line-height: 1.05;
+  overflow: visible;
+}
+
+.logo-slot span.space {
+  width: 0.7em;
+}
+
+.logo-slot .gold {
+  color: #d6a060;
+}
+
+/* =========================
+   TAGLINE
+========================= */
+.tagline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 48px;
+}
+
+.tagline .text {
+  font-family: "Playfair Display", serif;
+  font-size: 1.05rem;
+  color: #e4e1dc;
+  text-align: center;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.tagline .line {
+  width: 55px;
+  height: 2px;
+  background: #d9772b;
+  flex-shrink: 0;
+}
+
+/* =========================
+   BOUTONS
+========================= */
+.btn-gold {
+  display: inline-block;
+  background: #d6a060;
+  color: #111;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 36px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.2s;
+}
+
+.btn-gold:hover {
+  background: #c8914d;
+  transform: translateY(-2px);
+}
+
+.btn-full { width: 100%; text-align: center; }
+
+.btn-hero {
+  display: inline-block;
+  border: 1px solid rgba(228, 225, 220, 0.5);
+  color: #e4e1dc;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 13px 32px;
+  border-radius: 4px;
+  transition: border-color 0.25s, color 0.25s;
+}
+
+.btn-hero:hover {
+  border-color: #d6a060;
+  color: #d6a060;
+}
+
+/* =========================
+   PAGE HEADER (pages internes)
+========================= */
+.page-header {
+  padding: 160px 0 60px;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-size: 3rem;
+  color: #edeae5;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 24px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* =========================
+   TITRES GÉNÉRAUX
+========================= */
+h2 {
+  font-size: 2rem;
+  color: #edeae5;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+}
+
+h3 {
+  font-size: 1.3rem;
+  color: #edeae5;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+p {
+  line-height: 1.85;
+  color: #e4e1dc;
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+
+/* =========================
+   HOME — INTRO
+========================= */
+.home-intro {
+  padding: 80px 0;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.home-intro p {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
+
+/* =========================
+   HOME — SERVICES CARDS
+========================= */
+.home-services {
+  padding: 60px 0 80px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.service-card {
+  display: block;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 36px 28px;
+  text-align: center;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+
+.service-card:hover {
+  background: rgba(214, 160, 96, 0.1);
+  border-color: rgba(214, 160, 96, 0.4);
+  transform: translateY(-4px);
+}
+
+.service-icon {
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+}
+
+.service-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  color: #d6a060;
+}
+
+.service-card p {
+  font-size: 0.92rem;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+.card-link {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #66bfc0;
+  text-transform: uppercase;
+}
+
+/* =========================
+   HOME — CTA
+========================= */
+.home-cta {
+  padding: 80px 0;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.home-cta h2 { margin-bottom: 16px; }
+.home-cta p { max-width: 500px; margin: 0 auto 32px; opacity: 0.85; }
+
+/* =========================
+   SERVICES PAGE
+========================= */
+.service-section {
+  padding: 70px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.service-detail {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.service-label {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #d9772b;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.service-detail h2 {
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+}
+
+.service-items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 36px 0 36px;
+}
+
+.service-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 20px 22px;
+}
+
+.item-title {
+  display: block;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #d6a060;
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+
+.item-desc {
+  display: block;
+  font-size: 0.88rem;
+  opacity: 0.78;
+  line-height: 1.5;
+}
+
+.section-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 0 40px;
+}
+
+/* =========================
+   PORTFOLIO PAGE
+========================= */
+.filter-bar {
+  padding: 20px 0 40px;
+  text-align: center;
+}
+
+.filter-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #e4e1dc;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 4px;
+  transition: all 0.25s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: #d6a060;
+  border-color: #d6a060;
+  color: #111;
+}
+
+.portfolio-grid-section { padding: 0 0 60px; }
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.portfolio-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  cursor: pointer;
+}
+
+.portfolio-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.portfolio-item:hover img {
+  transform: scale(1.06);
+}
+
+.portfolio-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.portfolio-item:hover .portfolio-overlay {
+  opacity: 1;
+}
+
+.portfolio-cat {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #d6a060;
+  margin-bottom: 8px;
+}
+
+.portfolio-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* =========================
+   CONTACT PAGE
+========================= */
+.contact-section { padding: 30px 0 80px; }
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.contact-info-block h3 {
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+  color: #d6a060;
+}
+
+.contact-details {
+  margin: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.92rem;
+}
+
+.detail-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(214,160,96,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.contact-detail-item a {
+  color: #66bfc0;
+  transition: color 0.2s;
+}
+
+.contact-detail-item a:hover { color: #d6a060; }
+
+.response-note {
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.82rem;
+  color: rgba(228,225,220,0.6);
+  margin-top: 24px;
+  letter-spacing: 0.04em;
+}
+
+/* FORM */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(228,225,220,0.7);
+  margin-bottom: 8px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  color: #e4e1dc;
+  font-family: "Playfair Display", serif;
+  font-size: 0.95rem;
+  transition: border-color 0.25s;
+  appearance: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #d6a060;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(228,225,220,0.35);
+}
+
+select option { background: #1a1a1a; }
+
+textarea { min-height: 130px; resize: vertical; }
+
+#form-status {
+  margin-top: 14px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* =========================
+   DRONE VIDEO
+========================= */
+.drone-video-wrap {
+  margin: 36px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(214, 160, 96, 0.25);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+
+.drone-video-wrap video {
+  width: 100%;
+  display: block;
+  max-height: 480px;
+  object-fit: cover;
+  background: #111;
+}
+
+/* =========================
+   MODAL
+========================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal.active { display: flex; }
+
+.modal-content {
+  background: #1f1f1f;
+  border: 1px solid rgba(214,160,96,0.3);
+  padding: 40px 36px;
+  border-radius: 12px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+.modal-content p {
+  margin-bottom: 28px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+  padding: 36px 24px;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+  color: rgba(228,225,220,0.5);
+}
+
+footer p { margin-bottom: 6px; }
+
+footer a {
+  color: rgba(228,225,220,0.5);
+  transition: color 0.2s;
+}
+footer a:hover { color: #d6a060; }
+
+/* =========================
+   ANIMATIONS SCROLL
+========================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+
+.reveal.left  { transform: translateX(-60px); }
+.reveal.right { transform: translateX(60px); }
+
+.reveal.active {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+
+  .main-nav {
+    padding: 18px 20px;
+    justify-content: space-between;
+  }
+
+  .burger { display: flex; }
+
+  .menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 75%;
+    height: 100vh;
+    background: rgba(10,10,10,0.97);
+    flex-direction: column;
+    justify-content: center;
+    gap: 28px;
+    padding: 60px 32px;
+    transition: right 0.3s ease;
+  }
+
+  .menu.open { right: 0; }
+
+  .menu a { font-size: 1rem; }
+
+  .hero { padding: 100px 20px 60px; }
+
+  .logo-slot {
+    font-size: 1.75rem;
+    letter-spacing: 0.11em;
+    gap: 4px;
+  }
+
+  .logo-x { width: 150px; }
+
+  .services-grid { grid-template-columns: 1fr; }
+
+  .portfolio-grid { grid-template-columns: 1fr 1fr; }
+
+  .service-items { grid-template-columns: 1fr; }
+
+  .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+
+  .page-header h1 { font-size: 2.2rem; }
+
+  h2 { font-size: 1.6rem; }
+}
+
+@media (max-width: 480px) {
+  .portfolio-grid { grid-template-columns: 1fr; }
+}
