@@ -176,6 +176,9 @@ section{margin-top:56px;scroll-margin-top:80px}
 .face img{width:100%;height:100%;object-fit:cover}
 .face .ph{position:relative;z-index:1;color:#8a8378;font-size:11px;text-align:center;padding:10px;line-height:1.5;font-family:'Montserrat',sans-serif;letter-spacing:.03em}
 .face .ph b{display:block;color:#4a453d;font-family:'Playfair Display',serif;font-size:13px;font-weight:600;letter-spacing:.06em;margin-bottom:5px}
+.ph-logo{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px}
+.ph-logo img{width:38%;height:auto;object-fit:contain;opacity:.94}
+.ph-logo b{font-family:'Playfair Display',serif;font-size:12.5px;letter-spacing:.16em;color:#2b2621;text-transform:uppercase}
 .edge{position:absolute;background:linear-gradient(90deg,#f2eee6,#cfc7b8 45%,#a99f8d)}
 .ru-base{position:absolute;background:linear-gradient(#7a7a7a,#38383a);border-radius:6px;box-shadow:0 8px 18px rgba(0,0,0,.5)}
 .ru-pole{position:absolute;background:linear-gradient(90deg,#4a4a4a,#c4c4c4 45%,#6b6b6b);border-radius:3px}
@@ -1405,13 +1408,12 @@ function fallbackArt(p){
   return artFlat(s.w||100,s.h||140);
 }
 function productArt(p){
-  // Aucune photo externe vérifiable depuis cet environnement (accès réseau
-  // restreint) — illustration vectorielle systématique pour un rendu fiable
-  // et cohérent. Remplir PHOTOS[id] avec une URL d'image réellement
-  // vérifiée réactive ce chemin sans autre changement de code.
-  const src=PHOTOS[p.id]||p.photo;
-  if(src)return '<img src="'+src+'" alt="'+p.name+'" loading="lazy" data-fb="'+p.id+'">';
-  return fallbackArt(p);
+  // Visuel = capture réelle de l'aperçu 3D du produit (rendu tel quel dans le
+  // configurateur, logo inclus), générée hors-ligne pour chaque article — pas
+  // une photo externe. Si le fichier est absent/ne charge pas, guardPhoto()
+  // bascule automatiquement sur l'illustration vectorielle (fallbackArt).
+  const src=PHOTOS[p.id]||p.photo||('art/'+p.id+'.jpg');
+  return '<img src="'+src+'" alt="'+p.name+'" loading="lazy" data-fb="'+p.id+'">';
 }
 
 function guardPhoto(el,p){
@@ -1800,6 +1802,7 @@ const obj=document.getElementById('obj3d'),stage=document.getElementById('stage'
 function faceHTML(f,fallback){
   if(f&&!f.isPdf)return '<img src="'+f.data+'" alt="">';
   if(f&&f.isPdf)return '<div class="ph">\uD83D\uDCC4 '+f.name+'<br><small>PDF — aperçu non affiché,<br>fichier imprimé tel quel</small></div>';
+  if(window.__catalogSnapshot)return '<div class="ph-logo"><img src="x-pixel.png" alt="Pixel Studio"><b>PIXEL STUDIO</b></div>';
   return '<div class="ph"><b>'+fallback+'</b><small>Glissez votre fichier pour l’aperçu</small></div>';
 }
 function fitBox(w,h,maxW,maxH){
