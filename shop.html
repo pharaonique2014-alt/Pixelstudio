@@ -164,17 +164,21 @@ section{margin-top:56px;scroll-margin-top:80px}
 .cfg-close{position:absolute;top:16px;right:18px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:50%;width:32px;height:32px;font-size:15px;line-height:1}
 #configSection{position:relative}
 
-.stage{background:radial-gradient(circle at 50% 32%,#1d1712,#0a0908 72%);border:1px solid var(--line);border-radius:14px;height:420px;display:flex;align-items:center;justify-content:center;perspective:1200px;overflow:hidden;position:relative;cursor:grab;touch-action:none}
+.stage{background:radial-gradient(circle at 50% 28%,#221b14,#0a0908 74%);border:1px solid var(--line);border-radius:14px;height:420px;display:flex;align-items:center;justify-content:center;perspective:1200px;overflow:hidden;position:relative;cursor:grab;touch-action:none}
+.stage::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 30% at 50% 78%,rgba(217,119,43,.16),transparent 70%);pointer-events:none}
+.stage::after{content:'';position:absolute;left:8%;right:8%;bottom:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(214,160,96,.28),transparent);pointer-events:none}
 .stage:active{cursor:grabbing}
 .stage .hint{position:absolute;bottom:11px;left:0;right:0;text-align:center;color:var(--muted);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;pointer-events:none}
 .stage .spin{position:absolute;top:11px;right:11px;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--muted);border-radius:16px;padding:6px 12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
-.obj3d{transform-style:preserve-3d;position:relative}
-.face{position:absolute;backface-visibility:hidden;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 26px 66px rgba(0,0,0,.72)}
+.obj3d{transform-style:preserve-3d;position:relative;-webkit-box-reflect:below 5px linear-gradient(to bottom,transparent,transparent 55%,rgba(255,255,255,.09))}
+.face{position:absolute;backface-visibility:hidden;background:linear-gradient(155deg,#ffffff 0%,#f7f4ef 55%,#e9e3d8 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 30px 70px -12px rgba(0,0,0,.78),0 4px 14px rgba(0,0,0,.4)}
+.face::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.08) 22%,rgba(255,255,255,0) 42%,rgba(0,0,0,.05) 100%);pointer-events:none}
 .face img{width:100%;height:100%;object-fit:cover}
-.face .ph{color:#9a9a9a;font-size:11.5px;text-align:center;padding:10px;line-height:1.45;font-family:'Montserrat',sans-serif}
-.edge{position:absolute;background:#dcdcdc}
-.ru-base{position:absolute;background:linear-gradient(#6e6e6e,#3c3c3c);border-radius:6px}
-.ru-pole{position:absolute;background:linear-gradient(90deg,#9a9a9a,#5a5a5a);border-radius:3px}
+.face .ph{position:relative;z-index:1;color:#8a8378;font-size:11px;text-align:center;padding:10px;line-height:1.5;font-family:'Montserrat',sans-serif;letter-spacing:.03em}
+.face .ph b{display:block;color:#4a453d;font-family:'Playfair Display',serif;font-size:13px;font-weight:600;letter-spacing:.06em;margin-bottom:5px}
+.edge{position:absolute;background:linear-gradient(90deg,#f2eee6,#cfc7b8 45%,#a99f8d)}
+.ru-base{position:absolute;background:linear-gradient(#7a7a7a,#38383a);border-radius:6px;box-shadow:0 8px 18px rgba(0,0,0,.5)}
+.ru-pole{position:absolute;background:linear-gradient(90deg,#4a4a4a,#c4c4c4 45%,#6b6b6b);border-radius:3px}
 .dlrow{display:flex;gap:8px;margin-top:9px}
 .dlrow button{flex:1;background:transparent;border:1px solid var(--line);color:var(--txt);border-radius:22px;padding:11px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;transition:.2s}
 .dlrow button:disabled{opacity:.3;cursor:not-allowed}
@@ -1819,7 +1823,7 @@ const obj=document.getElementById('obj3d'),stage=document.getElementById('stage'
 function faceHTML(f,fallback){
   if(f&&!f.isPdf)return '<img src="'+f.data+'" alt="">';
   if(f&&f.isPdf)return '<div class="ph">\uD83D\uDCC4 '+f.name+'<br><small>PDF — aperçu non affiché,<br>fichier imprimé tel quel</small></div>';
-  return '<div class="ph">'+fallback+'</div>';
+  return '<div class="ph"><b>'+fallback+'</b><small>Glissez votre fichier pour l’aperçu</small></div>';
 }
 function fitBox(w,h,maxW,maxH){
   const r=h/w;let W=maxW,H=W*r;
@@ -1832,12 +1836,12 @@ function build3D(){
   const s=cur.shape||{t:'flat',w:100,h:100};
   const front=faceHTML(fR,'Votre visuel recto');
   const back=isRV()?faceHTML(fV,'Votre visuel verso')
-    :'<div class="ph" style="color:#777">PIXEL PRINT<br><small>verso non imprimé</small></div>';
+    :'<div class="ph"><b>PIXEL PRINT</b><small>verso non imprimé</small></div>';
 
   if(s.t==='design'){
     obj.style.width='240px';obj.style.height='150px';
     obj.innerHTML='<div class="face" style="width:240px;height:150px;border-radius:8px;background:linear-gradient(135deg,#2a2320,#171310);border:1px dashed rgba(214,160,96,.5)">'+
-      '<div class="ph" style="color:#d6a060">\uD83C\uDFA8<br><b>Création sur mesure</b><br>'+
+      '<div class="ph" style="color:#d6a060">\uD83C\uDFA8<br><b style="color:#d6a060">Création sur mesure</b>'+
       '<small style="color:rgba(228,225,220,.55)">Nous dessinons votre visuel<br>et vous l\'envoyons pour validation</small></div></div>';
     applyRot();return;
   }
@@ -1863,7 +1867,7 @@ function build3D(){
       '<div class="ru-pole" style="width:6px;height:'+box.H+'px;left:'+(box.W/2-3)+'px;bottom:18px;transform:translateZ(-8px)"></div>'+
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;bottom:20px;border-radius:2px">'+front+'</div>'+
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;bottom:20px;border-radius:2px;transform:rotateY(180deg)">'+
-      '<div class="ph" style="background:#e8e8e8;width:100%;height:100%;display:flex;align-items:center;justify-content:center">dos gris</div></div>';
+      '<div class="ph" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center"><b>PIXEL PRINT</b><small>dos non imprimé</small></div></div>';
   }
   else if(s.t==='banner'){
     const box=fitBox(s.w,s.h,300,190);
@@ -1877,7 +1881,7 @@ function build3D(){
     obj.innerHTML=
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;border-radius:3px;transform:translateZ(1px)">'+front+eyelets+'</div>'+
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;border-radius:3px;transform:rotateY(180deg) translateZ(1px)">'+
-      '<div class="ph" style="background:#ededed;width:100%;height:100%;display:flex;align-items:center;justify-content:center">dos</div></div>';
+      '<div class="ph" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center"><b>PIXEL PRINT</b><small>dos non imprimé</small></div></div>';
   }
   else{
     const box=fitBox(s.w,s.h,235,300);
