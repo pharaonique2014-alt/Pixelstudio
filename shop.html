@@ -170,8 +170,8 @@ section{margin-top:56px;scroll-margin-top:80px}
 .stage:active{cursor:grabbing}
 .stage .hint{position:absolute;bottom:11px;left:0;right:0;text-align:center;color:var(--muted);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;pointer-events:none}
 .stage .spin{position:absolute;top:11px;right:11px;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--muted);border-radius:16px;padding:6px 12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
-.obj3d{transform-style:preserve-3d;position:relative;-webkit-box-reflect:below 5px linear-gradient(to bottom,transparent,transparent 55%,rgba(255,255,255,.09))}
-.face{position:absolute;backface-visibility:hidden;background:linear-gradient(155deg,#ffffff 0%,#f7f4ef 55%,#e9e3d8 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 30px 70px -12px rgba(0,0,0,.78),0 4px 14px rgba(0,0,0,.4)}
+.obj3d{-webkit-transform-style:preserve-3d;transform-style:preserve-3d;position:relative;-webkit-box-reflect:below 5px linear-gradient(to bottom,transparent,transparent 55%,rgba(255,255,255,.09))}
+.face{position:absolute;background:linear-gradient(155deg,#ffffff 0%,#f7f4ef 55%,#e9e3d8 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 30px 70px -12px rgba(0,0,0,.78),0 4px 14px rgba(0,0,0,.4)}
 .face::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.08) 22%,rgba(255,255,255,0) 42%,rgba(0,0,0,.05) 100%);pointer-events:none}
 .face img{width:100%;height:100%;object-fit:cover}
 .face .ph{position:relative;z-index:1;color:#8a8378;font-size:11px;text-align:center;padding:10px;line-height:1.5;font-family:'Montserrat',sans-serif;letter-spacing:.03em}
@@ -1870,7 +1870,21 @@ function build3D(){
   }
   applyRot();
 }
-function applyRot(){if(obj)obj.style.transform='rotateX('+rotX+'deg) rotateY('+rotY+'deg)';}
+function applyRot(){
+  if(!obj)return;
+  obj.style.transform='rotateX('+rotX+'deg) rotateY('+rotY+'deg)';
+  // backface-visibility ne cache pas toujours fiablement la face avant quand on
+  // regarde "de dos" (bug de rendu observé sur plusieurs moteurs) : on force donc
+  // explicitement quelle face (recto/verso) est affichée selon l'angle courant,
+  // plutôt que de compter sur le culling 3D du navigateur.
+  const faces=obj.querySelectorAll(':scope > .face');
+  if(faces.length===2){
+    const norm=((rotY%360)+360)%360;
+    const showBack=norm>90&&norm<270;
+    faces[0].style.visibility=showBack?'hidden':'visible';
+    faces[1].style.visibility=showBack?'visible':'hidden';
+  }
+}
 function isConfigVisible(){
   const p=document.getElementById('configPanel');
   if(!p||!p.classList.contains('open'))return false;
