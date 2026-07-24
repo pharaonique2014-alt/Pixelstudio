@@ -853,272 +853,188 @@ const store={
 
 const HANDLING=2;
 
-const FIN_PELL=[{n:'Sans pelliculage',p:0,d:0},{n:'Pelliculage mat',p:.14,d:1},
-  {n:'Pelliculage brillant',p:.14,d:1},{n:'Soft-touch',p:.26,d:2}];
-const FIN_LUXE=[{n:'Aucune',p:0,d:0},{n:'Vernis sélectif UV',p:.38,d:2},{n:'Dorure à chaud',p:.52,d:3}];
-const SIDES2=[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.18,d:0}];
-const SPEED=[{n:'Standard',p:0,d:0},{n:'Express',p:.32,d:-2}];
-
 const PRODUCTS=[
 
-{id:'cdv',cat:'carterie',ico:'\uD83D\uDCB3',name:'Cartes de visite classiques',fmt:'85 × 55 mm',tag:'Best-seller',
- desc:"Le format standard qui rentre dans tous les porte-cartes. Papier épais, finitions au choix.",
- shape:{t:'card',w:85,h:55,r:2},supDays:3,
- price:{100:17.40,250:23.80,500:32.60,1000:47.90,2500:86.20},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat',p:0,d:0},{n:'350 g couché brillant',p:0,d:0},
-   {n:'400 g extra-épais',p:.16,d:1},{n:'350 g recyclé',p:.08,d:1},{n:'Kraft naturel',p:.12,d:1}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'luxe',l:'Finition prestige',c:FIN_LUXE},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv',cat:'carterie',ico:'💳',name:'Cartes de visite classiques',fmt:'85 × 55 mm',tag:'Best-seller',
+ desc:'Le format standard qui rentre dans tous les porte-cartes. Papier épais, finitions au choix.',
+ shape:{"t":"card","w":85,"h":55,"r":2},supDays:3,
+ qtys:[100,250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'350 g couché brillant'},{n:'400 g extra-épais'},{n:'350 g recyclé'},{n:'Kraft naturel'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'luxe',l:'Finition prestige',c:[{n:'Aucune'},{n:'Vernis sélectif UV'},{n:'Dorure à chaud'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'cdv-sq',cat:'carterie',ico:'\u25FC\uFE0F',name:'Cartes de visite carrées',fmt:'55 × 55 mm',tag:'Original',
- desc:"Format carré qui sort du lot. Idéal pour les métiers créatifs et les marques affirmées.",
- shape:{t:'card',w:55,h:55,r:2},supDays:3,
- price:{100:19.60,250:26.40,500:36.10,1000:52.80,2500:94.70},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat',p:0,d:0},{n:'350 g couché brillant',p:0,d:0},
-   {n:'400 g extra-épais',p:.16,d:1},{n:'350 g recyclé',p:.08,d:1}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'luxe',l:'Finition prestige',c:FIN_LUXE},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv-sq',cat:'carterie',ico:'◼️',name:'Cartes de visite carrées',fmt:'55 × 55 mm',tag:'Original',
+ desc:'Format carré qui sort du lot. Idéal pour les métiers créatifs et les marques affirmées.',
+ shape:{"t":"card","w":55,"h":55,"r":2},supDays:3,
+ qtys:[100,250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'350 g couché brillant'},{n:'400 g extra-épais'},{n:'350 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'luxe',l:'Finition prestige',c:[{n:'Aucune'},{n:'Vernis sélectif UV'},{n:'Dorure à chaud'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'cdv-rd',cat:'carterie',ico:'\uD83C\uDFF7\uFE0F',name:'Cartes de visite coins arrondis',fmt:'85 × 55 mm — R6',
- desc:"Coins arrondis 6 mm pour un toucher doux et une allure contemporaine.",
- shape:{t:'card',w:85,h:55,r:11},supDays:4,
- price:{100:21.30,250:28.90,500:39.40,1000:57.60,2500:103.40},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat',p:0,d:0},{n:'350 g couché brillant',p:0,d:0},
-   {n:'400 g extra-épais',p:.16,d:1}]},
-  {k:'radius',l:'Rayon des coins',c:[{n:'3 mm',p:0,d:0},{n:'6 mm',p:0,d:0},{n:'10 mm',p:.04,d:0}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv-rd',cat:'carterie',ico:'🏷️',name:'Cartes de visite coins arrondis',fmt:'85 × 55 mm — R6',tag:null,
+ desc:'Coins arrondis 6 mm pour un toucher doux et une allure contemporaine.',
+ shape:{"t":"card","w":85,"h":55,"r":11},supDays:4,
+ qtys:[100,250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'350 g couché brillant'},{n:'400 g extra-épais'}]},{k:'radius',l:'Rayon des coins',c:[{n:'3 mm'},{n:'6 mm'},{n:'10 mm'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'cdv-pvc',cat:'carterie',ico:'\uD83D\uDCB3',name:'Cartes PVC',fmt:'85,6 × 54 mm',tag:'Durable',
- desc:"Format carte bancaire en PVC blanc. Résistant à l'eau et aux manipulations répétées.",
- shape:{t:'card',w:86,h:54,r:8},supDays:6,
- price:{100:61.80,250:96.40,500:148.70,1000:236.50},
- opts:[{k:'paper',l:'Finition PVC',c:[{n:'PVC blanc brillant',p:0,d:0},{n:'PVC blanc mat',p:.06,d:0}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv-pvc',cat:'carterie',ico:'💳',name:'Cartes PVC',fmt:'85,6 × 54 mm',tag:'Durable',
+ desc:'Format carte bancaire en PVC blanc. Résistant à l\'eau et aux manipulations répétées.',
+ shape:{"t":"card","w":86,"h":54,"r":8},supDays:6,
+ qtys:[100,250,500,1000],
+ opts:[{k:'paper',l:'Finition PVC',c:[{n:'PVC blanc brillant'},{n:'PVC blanc mat'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fid',cat:'carterie',ico:'\u2B50',name:'Cartes de fidélité',fmt:'85 × 55 mm',
- desc:"Cartes à tampons ou à cases. Papier inscriptible pour annoter facilement.",
- shape:{t:'card',w:85,h:55,r:2},supDays:3,
- price:{100:18.70,250:25.30,500:34.80,1000:50.40},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g inscriptible',p:0,d:0},{n:'350 g couché mat',p:0,d:0}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fid',cat:'carterie',ico:'⭐',name:'Cartes de fidélité',fmt:'85 × 55 mm',tag:null,
+ desc:'Cartes à tampons ou à cases. Papier inscriptible pour annoter facilement.',
+ shape:{"t":"card","w":85,"h":55,"r":2},supDays:3,
+ qtys:[100,250,500,1000],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g inscriptible'},{n:'350 g couché mat'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fla6',cat:'pub',ico:'\uD83D\uDCC4',name:'Flyers A6',fmt:'105 × 148 mm',
- desc:"Format carte postale. Parfait pour les promos, distributions et événements.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{250:26.30,500:31.70,1000:41.40,2500:63.80,5000:102.90},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},
-   {n:'250 g mat',p:.27,d:0},{n:'170 g recyclé',p:.14,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fla6',cat:'pub',ico:'📄',name:'Flyers A6',fmt:'105 × 148 mm',tag:null,
+ desc:'Format carte postale. Parfait pour les promos, distributions et événements.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[250,500,1000,2500,5000],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'},{n:'170 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fla5',cat:'pub',ico:'\uD83D\uDCC3',name:'Flyers A5',fmt:'148 × 210 mm',tag:'Populaire',
- desc:"Le format flyer par excellence. Distribution, salons, toutes-boîtes.",
- shape:{t:'flat',w:148,h:210},supDays:3,
- price:{250:33.60,500:41.20,1000:54.70,2500:86.40,5000:139.20},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},
-   {n:'250 g mat',p:.27,d:0},{n:'170 g recyclé',p:.14,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fla5',cat:'pub',ico:'📃',name:'Flyers A5',fmt:'148 × 210 mm',tag:'Populaire',
+ desc:'Le format flyer par excellence. Distribution, salons, toutes-boîtes.',
+ shape:{"t":"flat","w":148,"h":210},supDays:3,
+ qtys:[250,500,1000,2500,5000],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'},{n:'170 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fla4',cat:'pub',ico:'\uD83D\uDDDE\uFE0F',name:'Flyers A4',fmt:'210 × 297 mm',
- desc:"Plus d'espace pour votre message. Menus, fiches produits, programmes.",
- shape:{t:'flat',w:210,h:297},supDays:3,
- price:{250:49.80,500:62.30,1000:83.60,2500:132.70},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.27,d:0}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fla4',cat:'pub',ico:'🗞️',name:'Flyers A4',fmt:'210 × 297 mm',tag:null,
+ desc:'Plus d\'espace pour votre message. Menus, fiches produits, programmes.',
+ shape:{"t":"flat","w":210,"h":297},supDays:3,
+ qtys:[250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'dep1',cat:'pub',ico:'\uD83D\uDCD6',name:'Dépliants 1 pli',fmt:'A4 plié en A5 — 4 pages',
- desc:"A4 plié en deux. Présentation soignée de vos services ou de votre carte.",
- shape:{t:'flat',w:210,h:148},supDays:4,
- price:{250:71.40,500:89.60,1000:118.30,2500:189.50},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.27,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'dep1',cat:'pub',ico:'📖',name:'Dépliants 1 pli',fmt:'A4 plié en A5 — 4 pages',tag:null,
+ desc:'A4 plié en deux. Présentation soignée de vos services ou de votre carte.',
+ shape:{"t":"flat","w":210,"h":148},supDays:4,
+ qtys:[250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'dep3',cat:'pub',ico:'\uD83D\uDCD1',name:'Dépliants 2 plis roulés',fmt:'A4 → DL — 6 pages',
- desc:"Trois volets, format enveloppe. Le classique de la plaquette commerciale.",
- shape:{t:'flat',w:99,h:210},supDays:4,
- price:{250:78.90,500:97.40,1000:129.60,2500:207.80},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.27,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'dep3',cat:'pub',ico:'📑',name:'Dépliants 2 plis roulés',fmt:'A4 → DL — 6 pages',tag:null,
+ desc:'Trois volets, format enveloppe. Le classique de la plaquette commerciale.',
+ shape:{"t":"flat","w":99,"h":210},supDays:4,
+ qtys:[250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'affA3',cat:'pub',ico:'\uD83D\uDDBC\uFE0F',name:'Affiches A3',fmt:'297 × 420 mm',
- desc:"Vitrine, intérieur, point de vente. Impression quadri haute définition.",
- shape:{t:'flat',w:297,h:420},supDays:3,
- price:{5:18.90,10:23.70,25:36.40,50:54.80,100:87.30},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.24,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'affA3',cat:'pub',ico:'🖼️',name:'Affiches A3',fmt:'297 × 420 mm',tag:null,
+ desc:'Vitrine, intérieur, point de vente. Impression quadri haute définition.',
+ shape:{"t":"flat","w":297,"h":420},supDays:3,
+ qtys:[5,10,25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'affA2',cat:'pub',ico:'\uD83D\uDDBC\uFE0F',name:'Affiches A2',fmt:'420 × 594 mm',
- desc:"Grand format pour vitrine et affichage intérieur. Rendu net et couleurs vives.",
- shape:{t:'flat',w:420,h:594},supDays:3,
- price:{5:27.60,10:34.90,25:53.20,50:79.40,100:126.70},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'affA2',cat:'pub',ico:'🖼️',name:'Affiches A2',fmt:'420 × 594 mm',tag:null,
+ desc:'Grand format pour vitrine et affichage intérieur. Rendu net et couleurs vives.',
+ shape:{"t":"flat","w":420,"h":594},supDays:3,
+ qtys:[5,10,25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'aff70',cat:'pub',ico:'\uD83D\uDCE2',name:'Affiches 70 × 100 cm',fmt:'700 × 1000 mm',
- desc:"Affichage grand format, papier à dos bleu qui empêche la transparence.",
- shape:{t:'flat',w:700,h:1000},supDays:4,
- price:{5:46.80,10:61.30,25:98.70,50:154.20},
- opts:[{k:'paper',l:'Support',c:[{n:'150 g dos bleu',p:0,d:0},{n:'170 g brillant',p:.13,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'aff70',cat:'pub',ico:'📢',name:'Affiches 70 × 100 cm',fmt:'700 × 1000 mm',tag:null,
+ desc:'Affichage grand format, papier à dos bleu qui empêche la transparence.',
+ shape:{"t":"flat","w":700,"h":1000},supDays:4,
+ qtys:[5,10,25,50],
+ opts:[{k:'paper',l:'Support',c:[{n:'150 g dos bleu'},{n:'170 g brillant'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'rollup',cat:'signa',ico:'\uD83C\uDF8C',name:'Roll-up 85 × 200 cm',fmt:'850 × 2000 mm',tag:'Salons',
- desc:"Structure aluminium + bâche 510 g + housse de transport. Monté en 30 secondes.",
- shape:{t:'rollup',w:85,h:200},supDays:3,
- price:{1:63.40,2:118.70,3:167.90,5:264.30},
- opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g',p:0,d:0},{n:'Bâche anti-feu M1',p:.17,d:1},
-   {n:'Toile textile',p:.23,d:1}]},
-  {k:'base',l:'Structure',c:[{n:'Alu standard',p:0,d:0},{n:'Alu premium (base large)',p:.28,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'rollup',cat:'signa',ico:'🎌',name:'Roll-up 85 × 200 cm',fmt:'850 × 2000 mm',tag:'Salons',
+ desc:'Structure aluminium + bâche 510 g + housse de transport. Monté en 30 secondes.',
+ shape:{"t":"rollup","w":85,"h":200},supDays:3,
+ qtys:[1,2,3,5],
+ opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g'},{n:'Bâche anti-feu M1'},{n:'Toile textile'}]},{k:'base',l:'Structure',c:[{n:'Alu standard'},{n:'Alu premium (base large)'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'rollup100',cat:'signa',ico:'\uD83C\uDF8C',name:'Roll-up 100 × 200 cm',fmt:'1000 × 2000 mm',
- desc:"Version large pour une visibilité maximale en salon ou en hall d'accueil.",
- shape:{t:'rollup',w:100,h:200},supDays:3,
- price:{1:74.60,2:139.80,3:198.40,5:312.70},
- opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g',p:0,d:0},{n:'Bâche anti-feu M1',p:.17,d:1}]},
-  {k:'base',l:'Structure',c:[{n:'Alu standard',p:0,d:0},{n:'Alu premium (base large)',p:.28,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'rollup100',cat:'signa',ico:'🎌',name:'Roll-up 100 × 200 cm',fmt:'1000 × 2000 mm',tag:null,
+ desc:'Version large pour une visibilité maximale en salon ou en hall d\'accueil.',
+ shape:{"t":"rollup","w":100,"h":200},supDays:3,
+ qtys:[1,2,3,5],
+ opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g'},{n:'Bâche anti-feu M1'}]},{k:'base',l:'Structure',c:[{n:'Alu standard'},{n:'Alu premium (base large)'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'band',cat:'signa',ico:'\uD83C\uDFF3\uFE0F',name:'Banderole PVC',fmt:'200 × 100 cm',
- desc:"Bâche PVC 510 g avec ourlets et œillets. Résiste à l'extérieur toute l'année.",
- shape:{t:'banner',w:200,h:100},supDays:4,
- price:{1:38.70,2:71.40,3:101.60,5:159.80},
- opts:[{k:'paper',l:'Support',c:[{n:'PVC 510 g',p:0,d:0},{n:'PVC 650 g renforcé',p:.21,d:0},
-   {n:'Mesh micro-perforé',p:.18,d:1}]},
-  {k:'finish',l:'Finition',c:[{n:'Ourlets + œillets',p:0,d:0},{n:'Sans finition',p:-.09,d:0},
-   {n:'Fourreaux haut/bas',p:.12,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'band',cat:'signa',ico:'🏳️',name:'Banderole PVC',fmt:'200 × 100 cm',tag:null,
+ desc:'Bâche PVC 510 g avec ourlets et œillets. Résiste à l\'extérieur toute l\'année.',
+ shape:{"t":"banner","w":200,"h":100},supDays:4,
+ qtys:[1,2,3,5],
+ opts:[{k:'paper',l:'Support',c:[{n:'PVC 510 g'},{n:'PVC 650 g renforcé'},{n:'Mesh micro-perforé'}]},{k:'finish',l:'Finition',c:[{n:'Ourlets + œillets'},{n:'Sans finition'},{n:'Fourreaux haut/bas'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'panneau',cat:'signa',ico:'\uD83D\uDEA7',name:'Panneau Forex',fmt:'60 × 40 cm',
- desc:"PVC expansé 3 mm, léger et rigide. Signalétique intérieure ou abritée.",
- shape:{t:'flat',w:600,h:400},supDays:4,
- price:{1:29.40,2:53.80,5:118.60,10:214.30},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Forex 3 mm',p:0,d:0},{n:'Forex 5 mm',p:.19,d:0},
-   {n:'Dibond alu 3 mm',p:.64,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'panneau',cat:'signa',ico:'🚧',name:'Panneau Forex',fmt:'60 × 40 cm',tag:null,
+ desc:'PVC expansé 3 mm, léger et rigide. Signalétique intérieure ou abritée.',
+ shape:{"t":"flat","w":600,"h":400},supDays:4,
+ qtys:[1,2,5,10],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Forex 3 mm'},{n:'Forex 5 mm'},{n:'Dibond alu 3 mm'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'stick-rd',cat:'stick',ico:'\uD83D\uDD34',name:'Stickers ronds',fmt:'Ø 100 mm',
- desc:"Vinyle blanc résistant, découpe ronde. Intérieur et extérieur.",
- shape:{t:'flat',w:100,h:100,round:true},supDays:4,
- price:{50:27.30,100:33.80,250:52.60,500:78.40,1000:123.90},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant',p:0,d:0},{n:'Vinyle blanc mat',p:0,d:0},
-   {n:'Vinyle transparent',p:.16,d:1},{n:'Papier recyclé',p:-.11,d:0}]},
-  {k:'lam',l:'Protection',c:[{n:'Sans',p:0,d:0},{n:'Laminage brillant',p:.14,d:1},{n:'Laminage mat',p:.14,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'stick-rd',cat:'stick',ico:'🔴',name:'Stickers ronds',fmt:'Ø 100 mm',tag:null,
+ desc:'Vinyle blanc résistant, découpe ronde. Intérieur et extérieur.',
+ shape:{"t":"flat","w":100,"h":100,"round":true},supDays:4,
+ qtys:[50,100,250,500,1000],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant'},{n:'Vinyle blanc mat'},{n:'Vinyle transparent'},{n:'Papier recyclé'}]},{k:'lam',l:'Protection',c:[{n:'Sans'},{n:'Laminage brillant'},{n:'Laminage mat'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'stick-sq',cat:'stick',ico:'\u2B1C',name:'Stickers carrés',fmt:'100 × 100 mm',
- desc:"Découpe carrée aux angles légèrement arrondis. Étiquetage, packaging, goodies.",
- shape:{t:'flat',w:100,h:100,r:6},supDays:4,
- price:{50:26.10,100:32.40,250:50.30,500:75.20,1000:118.70},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant',p:0,d:0},{n:'Vinyle blanc mat',p:0,d:0},
-   {n:'Vinyle transparent',p:.16,d:1}]},
-  {k:'lam',l:'Protection',c:[{n:'Sans',p:0,d:0},{n:'Laminage brillant',p:.14,d:1},{n:'Laminage mat',p:.14,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'stick-sq',cat:'stick',ico:'⬜',name:'Stickers carrés',fmt:'100 × 100 mm',tag:null,
+ desc:'Découpe carrée aux angles légèrement arrondis. Étiquetage, packaging, goodies.',
+ shape:{"t":"flat","w":100,"h":100,"r":6},supDays:4,
+ qtys:[50,100,250,500,1000],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant'},{n:'Vinyle blanc mat'},{n:'Vinyle transparent'}]},{k:'lam',l:'Protection',c:[{n:'Sans'},{n:'Laminage brillant'},{n:'Laminage mat'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'vitro',cat:'stick',ico:'\uD83E\uDE9F',name:'Vitrophanie',fmt:'100 × 70 cm',
- desc:"Adhésif pour vitrine, pose intérieure ou extérieure. Découpe au format.",
- shape:{t:'flat',w:1000,h:700},supDays:5,
- price:{1:42.60,2:78.30,5:172.40},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle monomère',p:0,d:0},{n:'Vinyle polymère (longue durée)',p:.34,d:1},
-   {n:'Dépoli / sablé',p:.41,d:2}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'vitro',cat:'stick',ico:'🪟',name:'Vitrophanie',fmt:'100 × 70 cm',tag:null,
+ desc:'Adhésif pour vitrine, pose intérieure ou extérieure. Découpe au format.',
+ shape:{"t":"flat","w":1000,"h":700},supDays:5,
+ qtys:[1,2,5],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle monomère'},{n:'Vinyle polymère (longue durée)'},{n:'Dépoli / sablé'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'entete',cat:'pap',ico:'\uD83D\uDCDD',name:'Papier à en-tête',fmt:'A4 — 210 × 297 mm',
- desc:"Courriers, devis, factures. Papier offset inscriptible à la main comme à l'imprimante.",
- shape:{t:'flat',w:210,h:297},supDays:4,
- price:{100:41.70,250:53.20,500:71.80,1000:104.60},
- opts:[{k:'paper',l:'Support',c:[{n:'90 g offset',p:0,d:0},{n:'120 g offset',p:.17,d:0},{n:'100 g recyclé',p:.13,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.21,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'entete',cat:'pap',ico:'📝',name:'Papier à en-tête',fmt:'A4 — 210 × 297 mm',tag:null,
+ desc:'Courriers, devis, factures. Papier offset inscriptible à la main comme à l\'imprimante.',
+ shape:{"t":"flat","w":210,"h":297},supDays:4,
+ qtys:[100,250,500,1000],
+ opts:[{k:'paper',l:'Support',c:[{n:'90 g offset'},{n:'120 g offset'},{n:'100 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'enveloppe',cat:'pap',ico:'\u2709\uFE0F',name:'Enveloppes DL',fmt:'220 × 110 mm',
- desc:"Enveloppes à votre image, avec ou sans fenêtre. Impression quadri au recto.",
- shape:{t:'flat',w:220,h:110},supDays:5,
- price:{250:63.80,500:86.40,1000:127.30},
- opts:[{k:'paper',l:'Type',c:[{n:'Sans fenêtre',p:0,d:0},{n:'Avec fenêtre',p:.09,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'enveloppe',cat:'pap',ico:'✉️',name:'Enveloppes DL',fmt:'220 × 110 mm',tag:null,
+ desc:'Enveloppes à votre image, avec ou sans fenêtre. Impression quadri au recto.',
+ shape:{"t":"flat","w":220,"h":110},supDays:5,
+ qtys:[250,500,1000],
+ opts:[{k:'paper',l:'Type',c:[{n:'Sans fenêtre'},{n:'Avec fenêtre'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'bloc',cat:'pap',ico:'\uD83D\uDCD2',name:'Bloc-notes A5',fmt:'148 × 210 mm — 50 feuilles',
- desc:"Blocs collés en tête, 50 feuillets. Un support de fidélisation qui reste sur le bureau.",
- shape:{t:'flat',w:148,h:210},supDays:5,
- price:{25:64.30,50:97.80,100:158.40},
- opts:[{k:'paper',l:'Support',c:[{n:'90 g offset',p:0,d:0},{n:'100 g recyclé',p:.13,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'bloc',cat:'pap',ico:'📒',name:'Bloc-notes A5',fmt:'148 × 210 mm — 50 feuilles',tag:null,
+ desc:'Blocs collés en tête, 50 feuillets. Un support de fidélisation qui reste sur le bureau.',
+ shape:{"t":"flat","w":148,"h":210},supDays:5,
+ qtys:[25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'90 g offset'},{n:'100 g recyclé'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fpn',cat:'part',ico:'\uD83D\uDC76',name:'Faire-parts de naissance',fmt:'A6 — 105 × 148 mm',tag:'Nouveau',
- desc:"Annoncez l'arrivée de bébé avec un papier épais et une finition soignée.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{25:31.40,50:42.70,100:59.80,200:89.30},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1},
-   {n:'350 g texturé',p:.23,d:1},{n:'300 g recyclé',p:.09,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'corner',l:'Coins',c:[{n:'Droits',p:0,d:0},{n:'Arrondis',p:.11,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fpn',cat:'part',ico:'👶',name:'Faire-parts de naissance',fmt:'A6 — 105 × 148 mm',tag:'Nouveau',
+ desc:'Annoncez l\'arrivée de bébé avec un papier épais et une finition soignée.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'},{n:'350 g texturé'},{n:'300 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'corner',l:'Coins',c:[{n:'Droits'},{n:'Arrondis'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fpm',cat:'part',ico:'\uD83D\uDC8D',name:'Faire-parts de mariage',fmt:'Carré — 130 × 130 mm',
- desc:"L'invitation qui donne le ton du grand jour. Papiers nacrés et texturés disponibles.",
- shape:{t:'flat',w:130,h:130},supDays:3,
- price:{25:35.90,50:48.60,100:68.40,200:102.70},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1},{n:'350 g texturé',p:.23,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'corner',l:'Coins',c:[{n:'Droits',p:0,d:0},{n:'Arrondis',p:.11,d:1}]},
-  {k:'luxe',l:'Finition prestige',c:FIN_LUXE},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fpm',cat:'part',ico:'💍',name:'Faire-parts de mariage',fmt:'Carré — 130 × 130 mm',tag:null,
+ desc:'L\'invitation qui donne le ton du grand jour. Papiers nacrés et texturés disponibles.',
+ shape:{"t":"flat","w":130,"h":130},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'},{n:'350 g texturé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'corner',l:'Coins',c:[{n:'Droits'},{n:'Arrondis'}]},{k:'luxe',l:'Finition prestige',c:[{n:'Aucune'},{n:'Vernis sélectif UV'},{n:'Dorure à chaud'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'inv',cat:'part',ico:'\uD83C\uDF89',name:'Invitations & anniversaires',fmt:'A6 — 105 × 148 mm',
- desc:"Anniversaires, communions, baby showers, départs à la retraite.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{25:28.60,50:38.40,100:54.20,200:81.60},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g brillant',p:0,d:0},{n:'300 g nacré',p:.17,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'corner',l:'Coins',c:[{n:'Droits',p:0,d:0},{n:'Arrondis',p:.11,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'inv',cat:'part',ico:'🎉',name:'Invitations & anniversaires',fmt:'A6 — 105 × 148 mm',tag:null,
+ desc:'Anniversaires, communions, baby showers, départs à la retraite.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g brillant'},{n:'300 g nacré'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'corner',l:'Coins',c:[{n:'Droits'},{n:'Arrondis'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'rem',cat:'part',ico:'\uD83D\uDC8C',name:'Cartes de remerciement',fmt:'A6 — 105 × 148 mm',
- desc:"Après un mariage, une naissance ou un deuil. Papier épais, rendu sobre.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{25:28.60,50:38.40,100:54.20,200:81.60},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'rem',cat:'part',ico:'💌',name:'Cartes de remerciement',fmt:'A6 — 105 × 148 mm',tag:null,
+ desc:'Après un mariage, une naissance ou un deuil. Papier épais, rendu sobre.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'menu',cat:'part',ico:'\uD83C\uDF7D\uFE0F',name:'Menus & marque-places',fmt:'99 × 210 mm',
- desc:"Menus de table assortis à vos faire-parts. Papier épais, finition mate.",
- shape:{t:'flat',w:99,h:210},supDays:3,
- price:{25:26.80,50:35.90,100:50.40,200:76.20},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1},{n:'350 g texturé',p:.23,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'menu',cat:'part',ico:'🍽️',name:'Menus & marque-places',fmt:'99 × 210 mm',tag:null,
+ desc:'Menus de table assortis à vos faire-parts. Papier épais, finition mate.',
+ shape:{"t":"flat","w":99,"h":210},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'},{n:'350 g texturé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'design-r',cat:'design',ico:'\uD83C\uDFA8',name:'Création de design — Recto',fmt:'Fichier prêt à imprimer',tag:'Service',
- desc:"Pas de visuel ? Nous créons votre design de A à Z. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.",
- shape:{t:'design'},supDays:2,design:true,
- price:{1:65.00},
- opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite',p:0,d:0},{n:'Flyer',p:0,d:0},
-   {n:'Affiche',p:.12,d:1},{n:'Roll-up',p:.18,d:1},{n:'Faire-part',p:0,d:0},{n:'Logo simple',p:.35,d:2}]},
-  {k:'speed',l:'Délai',c:[{n:'Standard (48 h)',p:0,d:0},{n:'Express (24 h)',p:.4,d:-1}]}]},
+{id:'design-r',cat:'design',ico:'🎨',name:'Création de design — Recto',fmt:'Fichier prêt à imprimer',tag:'Service',
+ desc:'Pas de visuel ? Nous créons votre design de A à Z. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.',
+ shape:{"t":"design"},supDays:2,design:true,
+ qtys:[1],
+ opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite'},{n:'Flyer'},{n:'Affiche'},{n:'Roll-up'},{n:'Faire-part'},{n:'Logo simple'}]},{k:'speed',l:'Délai',c:[{n:'Standard (48 h)'},{n:'Express (24 h)'}]}]},
 
-{id:'design-rv',cat:'design',ico:'\uD83C\uDFA8',name:'Création de design — Recto/Verso',fmt:'Fichier prêt à imprimer',tag:'Service',
- desc:"Création des deux faces. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.",
- shape:{t:'design'},supDays:2,design:true,
- price:{1:90.00},
- opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite',p:0,d:0},{n:'Flyer',p:0,d:0},
-   {n:'Dépliant',p:.22,d:1},{n:'Faire-part',p:0,d:0}]},
-  {k:'speed',l:'Délai',c:[{n:'Standard (48 h)',p:0,d:0},{n:'Express (24 h)',p:.4,d:-1}]}]},
+{id:'design-rv',cat:'design',ico:'🎨',name:'Création de design — Recto/Verso',fmt:'Fichier prêt à imprimer',tag:'Service',
+ desc:'Création des deux faces. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.',
+ shape:{"t":"design"},supDays:2,design:true,
+ qtys:[1],
+ opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite'},{n:'Flyer'},{n:'Dépliant'},{n:'Faire-part'}]},{k:'speed',l:'Délai',c:[{n:'Standard (48 h)'},{n:'Express (24 h)'}]}]},
+
 ];
 
 const CATS=[
@@ -1488,7 +1404,20 @@ function guardPhoto(el,p){
   setTimeout(function(){if(img.complete&&img.naturalWidth===0)swap();},4000);
 }
 
-function minPrice(p){return Math.min.apply(null,Object.values(p.price));}
+const FROM_PRICES={};
+let catalogLoaded=false;
+async function loadCatalog(){
+  try{
+    const r=await fetch(MOLLIE_FUNCTION_URL,{method:'POST',headers:await authHeaders(),
+      body:JSON.stringify({action:'catalog'})});
+    const out=await r.json();
+    if(r.ok&&out&&Array.isArray(out.products)){
+      out.products.forEach(function(row){FROM_PRICES[row.id]=row.from_price;});
+    }
+  }catch(e){}
+  catalogLoaded=true;
+  renderCats();renderGrid();
+}
 function baseDays(p){
   let d=p.supDays+HANDLING+SHIPPING[country].extraDays;
   if(p.design)d+=2;
@@ -1496,11 +1425,15 @@ function baseDays(p){
 }
 function card(p){
   const el=document.createElement('div');el.className='pcard';
+  const fp=FROM_PRICES[p.id];
+  const priceHTML=fp!=null
+    ? (p.design?'':'dès ')+'<b>'+euro(fp)+'</b> HTVA'
+    : '<span style="opacity:.55">calcul du prix…</span>';
   el.innerHTML=(p.tag?'<span class="tag">'+p.tag+'</span>':'')+
     '<div class="art">'+productArt(p)+'<span class="badge-fmt">'+p.fmt+'</span></div>'+
     '<h3>'+p.name+'</h3>'+
     '<p>'+p.desc+'</p>'+
-    '<div class="from">'+(p.design?'':'dès ')+'<b>'+euro(minPrice(p))+'</b> HTVA<span style="display:block;font-size:10.5px;font-style:italic;opacity:.6;margin-top:2px">prix à venir</span></div>'+
+    '<div class="from">'+priceHTML+'</div>'+
     '<div class="dl">'+(p.design?'Proposition sous 48 h ouvrables':'Livré en '+baseDays(p)+' j. ouvrables')+'</div>'+
     '<button>'+(p.design?'Demander un design':'Configurer')+'</button>';
   el.querySelector('button').onclick=function(){openConfig(p.id);};
@@ -1582,6 +1515,7 @@ function askQuote(){
   window.location.href='mailto:'+ORDER_EMAIL+'?subject='+sujet+'&body='+corps;
 }
 renderCats();renderGrid();
+loadCatalog();
 (function(){
   const btn=document.getElementById('toTop');
   if(!btn)return;
@@ -1604,7 +1538,7 @@ function openConfig(id){
   const p=PRODUCTS.find(x=>x.id===id);
   if(!p)return;
   cur=p;
-  sel={qty:Object.keys(p.price)[0]};
+  sel={qty:p.qtys[0]};
   (p.opts||[]).forEach(o=>{sel[o.k]=0;});
   fR=null;fV=null;fB=null;resetUp('R');resetUp('V');resetUp('B');
   document.getElementById('cfgName').textContent=p.ico+' '+p.name;
@@ -1613,6 +1547,7 @@ function openConfig(id){
   document.getElementById('briefZone').style.display=p.design?'block':'none';
   document.getElementById('rowUnit').style.display=p.design?'none':'flex';
   renderOptions();
+  invalidatePrice();
   refresh();
   const panel=document.getElementById('configPanel');
   panel.classList.add('open');
@@ -1629,12 +1564,12 @@ function closeConfig(){
 function renderOptions(){
   const box=document.getElementById('optBoxes');box.innerHTML='';
 
-  const qs=Object.keys(cur.price);
+  const qs=cur.qtys;
   if(!(cur.design&&qs.length===1)){
     box.appendChild(optGroup('Quantité','qty',qs.map(q=>({n:Number(q).toLocaleString('fr-BE')+' ex.',v:q}))));
   }
   (cur.opts||[]).forEach(o=>{
-    box.appendChild(optGroup(o.l,o.k,o.c.map((c,i)=>({n:c.n,v:i,sup:c.p,d:c.d}))));
+    box.appendChild(optGroup(o.l,o.k,o.c.map((c,i)=>({n:c.n,v:i}))));
   });
 }
 function optGroup(label,key,items){
@@ -1643,11 +1578,9 @@ function optGroup(label,key,items){
   const box=document.createElement('div');box.className='opts';
   items.forEach(it=>{
     const b=document.createElement('button');
-    let txt=it.n;
-    if(it.sup!==undefined&&it.sup!==0)txt+=' <span class="sup">prix à venir</span>';
-    b.innerHTML=txt;
+    b.innerHTML=it.n;
     if(String(it.v)===String(sel[key]))b.classList.add('sel');
-    b.onclick=function(){sel[key]=it.v;renderOptions();refresh();};
+    b.onclick=function(){sel[key]=it.v;invalidatePrice();renderOptions();refresh();};
     box.appendChild(b);
   });
   f.appendChild(box);
@@ -1662,25 +1595,68 @@ function isRV(){
   const s=optAt('sides');
   return !!(s&&/verso/i.test(s.n));
 }
-function computeTotal(){
-  let t=cur.price[sel.qty];
-  (cur.opts||[]).forEach(o=>{
-    const c=o.c[sel[o.k]||0];
-    if(c&&c.p)t*=(1+c.p);
-  });
-  return Math.round(t*100)/100;
+// Price is never computed client-side. It's fetched from the `price` action of the
+// Edge Function, which is the only place that reads the pricing formula (products.price_grid
+// / products.opts[].c[].p/d — never exposed to the browser). curPrice/curDays cache the last
+// server response for the current selection; invalidatePrice() clears it whenever the
+// selection changes so the UI shows a loading state until the new price arrives.
+let curPrice=null,curDays=null,priceReqId=0,priceDebounce=null;
+function selIndices(){
+  const s={};
+  (cur.opts||[]).forEach(o=>{s[o.k]=sel[o.k]||0;});
+  return s;
 }
-function computeDays(){
-  let d=baseDays(cur);
-  (cur.opts||[]).forEach(o=>{
-    const c=o.c[sel[o.k]||0];
-    if(c&&c.d)d+=c.d;
-  });
-  return Math.max(2,d);
+function invalidatePrice(){curPrice=null;curDays=null;}
+function schedulePriceFetch(){
+  clearTimeout(priceDebounce);
+  priceDebounce=setTimeout(fetchPrice,150);
+}
+async function fetchPrice(){
+  if(!cur)return;
+  const myReq=++priceReqId;
+  const q=Number(sel.qty)||1;
+  try{
+    const r=await fetch(MOLLIE_FUNCTION_URL,{method:'POST',headers:await authHeaders(),
+      body:JSON.stringify({action:'price',pid:cur.id,qty:q,sel:selIndices(),country:country})});
+    const out=await r.json();
+    if(myReq!==priceReqId)return;
+    if(!r.ok||out.error||typeof out.price!=='number'){curPrice=null;curDays=null;}
+    else{curPrice=out.price;curDays=out.days;}
+  }catch(e){
+    if(myReq!==priceReqId)return;
+    curPrice=null;curDays=null;
+  }
+  applyPriceToUI();
+}
+function applyPriceToUI(){
+  if(!cur)return;
+  const q=Number(sel.qty)||1;
+  const sh=SHIPPING[country];
+  const btn=document.getElementById('addBtn');
+  if(curPrice==null){
+    document.getElementById('pbUnit').textContent='';
+    document.getElementById('pbTotal').textContent='…';
+    document.getElementById('pbTva').textContent='';
+    document.getElementById('delivDate').textContent='';
+    document.getElementById('delivDetail').textContent='';
+    btn.disabled=true;
+    btn.textContent='Calcul du prix…';
+    return;
+  }
+  const tot=curPrice,nd=curDays;
+  document.getElementById('pbUnit').textContent=euro(tot/q)+' /ex.';
+  document.getElementById('pbTotal').textContent=euro(tot);
+  document.getElementById('pbTva').textContent='+ '+euro(tot*VAT);
+  document.getElementById('delivDate').textContent=fmtDate(addBizDays(new Date(),nd));
+  document.getElementById('delivDetail').textContent=' ('+nd+' j. ouvrables'+(cur.design?' — BAT compris':' — '+sh.label)+')';
+  const need=cur.design?true:(isRV()?(fR&&fV):!!fR);
+  btn.disabled=!need;
+  btn.textContent=need?'Ajouter au panier — '+euro(tot)+' HTVA'
+    :(fR?'Uploadez votre fichier verso':'Uploadez votre fichier recto');
 }
 function confText(){
   const parts=[];
-  if(!(cur.design&&Object.keys(cur.price).length===1))
+  if(!(cur.design&&cur.qtys.length===1))
     parts.push(Number(sel.qty).toLocaleString('fr-BE')+' ex.');
   (cur.opts||[]).forEach(o=>{
     const c=o.c[sel[o.k]||0];
@@ -1692,30 +1668,20 @@ function setCountry(c){
   country=c;
   const a=document.getElementById('cfgCountry');if(a)a.value=c;
   const b=document.getElementById('ckCountry');if(b)b.value=c;
-  if(cur)refresh();
+  if(cur){invalidatePrice();refresh();}
   renderGrid();
   if(document.getElementById('page-cart').classList.contains('open'))renderCart();
 }
 function refresh(){
   if(!cur)return;
-  const tot=computeTotal(),q=Number(sel.qty)||1;
   const sh=SHIPPING[country];
   const fv=document.getElementById('fVerso');
   if(fv)fv.style.display=(!cur.design&&isRV())?'block':'none';
   document.getElementById('pbConf').textContent=confText();
-  document.getElementById('pbUnit').textContent=euro(tot/q)+' /ex.';
   document.getElementById('pbShip').textContent=cur.design?'Sans objet (fichier numérique)'
     :sh.label+' — offerte dès '+sh.free+' € · sinon '+euro(sh.price);
-  document.getElementById('pbTotal').textContent=euro(tot);
-  document.getElementById('pbTva').textContent='+ '+euro(tot*VAT);
-  const nd=computeDays();
-  document.getElementById('delivDate').textContent=fmtDate(addBizDays(new Date(),nd));
-  document.getElementById('delivDetail').textContent=' ('+nd+' j. ouvrables'+(cur.design?' — BAT compris':' — '+sh.label)+')';
-  const need=cur.design?true:(isRV()?(fR&&fV):!!fR);
-  const btn=document.getElementById('addBtn');
-  btn.disabled=!need;
-  btn.textContent=need?'Ajouter au panier — '+euro(tot)+' HTVA'
-    :(fR?'Uploadez votre fichier verso':'Uploadez votre fichier recto');
+  applyPriceToUI();
+  if(curPrice==null)schedulePriceFetch();
   const dr=document.getElementById('dlR'),dv=document.getElementById('dlV');
   dr.disabled=!fR;dv.disabled=!(isRV()&&fV);
   build3D();
@@ -1910,9 +1876,10 @@ if(stage){
 }
 
 function addToCart(){
-  const tot=computeTotal();
+  if(curPrice==null)return;
+  const tot=curPrice;
   const item={pid:cur.id,ico:cur.ico,name:cur.name,supDays:cur.supDays,design:!!cur.design,
-    qty:Number(sel.qty)||1,conf:confText(),days:computeDays(),price:tot,
+    qty:Number(sel.qty)||1,conf:confText(),days:curDays,price:tot,sel:selIndices(),
     fileR:fR?fR.name:null,fileV:(isRV()&&fV)?fV.name:null,
     rawR:fR?fR.raw:null,rawV:(isRV()&&fV)?fV.raw:null,
     thumb:(fR&&!fR.isPdf)?fR.data:null};
@@ -1992,10 +1959,11 @@ function buildMenu(){
         '<span>'+c.n+' <span class="n">('+list.length+')</span></span>'+
         '<span class="ch">&#10095;</span></button>'+
       '<div class="sub">'+list.map(function(p){
+        const fp=FROM_PRICES[p.id];
         return '<button onclick="pickProduct(\''+p.id+'\')">'+
           '<span class="ic">'+p.ico+'</span>'+
           '<span class="tx"><b>'+p.name+'</b><i>'+p.fmt+'</i></span>'+
-          '<span class="pr">'+euro(minPrice(p))+'</span></button>';
+          '<span class="pr">'+(fp!=null?euro(fp):'…')+'</span></button>';
       }).join('')+'</div></div>';
   }).join('');
 }
@@ -2315,8 +2283,7 @@ async function confirmPay(){
       const res=await fetch(MOLLIE_FUNCTION_URL,{
         method:'POST',headers:await authHeaders(),
         body:JSON.stringify({ref:ref,country:country,method:MOLLIE_METHOD[payMethod],
-          items:cart.map(function(c){return {pid:c.pid,qty:c.qty,
-            paper:c.opt_paper||'',sides:c.opt_sides||''};}),
+          items:cart.map(function(c){return {pid:c.pid,qty:c.qty,sel:c.sel||{}};}),
           order:Object.assign({},order,{user_id:user.id||null})})
       });
       const out=await res.json();
