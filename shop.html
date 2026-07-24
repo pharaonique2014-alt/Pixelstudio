@@ -164,17 +164,21 @@ section{margin-top:56px;scroll-margin-top:80px}
 .cfg-close{position:absolute;top:16px;right:18px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:50%;width:32px;height:32px;font-size:15px;line-height:1}
 #configSection{position:relative}
 
-.stage{background:radial-gradient(circle at 50% 32%,#1d1712,#0a0908 72%);border:1px solid var(--line);border-radius:14px;height:420px;display:flex;align-items:center;justify-content:center;perspective:1200px;overflow:hidden;position:relative;cursor:grab;touch-action:none}
+.stage{background:radial-gradient(circle at 50% 28%,#221b14,#0a0908 74%);border:1px solid var(--line);border-radius:14px;height:420px;display:flex;align-items:center;justify-content:center;perspective:1200px;overflow:hidden;position:relative;cursor:grab;touch-action:none}
+.stage::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 30% at 50% 78%,rgba(217,119,43,.16),transparent 70%);pointer-events:none}
+.stage::after{content:'';position:absolute;left:8%;right:8%;bottom:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(214,160,96,.28),transparent);pointer-events:none}
 .stage:active{cursor:grabbing}
 .stage .hint{position:absolute;bottom:11px;left:0;right:0;text-align:center;color:var(--muted);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;pointer-events:none}
 .stage .spin{position:absolute;top:11px;right:11px;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--muted);border-radius:16px;padding:6px 12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
-.obj3d{transform-style:preserve-3d;position:relative}
-.face{position:absolute;backface-visibility:hidden;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 26px 66px rgba(0,0,0,.72)}
+.obj3d{transform-style:preserve-3d;position:relative;-webkit-box-reflect:below 5px linear-gradient(to bottom,transparent,transparent 55%,rgba(255,255,255,.09))}
+.face{position:absolute;backface-visibility:hidden;background:linear-gradient(155deg,#ffffff 0%,#f7f4ef 55%,#e9e3d8 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 30px 70px -12px rgba(0,0,0,.78),0 4px 14px rgba(0,0,0,.4)}
+.face::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.08) 22%,rgba(255,255,255,0) 42%,rgba(0,0,0,.05) 100%);pointer-events:none}
 .face img{width:100%;height:100%;object-fit:cover}
-.face .ph{color:#9a9a9a;font-size:11.5px;text-align:center;padding:10px;line-height:1.45;font-family:'Montserrat',sans-serif}
-.edge{position:absolute;background:#dcdcdc}
-.ru-base{position:absolute;background:linear-gradient(#6e6e6e,#3c3c3c);border-radius:6px}
-.ru-pole{position:absolute;background:linear-gradient(90deg,#9a9a9a,#5a5a5a);border-radius:3px}
+.face .ph{position:relative;z-index:1;color:#8a8378;font-size:11px;text-align:center;padding:10px;line-height:1.5;font-family:'Montserrat',sans-serif;letter-spacing:.03em}
+.face .ph b{display:block;color:#4a453d;font-family:'Playfair Display',serif;font-size:13px;font-weight:600;letter-spacing:.06em;margin-bottom:5px}
+.edge{position:absolute;background:linear-gradient(90deg,#f2eee6,#cfc7b8 45%,#a99f8d)}
+.ru-base{position:absolute;background:linear-gradient(#7a7a7a,#38383a);border-radius:6px;box-shadow:0 8px 18px rgba(0,0,0,.5)}
+.ru-pole{position:absolute;background:linear-gradient(90deg,#4a4a4a,#c4c4c4 45%,#6b6b6b);border-radius:3px}
 .dlrow{display:flex;gap:8px;margin-top:9px}
 .dlrow button{flex:1;background:transparent;border:1px solid var(--line);color:var(--txt);border-radius:22px;padding:11px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;transition:.2s}
 .dlrow button:disabled{opacity:.3;cursor:not-allowed}
@@ -834,7 +838,7 @@ const store={
 
 (function(){
   const v=document.getElementById('bgVideo');
-  if(window.innerWidth>900){
+  if(v&&window.innerWidth>900){
     v.addEventListener('canplay',function(){v.style.display='block'});
     v.load();
   }else if(v&&v.parentNode){v.parentNode.removeChild(v);}
@@ -853,272 +857,188 @@ const store={
 
 const HANDLING=2;
 
-const FIN_PELL=[{n:'Sans pelliculage',p:0,d:0},{n:'Pelliculage mat',p:.14,d:1},
-  {n:'Pelliculage brillant',p:.14,d:1},{n:'Soft-touch',p:.26,d:2}];
-const FIN_LUXE=[{n:'Aucune',p:0,d:0},{n:'Vernis sélectif UV',p:.38,d:2},{n:'Dorure à chaud',p:.52,d:3}];
-const SIDES2=[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.18,d:0}];
-const SPEED=[{n:'Standard',p:0,d:0},{n:'Express',p:.32,d:-2}];
-
 const PRODUCTS=[
 
-{id:'cdv',cat:'carterie',ico:'\uD83D\uDCB3',name:'Cartes de visite classiques',fmt:'85 × 55 mm',tag:'Best-seller',
- desc:"Le format standard qui rentre dans tous les porte-cartes. Papier épais, finitions au choix.",
- shape:{t:'card',w:85,h:55,r:2},supDays:3,
- price:{100:17.40,250:23.80,500:32.60,1000:47.90,2500:86.20},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat',p:0,d:0},{n:'350 g couché brillant',p:0,d:0},
-   {n:'400 g extra-épais',p:.16,d:1},{n:'350 g recyclé',p:.08,d:1},{n:'Kraft naturel',p:.12,d:1}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'luxe',l:'Finition prestige',c:FIN_LUXE},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv',cat:'carterie',ico:'💳',name:'Cartes de visite classiques',fmt:'85 × 55 mm',tag:'Best-seller',
+ desc:'Le format standard qui rentre dans tous les porte-cartes. Papier épais, finitions au choix.',
+ shape:{"t":"card","w":85,"h":55,"r":2},supDays:3,
+ qtys:[100,250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'350 g couché brillant'},{n:'400 g extra-épais'},{n:'350 g recyclé'},{n:'Kraft naturel'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'luxe',l:'Finition prestige',c:[{n:'Aucune'},{n:'Vernis sélectif UV'},{n:'Dorure à chaud'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'cdv-sq',cat:'carterie',ico:'\u25FC\uFE0F',name:'Cartes de visite carrées',fmt:'55 × 55 mm',tag:'Original',
- desc:"Format carré qui sort du lot. Idéal pour les métiers créatifs et les marques affirmées.",
- shape:{t:'card',w:55,h:55,r:2},supDays:3,
- price:{100:19.60,250:26.40,500:36.10,1000:52.80,2500:94.70},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat',p:0,d:0},{n:'350 g couché brillant',p:0,d:0},
-   {n:'400 g extra-épais',p:.16,d:1},{n:'350 g recyclé',p:.08,d:1}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'luxe',l:'Finition prestige',c:FIN_LUXE},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv-sq',cat:'carterie',ico:'◼️',name:'Cartes de visite carrées',fmt:'55 × 55 mm',tag:'Original',
+ desc:'Format carré qui sort du lot. Idéal pour les métiers créatifs et les marques affirmées.',
+ shape:{"t":"card","w":55,"h":55,"r":2},supDays:3,
+ qtys:[100,250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'350 g couché brillant'},{n:'400 g extra-épais'},{n:'350 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'luxe',l:'Finition prestige',c:[{n:'Aucune'},{n:'Vernis sélectif UV'},{n:'Dorure à chaud'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'cdv-rd',cat:'carterie',ico:'\uD83C\uDFF7\uFE0F',name:'Cartes de visite coins arrondis',fmt:'85 × 55 mm — R6',
- desc:"Coins arrondis 6 mm pour un toucher doux et une allure contemporaine.",
- shape:{t:'card',w:85,h:55,r:11},supDays:4,
- price:{100:21.30,250:28.90,500:39.40,1000:57.60,2500:103.40},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat',p:0,d:0},{n:'350 g couché brillant',p:0,d:0},
-   {n:'400 g extra-épais',p:.16,d:1}]},
-  {k:'radius',l:'Rayon des coins',c:[{n:'3 mm',p:0,d:0},{n:'6 mm',p:0,d:0},{n:'10 mm',p:.04,d:0}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv-rd',cat:'carterie',ico:'🏷️',name:'Cartes de visite coins arrondis',fmt:'85 × 55 mm — R6',tag:null,
+ desc:'Coins arrondis 6 mm pour un toucher doux et une allure contemporaine.',
+ shape:{"t":"card","w":85,"h":55,"r":11},supDays:4,
+ qtys:[100,250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'350 g couché brillant'},{n:'400 g extra-épais'}]},{k:'radius',l:'Rayon des coins',c:[{n:'3 mm'},{n:'6 mm'},{n:'10 mm'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'cdv-pvc',cat:'carterie',ico:'\uD83D\uDCB3',name:'Cartes PVC',fmt:'85,6 × 54 mm',tag:'Durable',
- desc:"Format carte bancaire en PVC blanc. Résistant à l'eau et aux manipulations répétées.",
- shape:{t:'card',w:86,h:54,r:8},supDays:6,
- price:{100:61.80,250:96.40,500:148.70,1000:236.50},
- opts:[{k:'paper',l:'Finition PVC',c:[{n:'PVC blanc brillant',p:0,d:0},{n:'PVC blanc mat',p:.06,d:0}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'cdv-pvc',cat:'carterie',ico:'💳',name:'Cartes PVC',fmt:'85,6 × 54 mm',tag:'Durable',
+ desc:'Format carte bancaire en PVC blanc. Résistant à l\'eau et aux manipulations répétées.',
+ shape:{"t":"card","w":86,"h":54,"r":8},supDays:6,
+ qtys:[100,250,500,1000],
+ opts:[{k:'paper',l:'Finition PVC',c:[{n:'PVC blanc brillant'},{n:'PVC blanc mat'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fid',cat:'carterie',ico:'\u2B50',name:'Cartes de fidélité',fmt:'85 × 55 mm',
- desc:"Cartes à tampons ou à cases. Papier inscriptible pour annoter facilement.",
- shape:{t:'card',w:85,h:55,r:2},supDays:3,
- price:{100:18.70,250:25.30,500:34.80,1000:50.40},
- opts:[{k:'paper',l:'Support',c:[{n:'350 g inscriptible',p:0,d:0},{n:'350 g couché mat',p:0,d:0}]},
-  {k:'sides',l:'Impression',c:SIDES2},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fid',cat:'carterie',ico:'⭐',name:'Cartes de fidélité',fmt:'85 × 55 mm',tag:null,
+ desc:'Cartes à tampons ou à cases. Papier inscriptible pour annoter facilement.',
+ shape:{"t":"card","w":85,"h":55,"r":2},supDays:3,
+ qtys:[100,250,500,1000],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g inscriptible'},{n:'350 g couché mat'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fla6',cat:'pub',ico:'\uD83D\uDCC4',name:'Flyers A6',fmt:'105 × 148 mm',
- desc:"Format carte postale. Parfait pour les promos, distributions et événements.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{250:26.30,500:31.70,1000:41.40,2500:63.80,5000:102.90},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},
-   {n:'250 g mat',p:.27,d:0},{n:'170 g recyclé',p:.14,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fla6',cat:'pub',ico:'📄',name:'Flyers A6',fmt:'105 × 148 mm',tag:null,
+ desc:'Format carte postale. Parfait pour les promos, distributions et événements.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[250,500,1000,2500,5000],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'},{n:'170 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fla5',cat:'pub',ico:'\uD83D\uDCC3',name:'Flyers A5',fmt:'148 × 210 mm',tag:'Populaire',
- desc:"Le format flyer par excellence. Distribution, salons, toutes-boîtes.",
- shape:{t:'flat',w:148,h:210},supDays:3,
- price:{250:33.60,500:41.20,1000:54.70,2500:86.40,5000:139.20},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},
-   {n:'250 g mat',p:.27,d:0},{n:'170 g recyclé',p:.14,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fla5',cat:'pub',ico:'📃',name:'Flyers A5',fmt:'148 × 210 mm',tag:'Populaire',
+ desc:'Le format flyer par excellence. Distribution, salons, toutes-boîtes.',
+ shape:{"t":"flat","w":148,"h":210},supDays:3,
+ qtys:[250,500,1000,2500,5000],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'},{n:'170 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fla4',cat:'pub',ico:'\uD83D\uDDDE\uFE0F',name:'Flyers A4',fmt:'210 × 297 mm',
- desc:"Plus d'espace pour votre message. Menus, fiches produits, programmes.",
- shape:{t:'flat',w:210,h:297},supDays:3,
- price:{250:49.80,500:62.30,1000:83.60,2500:132.70},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.27,d:0}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fla4',cat:'pub',ico:'🗞️',name:'Flyers A4',fmt:'210 × 297 mm',tag:null,
+ desc:'Plus d\'espace pour votre message. Menus, fiches produits, programmes.',
+ shape:{"t":"flat","w":210,"h":297},supDays:3,
+ qtys:[250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'dep1',cat:'pub',ico:'\uD83D\uDCD6',name:'Dépliants 1 pli',fmt:'A4 plié en A5 — 4 pages',
- desc:"A4 plié en deux. Présentation soignée de vos services ou de votre carte.",
- shape:{t:'flat',w:210,h:148},supDays:4,
- price:{250:71.40,500:89.60,1000:118.30,2500:189.50},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.27,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'dep1',cat:'pub',ico:'📖',name:'Dépliants 1 pli',fmt:'A4 plié en A5 — 4 pages',tag:null,
+ desc:'A4 plié en deux. Présentation soignée de vos services ou de votre carte.',
+ shape:{"t":"flat","w":210,"h":148},supDays:4,
+ qtys:[250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'dep3',cat:'pub',ico:'\uD83D\uDCD1',name:'Dépliants 2 plis roulés',fmt:'A4 → DL — 6 pages',
- desc:"Trois volets, format enveloppe. Le classique de la plaquette commerciale.",
- shape:{t:'flat',w:99,h:210},supDays:4,
- price:{250:78.90,500:97.40,1000:129.60,2500:207.80},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.27,d:0}]},
-  {k:'pell',l:'Pelliculage',c:FIN_PELL},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'dep3',cat:'pub',ico:'📑',name:'Dépliants 2 plis roulés',fmt:'A4 → DL — 6 pages',tag:null,
+ desc:'Trois volets, format enveloppe. Le classique de la plaquette commerciale.',
+ shape:{"t":"flat","w":99,"h":210},supDays:4,
+ qtys:[250,500,1000,2500],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'},{n:'Pelliculage brillant'},{n:'Soft-touch'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'affA3',cat:'pub',ico:'\uD83D\uDDBC\uFE0F',name:'Affiches A3',fmt:'297 × 420 mm',
- desc:"Vitrine, intérieur, point de vente. Impression quadri haute définition.",
- shape:{t:'flat',w:297,h:420},supDays:3,
- price:{5:18.90,10:23.70,25:36.40,50:54.80,100:87.30},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0},{n:'250 g mat',p:.24,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'affA3',cat:'pub',ico:'🖼️',name:'Affiches A3',fmt:'297 × 420 mm',tag:null,
+ desc:'Vitrine, intérieur, point de vente. Impression quadri haute définition.',
+ shape:{"t":"flat","w":297,"h":420},supDays:3,
+ qtys:[5,10,25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'},{n:'250 g mat'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'affA2',cat:'pub',ico:'\uD83D\uDDBC\uFE0F',name:'Affiches A2',fmt:'420 × 594 mm',
- desc:"Grand format pour vitrine et affichage intérieur. Rendu net et couleurs vives.",
- shape:{t:'flat',w:420,h:594},supDays:3,
- price:{5:27.60,10:34.90,25:53.20,50:79.40,100:126.70},
- opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant',p:0,d:0},{n:'170 g brillant',p:.11,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'affA2',cat:'pub',ico:'🖼️',name:'Affiches A2',fmt:'420 × 594 mm',tag:null,
+ desc:'Grand format pour vitrine et affichage intérieur. Rendu net et couleurs vives.',
+ shape:{"t":"flat","w":420,"h":594},supDays:3,
+ qtys:[5,10,25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'135 g brillant'},{n:'170 g brillant'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'aff70',cat:'pub',ico:'\uD83D\uDCE2',name:'Affiches 70 × 100 cm',fmt:'700 × 1000 mm',
- desc:"Affichage grand format, papier à dos bleu qui empêche la transparence.",
- shape:{t:'flat',w:700,h:1000},supDays:4,
- price:{5:46.80,10:61.30,25:98.70,50:154.20},
- opts:[{k:'paper',l:'Support',c:[{n:'150 g dos bleu',p:0,d:0},{n:'170 g brillant',p:.13,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'aff70',cat:'pub',ico:'📢',name:'Affiches 70 × 100 cm',fmt:'700 × 1000 mm',tag:null,
+ desc:'Affichage grand format, papier à dos bleu qui empêche la transparence.',
+ shape:{"t":"flat","w":700,"h":1000},supDays:4,
+ qtys:[5,10,25,50],
+ opts:[{k:'paper',l:'Support',c:[{n:'150 g dos bleu'},{n:'170 g brillant'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'rollup',cat:'signa',ico:'\uD83C\uDF8C',name:'Roll-up 85 × 200 cm',fmt:'850 × 2000 mm',tag:'Salons',
- desc:"Structure aluminium + bâche 510 g + housse de transport. Monté en 30 secondes.",
- shape:{t:'rollup',w:85,h:200},supDays:3,
- price:{1:63.40,2:118.70,3:167.90,5:264.30},
- opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g',p:0,d:0},{n:'Bâche anti-feu M1',p:.17,d:1},
-   {n:'Toile textile',p:.23,d:1}]},
-  {k:'base',l:'Structure',c:[{n:'Alu standard',p:0,d:0},{n:'Alu premium (base large)',p:.28,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'rollup',cat:'signa',ico:'🎌',name:'Roll-up 85 × 200 cm',fmt:'850 × 2000 mm',tag:'Salons',
+ desc:'Structure aluminium + bâche 510 g + housse de transport. Monté en 30 secondes.',
+ shape:{"t":"rollup","w":85,"h":200},supDays:3,
+ qtys:[1,2,3,5],
+ opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g'},{n:'Bâche anti-feu M1'},{n:'Toile textile'}]},{k:'base',l:'Structure',c:[{n:'Alu standard'},{n:'Alu premium (base large)'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'rollup100',cat:'signa',ico:'\uD83C\uDF8C',name:'Roll-up 100 × 200 cm',fmt:'1000 × 2000 mm',
- desc:"Version large pour une visibilité maximale en salon ou en hall d'accueil.",
- shape:{t:'rollup',w:100,h:200},supDays:3,
- price:{1:74.60,2:139.80,3:198.40,5:312.70},
- opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g',p:0,d:0},{n:'Bâche anti-feu M1',p:.17,d:1}]},
-  {k:'base',l:'Structure',c:[{n:'Alu standard',p:0,d:0},{n:'Alu premium (base large)',p:.28,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'rollup100',cat:'signa',ico:'🎌',name:'Roll-up 100 × 200 cm',fmt:'1000 × 2000 mm',tag:null,
+ desc:'Version large pour une visibilité maximale en salon ou en hall d\'accueil.',
+ shape:{"t":"rollup","w":100,"h":200},supDays:3,
+ qtys:[1,2,3,5],
+ opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g'},{n:'Bâche anti-feu M1'}]},{k:'base',l:'Structure',c:[{n:'Alu standard'},{n:'Alu premium (base large)'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'band',cat:'signa',ico:'\uD83C\uDFF3\uFE0F',name:'Banderole PVC',fmt:'200 × 100 cm',
- desc:"Bâche PVC 510 g avec ourlets et œillets. Résiste à l'extérieur toute l'année.",
- shape:{t:'banner',w:200,h:100},supDays:4,
- price:{1:38.70,2:71.40,3:101.60,5:159.80},
- opts:[{k:'paper',l:'Support',c:[{n:'PVC 510 g',p:0,d:0},{n:'PVC 650 g renforcé',p:.21,d:0},
-   {n:'Mesh micro-perforé',p:.18,d:1}]},
-  {k:'finish',l:'Finition',c:[{n:'Ourlets + œillets',p:0,d:0},{n:'Sans finition',p:-.09,d:0},
-   {n:'Fourreaux haut/bas',p:.12,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'band',cat:'signa',ico:'🏳️',name:'Banderole PVC',fmt:'200 × 100 cm',tag:null,
+ desc:'Bâche PVC 510 g avec ourlets et œillets. Résiste à l\'extérieur toute l\'année.',
+ shape:{"t":"banner","w":200,"h":100},supDays:4,
+ qtys:[1,2,3,5],
+ opts:[{k:'paper',l:'Support',c:[{n:'PVC 510 g'},{n:'PVC 650 g renforcé'},{n:'Mesh micro-perforé'}]},{k:'finish',l:'Finition',c:[{n:'Ourlets + œillets'},{n:'Sans finition'},{n:'Fourreaux haut/bas'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'panneau',cat:'signa',ico:'\uD83D\uDEA7',name:'Panneau Forex',fmt:'60 × 40 cm',
- desc:"PVC expansé 3 mm, léger et rigide. Signalétique intérieure ou abritée.",
- shape:{t:'flat',w:600,h:400},supDays:4,
- price:{1:29.40,2:53.80,5:118.60,10:214.30},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Forex 3 mm',p:0,d:0},{n:'Forex 5 mm',p:.19,d:0},
-   {n:'Dibond alu 3 mm',p:.64,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'panneau',cat:'signa',ico:'🚧',name:'Panneau Forex',fmt:'60 × 40 cm',tag:null,
+ desc:'PVC expansé 3 mm, léger et rigide. Signalétique intérieure ou abritée.',
+ shape:{"t":"flat","w":600,"h":400},supDays:4,
+ qtys:[1,2,5,10],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Forex 3 mm'},{n:'Forex 5 mm'},{n:'Dibond alu 3 mm'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'stick-rd',cat:'stick',ico:'\uD83D\uDD34',name:'Stickers ronds',fmt:'Ø 100 mm',
- desc:"Vinyle blanc résistant, découpe ronde. Intérieur et extérieur.",
- shape:{t:'flat',w:100,h:100,round:true},supDays:4,
- price:{50:27.30,100:33.80,250:52.60,500:78.40,1000:123.90},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant',p:0,d:0},{n:'Vinyle blanc mat',p:0,d:0},
-   {n:'Vinyle transparent',p:.16,d:1},{n:'Papier recyclé',p:-.11,d:0}]},
-  {k:'lam',l:'Protection',c:[{n:'Sans',p:0,d:0},{n:'Laminage brillant',p:.14,d:1},{n:'Laminage mat',p:.14,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'stick-rd',cat:'stick',ico:'🔴',name:'Stickers ronds',fmt:'Ø 100 mm',tag:null,
+ desc:'Vinyle blanc résistant, découpe ronde. Intérieur et extérieur.',
+ shape:{"t":"flat","w":100,"h":100,"round":true},supDays:4,
+ qtys:[50,100,250,500,1000],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant'},{n:'Vinyle blanc mat'},{n:'Vinyle transparent'},{n:'Papier recyclé'}]},{k:'lam',l:'Protection',c:[{n:'Sans'},{n:'Laminage brillant'},{n:'Laminage mat'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'stick-sq',cat:'stick',ico:'\u2B1C',name:'Stickers carrés',fmt:'100 × 100 mm',
- desc:"Découpe carrée aux angles légèrement arrondis. Étiquetage, packaging, goodies.",
- shape:{t:'flat',w:100,h:100,r:6},supDays:4,
- price:{50:26.10,100:32.40,250:50.30,500:75.20,1000:118.70},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant',p:0,d:0},{n:'Vinyle blanc mat',p:0,d:0},
-   {n:'Vinyle transparent',p:.16,d:1}]},
-  {k:'lam',l:'Protection',c:[{n:'Sans',p:0,d:0},{n:'Laminage brillant',p:.14,d:1},{n:'Laminage mat',p:.14,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'stick-sq',cat:'stick',ico:'⬜',name:'Stickers carrés',fmt:'100 × 100 mm',tag:null,
+ desc:'Découpe carrée aux angles légèrement arrondis. Étiquetage, packaging, goodies.',
+ shape:{"t":"flat","w":100,"h":100,"r":6},supDays:4,
+ qtys:[50,100,250,500,1000],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant'},{n:'Vinyle blanc mat'},{n:'Vinyle transparent'}]},{k:'lam',l:'Protection',c:[{n:'Sans'},{n:'Laminage brillant'},{n:'Laminage mat'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'vitro',cat:'stick',ico:'\uD83E\uDE9F',name:'Vitrophanie',fmt:'100 × 70 cm',
- desc:"Adhésif pour vitrine, pose intérieure ou extérieure. Découpe au format.",
- shape:{t:'flat',w:1000,h:700},supDays:5,
- price:{1:42.60,2:78.30,5:172.40},
- opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle monomère',p:0,d:0},{n:'Vinyle polymère (longue durée)',p:.34,d:1},
-   {n:'Dépoli / sablé',p:.41,d:2}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'vitro',cat:'stick',ico:'🪟',name:'Vitrophanie',fmt:'100 × 70 cm',tag:null,
+ desc:'Adhésif pour vitrine, pose intérieure ou extérieure. Découpe au format.',
+ shape:{"t":"flat","w":1000,"h":700},supDays:5,
+ qtys:[1,2,5],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle monomère'},{n:'Vinyle polymère (longue durée)'},{n:'Dépoli / sablé'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'entete',cat:'pap',ico:'\uD83D\uDCDD',name:'Papier à en-tête',fmt:'A4 — 210 × 297 mm',
- desc:"Courriers, devis, factures. Papier offset inscriptible à la main comme à l'imprimante.",
- shape:{t:'flat',w:210,h:297},supDays:4,
- price:{100:41.70,250:53.20,500:71.80,1000:104.60},
- opts:[{k:'paper',l:'Support',c:[{n:'90 g offset',p:0,d:0},{n:'120 g offset',p:.17,d:0},{n:'100 g recyclé',p:.13,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.21,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'entete',cat:'pap',ico:'📝',name:'Papier à en-tête',fmt:'A4 — 210 × 297 mm',tag:null,
+ desc:'Courriers, devis, factures. Papier offset inscriptible à la main comme à l\'imprimante.',
+ shape:{"t":"flat","w":210,"h":297},supDays:4,
+ qtys:[100,250,500,1000],
+ opts:[{k:'paper',l:'Support',c:[{n:'90 g offset'},{n:'120 g offset'},{n:'100 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'enveloppe',cat:'pap',ico:'\u2709\uFE0F',name:'Enveloppes DL',fmt:'220 × 110 mm',
- desc:"Enveloppes à votre image, avec ou sans fenêtre. Impression quadri au recto.",
- shape:{t:'flat',w:220,h:110},supDays:5,
- price:{250:63.80,500:86.40,1000:127.30},
- opts:[{k:'paper',l:'Type',c:[{n:'Sans fenêtre',p:0,d:0},{n:'Avec fenêtre',p:.09,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'enveloppe',cat:'pap',ico:'✉️',name:'Enveloppes DL',fmt:'220 × 110 mm',tag:null,
+ desc:'Enveloppes à votre image, avec ou sans fenêtre. Impression quadri au recto.',
+ shape:{"t":"flat","w":220,"h":110},supDays:5,
+ qtys:[250,500,1000],
+ opts:[{k:'paper',l:'Type',c:[{n:'Sans fenêtre'},{n:'Avec fenêtre'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'bloc',cat:'pap',ico:'\uD83D\uDCD2',name:'Bloc-notes A5',fmt:'148 × 210 mm — 50 feuilles',
- desc:"Blocs collés en tête, 50 feuillets. Un support de fidélisation qui reste sur le bureau.",
- shape:{t:'flat',w:148,h:210},supDays:5,
- price:{25:64.30,50:97.80,100:158.40},
- opts:[{k:'paper',l:'Support',c:[{n:'90 g offset',p:0,d:0},{n:'100 g recyclé',p:.13,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'bloc',cat:'pap',ico:'📒',name:'Bloc-notes A5',fmt:'148 × 210 mm — 50 feuilles',tag:null,
+ desc:'Blocs collés en tête, 50 feuillets. Un support de fidélisation qui reste sur le bureau.',
+ shape:{"t":"flat","w":148,"h":210},supDays:5,
+ qtys:[25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'90 g offset'},{n:'100 g recyclé'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fpn',cat:'part',ico:'\uD83D\uDC76',name:'Faire-parts de naissance',fmt:'A6 — 105 × 148 mm',tag:'Nouveau',
- desc:"Annoncez l'arrivée de bébé avec un papier épais et une finition soignée.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{25:31.40,50:42.70,100:59.80,200:89.30},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1},
-   {n:'350 g texturé',p:.23,d:1},{n:'300 g recyclé',p:.09,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'corner',l:'Coins',c:[{n:'Droits',p:0,d:0},{n:'Arrondis',p:.11,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fpn',cat:'part',ico:'👶',name:'Faire-parts de naissance',fmt:'A6 — 105 × 148 mm',tag:'Nouveau',
+ desc:'Annoncez l\'arrivée de bébé avec un papier épais et une finition soignée.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'},{n:'350 g texturé'},{n:'300 g recyclé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'corner',l:'Coins',c:[{n:'Droits'},{n:'Arrondis'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'fpm',cat:'part',ico:'\uD83D\uDC8D',name:'Faire-parts de mariage',fmt:'Carré — 130 × 130 mm',
- desc:"L'invitation qui donne le ton du grand jour. Papiers nacrés et texturés disponibles.",
- shape:{t:'flat',w:130,h:130},supDays:3,
- price:{25:35.90,50:48.60,100:68.40,200:102.70},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1},{n:'350 g texturé',p:.23,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'corner',l:'Coins',c:[{n:'Droits',p:0,d:0},{n:'Arrondis',p:.11,d:1}]},
-  {k:'luxe',l:'Finition prestige',c:FIN_LUXE},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'fpm',cat:'part',ico:'💍',name:'Faire-parts de mariage',fmt:'Carré — 130 × 130 mm',tag:null,
+ desc:'L\'invitation qui donne le ton du grand jour. Papiers nacrés et texturés disponibles.',
+ shape:{"t":"flat","w":130,"h":130},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'},{n:'350 g texturé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'corner',l:'Coins',c:[{n:'Droits'},{n:'Arrondis'}]},{k:'luxe',l:'Finition prestige',c:[{n:'Aucune'},{n:'Vernis sélectif UV'},{n:'Dorure à chaud'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'inv',cat:'part',ico:'\uD83C\uDF89',name:'Invitations & anniversaires',fmt:'A6 — 105 × 148 mm',
- desc:"Anniversaires, communions, baby showers, départs à la retraite.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{25:28.60,50:38.40,100:54.20,200:81.60},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g brillant',p:0,d:0},{n:'300 g nacré',p:.17,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'corner',l:'Coins',c:[{n:'Droits',p:0,d:0},{n:'Arrondis',p:.11,d:1}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'inv',cat:'part',ico:'🎉',name:'Invitations & anniversaires',fmt:'A6 — 105 × 148 mm',tag:null,
+ desc:'Anniversaires, communions, baby showers, départs à la retraite.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g brillant'},{n:'300 g nacré'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'corner',l:'Coins',c:[{n:'Droits'},{n:'Arrondis'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'rem',cat:'part',ico:'\uD83D\uDC8C',name:'Cartes de remerciement',fmt:'A6 — 105 × 148 mm',
- desc:"Après un mariage, une naissance ou un deuil. Papier épais, rendu sobre.",
- shape:{t:'flat',w:105,h:148},supDays:3,
- price:{25:28.60,50:38.40,100:54.20,200:81.60},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'rem',cat:'part',ico:'💌',name:'Cartes de remerciement',fmt:'A6 — 105 × 148 mm',tag:null,
+ desc:'Après un mariage, une naissance ou un deuil. Papier épais, rendu sobre.',
+ shape:{"t":"flat","w":105,"h":148},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'menu',cat:'part',ico:'\uD83C\uDF7D\uFE0F',name:'Menus & marque-places',fmt:'99 × 210 mm',
- desc:"Menus de table assortis à vos faire-parts. Papier épais, finition mate.",
- shape:{t:'flat',w:99,h:210},supDays:3,
- price:{25:26.80,50:35.90,100:50.40,200:76.20},
- opts:[{k:'paper',l:'Support',c:[{n:'300 g mat',p:0,d:0},{n:'300 g nacré',p:.17,d:1},{n:'350 g texturé',p:.23,d:1}]},
-  {k:'sides',l:'Impression',c:[{n:'Recto',p:0,d:0},{n:'Recto/Verso',p:.16,d:0}]},
-  {k:'speed',l:'Délai',c:SPEED}]},
+{id:'menu',cat:'part',ico:'🍽️',name:'Menus & marque-places',fmt:'99 × 210 mm',tag:null,
+ desc:'Menus de table assortis à vos faire-parts. Papier épais, finition mate.',
+ shape:{"t":"flat","w":99,"h":210},supDays:3,
+ qtys:[25,50,100,200],
+ opts:[{k:'paper',l:'Support',c:[{n:'300 g mat'},{n:'300 g nacré'},{n:'350 g texturé'}]},{k:'sides',l:'Impression',c:[{n:'Recto'},{n:'Recto/Verso'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
-{id:'design-r',cat:'design',ico:'\uD83C\uDFA8',name:'Création de design — Recto',fmt:'Fichier prêt à imprimer',tag:'Service',
- desc:"Pas de visuel ? Nous créons votre design de A à Z. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.",
- shape:{t:'design'},supDays:2,design:true,
- price:{1:65.00},
- opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite',p:0,d:0},{n:'Flyer',p:0,d:0},
-   {n:'Affiche',p:.12,d:1},{n:'Roll-up',p:.18,d:1},{n:'Faire-part',p:0,d:0},{n:'Logo simple',p:.35,d:2}]},
-  {k:'speed',l:'Délai',c:[{n:'Standard (48 h)',p:0,d:0},{n:'Express (24 h)',p:.4,d:-1}]}]},
+{id:'design-r',cat:'design',ico:'🎨',name:'Création de design — Recto',fmt:'Fichier prêt à imprimer',tag:'Service',
+ desc:'Pas de visuel ? Nous créons votre design de A à Z. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.',
+ shape:{"t":"design"},supDays:2,design:true,
+ qtys:[1],
+ opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite'},{n:'Flyer'},{n:'Affiche'},{n:'Roll-up'},{n:'Faire-part'},{n:'Logo simple'}]},{k:'speed',l:'Délai',c:[{n:'Standard (48 h)'},{n:'Express (24 h)'}]}]},
 
-{id:'design-rv',cat:'design',ico:'\uD83C\uDFA8',name:'Création de design — Recto/Verso',fmt:'Fichier prêt à imprimer',tag:'Service',
- desc:"Création des deux faces. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.",
- shape:{t:'design'},supDays:2,design:true,
- price:{1:90.00},
- opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite',p:0,d:0},{n:'Flyer',p:0,d:0},
-   {n:'Dépliant',p:.22,d:1},{n:'Faire-part',p:0,d:0}]},
-  {k:'speed',l:'Délai',c:[{n:'Standard (48 h)',p:0,d:0},{n:'Express (24 h)',p:.4,d:-1}]}]},
+{id:'design-rv',cat:'design',ico:'🎨',name:'Création de design — Recto/Verso',fmt:'Fichier prêt à imprimer',tag:'Service',
+ desc:'Création des deux faces. Proposition sous 48 h ouvrables, une série de retouches incluse, fichier livré prêt à imprimer.',
+ shape:{"t":"design"},supDays:2,design:true,
+ qtys:[1],
+ opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite'},{n:'Flyer'},{n:'Dépliant'},{n:'Faire-part'}]},{k:'speed',l:'Délai',c:[{n:'Standard (48 h)'},{n:'Express (24 h)'}]}]},
+
 ];
 
 const CATS=[
@@ -1197,43 +1117,82 @@ const ART_DEFS =
  '<linearGradient id="alu" x1="0" y1="0" x2="1" y2="0">'+
   '<stop offset="0" stop-color="#6b6b6b"/><stop offset=".35" stop-color="#cfcfcf"/>'+
   '<stop offset=".62" stop-color="#8f8f8f"/><stop offset="1" stop-color="#5a5a5a"/></linearGradient>'+
+ '<linearGradient id="plastic" x1="0" y1="0" x2=".6" y2="1">'+
+  '<stop offset="0" stop-color="#f6f7f8"/><stop offset=".5" stop-color="#e3e6e9"/>'+
+  '<stop offset="1" stop-color="#c6ccd2"/></linearGradient>'+
+ '<linearGradient id="floorSheen" x1="0" y1="0" x2="0" y2="1">'+
+  '<stop offset="0" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'+
  '<filter id="sh" x="-45%" y="-45%" width="200%" height="200%">'+
   '<feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#000" flood-opacity=".62"/></filter>'+
  '<filter id="shs" x="-40%" y="-40%" width="190%" height="190%">'+
   '<feDropShadow dx="0" dy="4" stdDeviation="4.5" flood-color="#000" flood-opacity=".5"/></filter>'+
+ '<filter id="grain" x="0" y="0" width="100%" height="100%">'+
+  '<feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch" result="n"/>'+
+  '<feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0"/></filter>'+
 '</defs>';
 
 function svgWrap(inner){
-  return '<svg viewBox="0 0 320 158" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'+
+  return '<svg viewBox="0 0 320 158" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'+
     ART_DEFS+
     '<rect width="320" height="158" fill="url(#bgG)"/>'+
     '<rect width="320" height="158" fill="url(#glow)"/>'+
+    '<path d="M-30 190 L110 -30 L150 -30 L10 190 Z" fill="#fff" opacity=".025"/>'+
     inner+
     '<ellipse cx="160" cy="150" rx="128" ry="11" fill="#000" opacity=".38"/>'+
+    '<rect x="0" y="151" width="320" height="7" fill="url(#floorSheen)"/>'+
+    '<rect width="320" height="158" filter="url(#grain)" opacity=".5"/>'+
     '</svg>';
 }
 
-function printedFace(W,H,dark){
-  const u=Math.min(W,H)/100;
-  const tx=W*0.11, ty=H*0.2;
-  const ink=dark?'#f2efe9':'#2b2621';
-  const ink2=dark?'rgba(242,239,233,.55)':'#a89e91';
-  return ''+
-   '<g transform="translate('+tx+','+ty+')">'+
-     '<rect x="0" y="0" width="'+(11*u)+'" height="'+(11*u)+'" rx="'+(1.6*u)+'" fill="url(#accent)"/>'+
-     '<rect x="'+(13*u)+'" y="0" width="'+(5*u)+'" height="'+(5*u)+'" rx="'+(1*u)+'" fill="#d6a060"/>'+
-     '<rect x="0" y="'+(13*u)+'" width="'+(5*u)+'" height="'+(5*u)+'" rx="'+(1*u)+'" fill="#d6a060" opacity=".7"/>'+
-   '</g>'+
-   '<rect x="'+tx+'" y="'+(H*0.47)+'" width="'+(W*0.5)+'" height="'+(H*0.055)+'" rx="'+(H*0.028)+'" fill="'+ink+'"/>'+
-   '<rect x="'+tx+'" y="'+(H*0.58)+'" width="'+(W*0.68)+'" height="'+(H*0.032)+'" rx="'+(H*0.016)+'" fill="'+ink2+'"/>'+
-   '<rect x="'+tx+'" y="'+(H*0.65)+'" width="'+(W*0.44)+'" height="'+(H*0.032)+'" rx="'+(H*0.016)+'" fill="'+ink2+'"/>'+
-   '<rect x="'+tx+'" y="'+(H*0.79)+'" width="'+(W*0.3)+'" height="'+(H*0.028)+'" rx="'+(H*0.014)+'" fill="#d9772b"/>';
+// Marque Pixel Studio (x-pixel.png, fond transparent) centrée sur le support —
+// utilisée sur chaque visuel produit pour garantir une identité cohérente et
+// reconnaissable, quelle que soit la forme réelle de l'article (carte, feuille,
+// roll-up...).
+function logoMark(cx,cy,w,opacity){
+  const h=w*(1024/1536);
+  return '<image href="x-pixel.png" xlink:href="x-pixel.png" x="'+(cx-w/2)+'" y="'+(cy-h/2)+
+    '" width="'+w+'" height="'+h+'" opacity="'+(opacity==null?1:opacity)+'" preserveAspectRatio="xMidYMid meet"/>';
 }
 
-function artCard(r,square){
+function printedFace(W,H,dark){
+  const ink=dark?'#f2efe9':'#2b2621';
+  const cx=W/2, cy=H*0.42, lw=Math.min(W,H)*0.4;
+  return ''+
+   logoMark(cx,cy,lw)+
+   '<text x="'+cx+'" y="'+(cy+lw*0.6)+'" text-anchor="middle" font-family="Montserrat,Arial,sans-serif" font-weight="700" font-size="'+(Math.min(W,H)*0.09)+'" letter-spacing="1.4" fill="'+ink+'">PIXEL PRINT</text>'+
+   '<rect x="'+(cx-W*0.11)+'" y="'+(cy+lw*0.7)+'" width="'+(W*0.22)+'" height="'+(H*0.02)+'" rx="'+(H*0.01)+'" fill="url(#accent)"/>';
+}
+
+function cardContent(W,H,variant){
+  if(variant==='pvc'){
+    const u=Math.min(W,H)/100;
+    return '<g transform="translate('+(W*0.11)+','+(H*0.34)+')">'+
+        '<rect width="'+(24*u)+'" height="'+(18*u)+'" rx="'+(3*u)+'" fill="url(#alu)"/>'+
+        '<rect x="'+(2*u)+'" y="'+(2*u)+'" width="'+(20*u)+'" height="'+(1.6*u)+'" fill="#fff" opacity=".45"/>'+
+        '<rect x="'+(2*u)+'" y="'+(7*u)+'" width="'+(9*u)+'" height="'+(1.6*u)+'" fill="#3a3a3a" opacity=".45"/>'+
+      '</g>'+
+      logoMark(W*0.68,H*0.36,W*0.34)+
+      '<rect x="'+(W*0.11)+'" y="'+(H*0.82)+'" width="'+(W*0.36)+'" height="'+(H*0.035)+'" rx="'+(H*0.017)+'" fill="rgba(43,38,33,.5)"/>';
+  }
+  if(variant==='stamp'){
+    const cols=4,rows=2,rr=Math.min(W,H)*0.072;
+    const ox=W*0.14,oy=H*0.4,gx=(W*0.72)/(cols-1),gy=(H*0.4)/(rows-1);
+    let dots='';
+    for(let ry=0;ry<rows;ry++)for(let rx=0;rx<cols;rx++){
+      const cx=ox+rx*gx, cy=oy+ry*gy, filled=(ry*cols+rx)<3;
+      dots+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rr+'" fill="'+(filled?'url(#accent)':'none')+'" stroke="'+(filled?'none':'#c8bfae')+'" stroke-width="1.3" stroke-dasharray="'+(filled?'0':'2.2 2')+'"/>';
+      if(filled)dots+='<path d="M'+(cx-rr*.45)+' '+cy+' l'+(rr*.35)+' '+(rr*.42)+' l'+(rr*.62)+' -'+(rr*.8)+'" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+    return logoMark(W*0.2,H*0.16,W*0.22)+dots+
+      '<rect x="'+(W*0.11)+'" y="'+(H*0.86)+'" width="'+(W*0.36)+'" height="'+(H*0.045)+'" rx="'+(H*0.022)+'" fill="#d9772b"/>';
+  }
+  return printedFace(W,H,false);
+}
+function artCard(r,square,variant){
   r=r||3;
   const W=square?104:168, H=square?104:104;
   const x=square?(160-W/2):86, y=square?26:28;
+  const isPvc=variant==='pvc';
   const layer=function(dx,dy,op,rot){
     return '<g transform="translate('+(x+dx)+','+(y+dy)+') rotate('+rot+' '+(W/2)+' '+(H/2)+')" opacity="'+op+'">'+
       '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="url(#paperB)" filter="url(#shs)"/></g>';
@@ -1241,20 +1200,29 @@ function artCard(r,square){
   return svgWrap(
     layer(16,20,.62,-3)+layer(9,11,.8,-6)+
     '<g transform="translate('+x+','+y+') rotate(-9 '+(W/2)+' '+(H/2)+')" filter="url(#sh)">'+
-      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="url(#paper)"/>'+
-      printedFace(W,H,false)+
+      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="'+(isPvc?'url(#plastic)':'url(#paper)')+'"/>'+
+      cardContent(W,H,variant)+
       '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="url(#gloss)"/>'+
-      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width=".8"/>'+
+      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="none" stroke="#fff" stroke-opacity="'+(isPvc?'.7':'.55')+'" stroke-width="'+(isPvc?'1.1':'.8')+'"/>'+
     '</g>');
 }
 function artSquare(){return artCard(3,true);}
 
-function artFlat(w,h){
+function artFlat(w,h,fold){
   const ratio=h/w;
   let H=112,W=Math.round(H/ratio);
   if(W>150){W=150;H=Math.round(W*ratio);}
   if(H>124){H=124;W=Math.round(H/ratio);}
   const x=Math.round(160-W/2), y=Math.round(79-H/2);
+  let folds='';
+  if(fold===1){
+    const fx=Math.round(W/2);
+    folds='<line x1="'+fx+'" y1="0" x2="'+fx+'" y2="'+H+'" stroke="#c9c0b2" stroke-width="1.2" opacity=".65"/>';
+  }else if(fold===2){
+    [Math.round(W/3),Math.round(W*2/3)].forEach(function(fx){
+      folds+='<line x1="'+fx+'" y1="0" x2="'+fx+'" y2="'+H+'" stroke="#c9c0b2" stroke-width="1.1" opacity=".6"/>';
+    });
+  }
   return svgWrap(
     '<g transform="translate('+(x+18)+','+(y+13)+') rotate(7 '+(W/2)+' '+(H/2)+')" opacity=".55">'+
       '<rect width="'+W+'" height="'+H+'" rx="2" fill="url(#paperB)" filter="url(#shs)"/></g>'+
@@ -1265,7 +1233,21 @@ function artFlat(w,h){
       '<path d="M0 0 H'+W+' V'+Math.round(H*.38)+' Q'+(W/2)+' '+Math.round(H*.46)+' 0 '+Math.round(H*.38)+' Z" fill="url(#accent)"/>'+
       '<circle cx="'+Math.round(W*.74)+'" cy="'+Math.round(H*.17)+'" r="'+Math.round(W*.1)+'" fill="#fff" opacity=".2"/>'+
       printedFace(W,H,false)+
+      folds+
       '<rect width="'+W+'" height="'+H+'" rx="2" fill="url(#gloss)"/>'+
+    '</g>');
+}
+
+function artGlass(){
+  const W=190,H=124,x=160-W/2,y=17;
+  return svgWrap(
+    '<g filter="url(#sh)">'+
+      '<rect x="'+x+'" y="'+y+'" width="'+W+'" height="'+H+'" rx="4" fill="rgba(210,225,232,.14)" stroke="rgba(255,255,255,.35)" stroke-width="1.4"/>'+
+      '<line x1="'+(x+W/2)+'" y1="'+y+'" x2="'+(x+W/2)+'" y2="'+(y+H)+'" stroke="rgba(255,255,255,.22)" stroke-width="2"/>'+
+      '<line x1="'+x+'" y1="'+(y+H/2)+'" x2="'+(x+W)+'" y2="'+(y+H/2)+'" stroke="rgba(255,255,255,.16)" stroke-width="1.6"/>'+
+      '<path d="M'+(x+14)+' '+(y+H-10)+' L'+(x+70)+' '+y+' L'+(x+110)+' '+y+' L'+(x+54)+' '+(y+H-10)+' Z" fill="rgba(255,255,255,.12)"/>'+
+      '<rect x="'+(x+W*0.24)+'" y="'+(y+H*0.28)+'" width="'+(W*0.52)+'" height="'+(H*0.44)+'" rx="5" fill="url(#accent)" opacity=".92"/>'+
+      logoMark(x+W*0.5,y+H*0.44,W*0.3,1)+
     '</g>');
 }
 
@@ -1304,17 +1286,8 @@ function artBanner(){
       '<path d="M'+x+' '+y+' H'+(x+W)+' V'+(y+H)+' H'+x+' Z" fill="url(#paper)"/>'+
       '<path d="M'+x+' '+y+' H'+(x+92)+' V'+(y+H)+' H'+x+' Z" fill="url(#accent)"/>'+
       '<path d="M'+(x+92)+' '+y+' L'+(x+118)+' '+y+' L'+(x+102)+' '+(y+H)+' L'+(x+76)+' '+(y+H)+' Z" fill="#fff" opacity=".1"/>'+
-      '<g transform="translate('+(x+108)+','+(y+8)+')">'+
-        '<rect x="0" y="6" width="104" height="8" rx="4" fill="#2b2621"/>'+
-        '<rect x="0" y="22" width="126" height="5" rx="2.5" fill="#a89e91"/>'+
-        '<rect x="0" y="33" width="82" height="5" rx="2.5" fill="#a89e91"/>'+
-        '<rect x="0" y="48" width="54" height="4.5" rx="2.2" fill="#d9772b"/>'+
-      '</g>'+
-      '<g transform="translate('+(x+22)+','+(y+20)+')">'+
-        '<rect width="20" height="20" rx="3" fill="#fff" opacity=".92"/>'+
-        '<rect x="24" y="0" width="9" height="9" rx="2" fill="#fff" opacity=".6"/>'+
-        '<rect x="0" y="24" width="9" height="9" rx="2" fill="#fff" opacity=".6"/>'+
-      '</g>'+
+      logoMark(x+92+(W-92)*0.5,y+H*0.42,86)+
+      '<rect x="'+(x+92+(W-92)*0.5-42)+'" y="'+(y+H*0.74)+'" width="84" height="7" rx="3.5" fill="#d9772b"/>'+
       '<path d="M'+x+' '+y+' H'+(x+W)+' V'+(y+H)+' H'+x+' Z" fill="url(#gloss)"/>'+
       eyes+
     '</g>');
@@ -1327,14 +1300,12 @@ function artSticker(round){
       ? '<circle cx="'+R+'" cy="'+R+'" r="'+R+'" fill="url(#paper)"/>'+
         '<circle cx="'+R+'" cy="'+R+'" r="'+(R-3)+'" fill="none" stroke="#fff" stroke-width="3"/>'+
         '<circle cx="'+R+'" cy="'+R+'" r="'+(R-12)+'" fill="none" stroke="url(#accent)" stroke-width="7"/>'+
-        '<circle cx="'+R+'" cy="'+R+'" r="16" fill="url(#accent)"/>'+
-        '<rect x="'+(R+6)+'" y="'+(R-24)+'" width="8" height="8" rx="2" fill="#d6a060"/>'+
+        logoMark(R,R,38)+
         '<circle cx="'+R+'" cy="'+R+'" r="'+R+'" fill="url(#gloss)"/>'
       : '<rect width="104" height="104" rx="10" fill="url(#paper)"/>'+
         '<rect x="3" y="3" width="98" height="98" rx="8" fill="none" stroke="#fff" stroke-width="3"/>'+
         '<rect x="15" y="15" width="74" height="74" rx="6" fill="none" stroke="url(#accent)" stroke-width="7"/>'+
-        '<rect x="38" y="38" width="28" height="28" rx="4" fill="url(#accent)"/>'+
-        '<rect x="72" y="20" width="9" height="9" rx="2" fill="#d6a060"/>'+
+        logoMark(52,52,38)+
         '<rect width="104" height="104" rx="10" fill="url(#gloss)"/>';
   };
   return svgWrap(
@@ -1349,14 +1320,8 @@ function artPanel(){
     '<g filter="url(#sh)">'+
       '<rect x="'+x+'" y="'+y+'" width="'+W+'" height="'+H+'" rx="3" fill="url(#paper)"/>'+
       '<rect x="'+x+'" y="'+y+'" width="'+W+'" height="30" fill="url(#accent)"/>'+
-      '<g transform="translate('+(x+14)+','+(y+7)+')">'+
-        '<rect width="16" height="16" rx="3" fill="#fff" opacity=".9"/>'+
-        '<rect x="20" y="0" width="7" height="7" rx="1.6" fill="#fff" opacity=".55"/>'+
-      '</g>'+
-      '<rect x="'+(x+18)+'" y="'+(y+48)+'" width="96" height="7" rx="3.5" fill="#2b2621"/>'+
-      '<rect x="'+(x+18)+'" y="'+(y+62)+'" width="126" height="4.5" rx="2.2" fill="#a89e91"/>'+
-      '<rect x="'+(x+18)+'" y="'+(y+72)+'" width="72" height="4.5" rx="2.2" fill="#a89e91"/>'+
-      '<rect x="'+(x+18)+'" y="'+(y+86)+'" width="46" height="4" rx="2" fill="#d9772b"/>'+
+      logoMark(x+W*0.5,y+H*0.62,W*0.4)+
+      '<rect x="'+(x+W*0.5-24)+'" y="'+(y+H*0.87)+'" width="48" height="4" rx="2" fill="#d9772b"/>'+
       '<rect x="'+x+'" y="'+y+'" width="'+W+'" height="'+H+'" rx="3" fill="url(#gloss)"/>'+
     '</g>'+
     '<rect x="'+(x-9)+'" y="'+(y+H)+'" width="14" height="26" rx="2" fill="url(#alu)"/>'+
@@ -1371,11 +1336,7 @@ function artEnvelope(){
       '<path d="M'+x+' '+(y+4)+' L'+(x+W/2)+' '+(y+56)+' L'+(x+W)+' '+(y+4)+' L'+(x+W)+' '+(y+13)+
         ' L'+(x+W/2)+' '+(y+65)+' L'+x+' '+(y+13)+' Z" fill="#ded7cb"/>'+
       '<path d="M'+x+' '+(y+4)+' L'+(x+W/2)+' '+(y+56)+' L'+(x+W)+' '+(y+4)+'" fill="none" stroke="#c6bdae" stroke-width="1"/>'+
-      '<g transform="translate('+(x+16)+','+(y+68)+')">'+
-        '<rect width="15" height="15" rx="3" fill="url(#accent)"/>'+
-        '<rect x="22" y="3" width="58" height="4.5" rx="2.2" fill="#a89e91"/>'+
-        '<rect x="22" y="11" width="40" height="4" rx="2" fill="#c2b9ab"/>'+
-      '</g>'+
+      logoMark(x+56,y+80,54)+
       '<g transform="translate('+(x+W-46)+','+(y+10)+')">'+
         '<rect width="32" height="26" rx="2" fill="#efe9df" stroke="#cfc6b7" stroke-dasharray="3 2"/>'+
         '<rect x="6" y="6" width="20" height="14" rx="1.5" fill="#d6a060" opacity=".6"/>'+
@@ -1395,10 +1356,7 @@ function artNotepad(){
     '<g filter="url(#sh)">'+
       '<rect x="'+x+'" y="'+y+'" width="'+W+'" height="'+H+'" rx="3" fill="url(#paper)"/>'+
       '<rect x="'+x+'" y="'+y+'" width="'+W+'" height="30" fill="url(#accent)"/>'+
-      '<g transform="translate('+(x+12)+','+(y+8)+')">'+
-        '<rect width="14" height="14" rx="3" fill="#fff" opacity=".92"/>'+
-        '<rect x="18" y="0" width="6" height="6" rx="1.4" fill="#fff" opacity=".55"/>'+
-      '</g>'+
+      logoMark(x+W*0.5,y+15,W*0.62)+
       lines+
       '<rect x="'+(x+13)+'" y="'+(y+H-18)+'" width="34" height="3.4" rx="1.7" fill="#d9772b"/>'+
       '<rect x="'+x+'" y="'+(y+H-7)+'" width="'+W+'" height="7" fill="#e8e2d7"/>'+
@@ -1421,52 +1379,36 @@ function artDesign(){
     '</g>');
 }
 
-const PX='https://images.pexels.com/photos/';
-const PXQ='?auto=compress&cs=tinysrgb&w=760&h=420&fit=crop';
-const PXPNG={8066713:1};
-const px=function(id){return PX+id+'/pexels-photo-'+id+(PXPNG[id]?'.png':'.jpeg')+PXQ;};
-
-const PHOTOS={
-  cdv:        px(5706020),
-  'cdv-sq':   px(5706015),
-  'cdv-rd':   px(8066713),
-  'cdv-pvc':  px(4466448),
-  fid:        px(6373857),
-  fla6:       px(6565754),
-  fla5:       px(7648514),
-  fla4:       px(7648514),
-  dep1:       px(7180485),
-  dep3:       px(29452731),
-  affA3:      px(2250136),
-  affA2:      px(22890323),
-  aff70:      px(22890323),
-  rollup:     px(22890323),
-  rollup100:  px(22890323),
-  entete:     px(5420976),
-  bloc:       px(8490097),
-  fpn:        px(8490063),
-  fpm:        px(12445622),
-  inv:        px(9878733),
-  rem:        px(12048935),
-  menu:       px(8490061),
-  'design-r':  px(8293676),
-  'design-rv': px(7180485)
-
-};
+// Ancienne tentative d'illustrations photo (Pexels) désactivée : plusieurs
+// produits sans rapport pointaient vers la même image (ex. rollup, affiche A2
+// et affiche 70×100 partageaient la même photo), et ces URLs ne sont pas
+// vérifiables depuis l'environnement de build. Voir productArt() plus bas.
+const PHOTOS={};
 function fallbackArt(p){
   const s=p.shape||{};
   if(s.t==='design')return artDesign();
   if(s.t==='rollup')return artRollup();
   if(s.t==='banner')return artBanner();
-  if(s.t==='card')return artCard(s.w===s.h?3:(s.r>6?9:3));
-  if(p.cat==='stick')return artSticker(!!s.round);
+  if(p.id==='vitro')return artGlass();
   if(p.id==='enveloppe')return artEnvelope();
   if(p.id==='bloc')return artNotepad();
   if(p.id==='panneau')return artPanel();
+  if(p.cat==='stick')return artSticker(!!s.round);
+  if(s.t==='card'){
+    if(p.id==='cdv-pvc')return artCard(9,s.w===s.h,'pvc');
+    if(p.id==='fid')return artCard(3,s.w===s.h,'stamp');
+    return artCard(s.r>6?9:3,s.w===s.h);
+  }
+  if(p.id==='dep1')return artFlat(s.w||210,s.h||148,1);
+  if(p.id==='dep3')return artFlat(s.w||99,s.h||210,2);
   if(s.w===s.h)return artSquare();
   return artFlat(s.w||100,s.h||140);
 }
 function productArt(p){
+  // Aucune photo externe vérifiable depuis cet environnement (accès réseau
+  // restreint) — illustration vectorielle systématique pour un rendu fiable
+  // et cohérent. Remplir PHOTOS[id] avec une URL d'image réellement
+  // vérifiée réactive ce chemin sans autre changement de code.
   const src=PHOTOS[p.id]||p.photo;
   if(src)return '<img src="'+src+'" alt="'+p.name+'" loading="lazy" data-fb="'+p.id+'">';
   return fallbackArt(p);
@@ -1488,7 +1430,20 @@ function guardPhoto(el,p){
   setTimeout(function(){if(img.complete&&img.naturalWidth===0)swap();},4000);
 }
 
-function minPrice(p){return Math.min.apply(null,Object.values(p.price));}
+const FROM_PRICES={};
+let catalogLoaded=false;
+async function loadCatalog(){
+  try{
+    const r=await fetch(MOLLIE_FUNCTION_URL,{method:'POST',headers:await authHeaders(),
+      body:JSON.stringify({action:'catalog'})});
+    const out=await r.json();
+    if(r.ok&&out&&Array.isArray(out.products)){
+      out.products.forEach(function(row){FROM_PRICES[row.id]=row.from_price;});
+    }
+  }catch(e){}
+  catalogLoaded=true;
+  renderCats();renderGrid();
+}
 function baseDays(p){
   let d=p.supDays+HANDLING+SHIPPING[country].extraDays;
   if(p.design)d+=2;
@@ -1496,11 +1451,15 @@ function baseDays(p){
 }
 function card(p){
   const el=document.createElement('div');el.className='pcard';
+  const fp=FROM_PRICES[p.id];
+  const priceHTML=fp!=null
+    ? (p.design?'':'dès ')+'<b>'+euro(fp)+'</b> HTVA'
+    : '<span style="opacity:.55">calcul du prix…</span>';
   el.innerHTML=(p.tag?'<span class="tag">'+p.tag+'</span>':'')+
     '<div class="art">'+productArt(p)+'<span class="badge-fmt">'+p.fmt+'</span></div>'+
     '<h3>'+p.name+'</h3>'+
     '<p>'+p.desc+'</p>'+
-    '<div class="from">'+(p.design?'':'dès ')+'<b>'+euro(minPrice(p))+'</b> HTVA<span style="display:block;font-size:10.5px;font-style:italic;opacity:.6;margin-top:2px">prix à venir</span></div>'+
+    '<div class="from">'+priceHTML+'</div>'+
     '<div class="dl">'+(p.design?'Proposition sous 48 h ouvrables':'Livré en '+baseDays(p)+' j. ouvrables')+'</div>'+
     '<button>'+(p.design?'Demander un design':'Configurer')+'</button>';
   el.querySelector('button').onclick=function(){openConfig(p.id);};
@@ -1582,6 +1541,7 @@ function askQuote(){
   window.location.href='mailto:'+ORDER_EMAIL+'?subject='+sujet+'&body='+corps;
 }
 renderCats();renderGrid();
+loadCatalog();
 (function(){
   const btn=document.getElementById('toTop');
   if(!btn)return;
@@ -1604,7 +1564,7 @@ function openConfig(id){
   const p=PRODUCTS.find(x=>x.id===id);
   if(!p)return;
   cur=p;
-  sel={qty:Object.keys(p.price)[0]};
+  sel={qty:p.qtys[0]};
   (p.opts||[]).forEach(o=>{sel[o.k]=0;});
   fR=null;fV=null;fB=null;resetUp('R');resetUp('V');resetUp('B');
   document.getElementById('cfgName').textContent=p.ico+' '+p.name;
@@ -1613,6 +1573,7 @@ function openConfig(id){
   document.getElementById('briefZone').style.display=p.design?'block':'none';
   document.getElementById('rowUnit').style.display=p.design?'none':'flex';
   renderOptions();
+  invalidatePrice();
   refresh();
   const panel=document.getElementById('configPanel');
   panel.classList.add('open');
@@ -1629,12 +1590,12 @@ function closeConfig(){
 function renderOptions(){
   const box=document.getElementById('optBoxes');box.innerHTML='';
 
-  const qs=Object.keys(cur.price);
+  const qs=cur.qtys;
   if(!(cur.design&&qs.length===1)){
     box.appendChild(optGroup('Quantité','qty',qs.map(q=>({n:Number(q).toLocaleString('fr-BE')+' ex.',v:q}))));
   }
   (cur.opts||[]).forEach(o=>{
-    box.appendChild(optGroup(o.l,o.k,o.c.map((c,i)=>({n:c.n,v:i,sup:c.p,d:c.d}))));
+    box.appendChild(optGroup(o.l,o.k,o.c.map((c,i)=>({n:c.n,v:i}))));
   });
 }
 function optGroup(label,key,items){
@@ -1643,11 +1604,9 @@ function optGroup(label,key,items){
   const box=document.createElement('div');box.className='opts';
   items.forEach(it=>{
     const b=document.createElement('button');
-    let txt=it.n;
-    if(it.sup!==undefined&&it.sup!==0)txt+=' <span class="sup">prix à venir</span>';
-    b.innerHTML=txt;
+    b.innerHTML=it.n;
     if(String(it.v)===String(sel[key]))b.classList.add('sel');
-    b.onclick=function(){sel[key]=it.v;renderOptions();refresh();};
+    b.onclick=function(){sel[key]=it.v;invalidatePrice();renderOptions();refresh();};
     box.appendChild(b);
   });
   f.appendChild(box);
@@ -1662,25 +1621,68 @@ function isRV(){
   const s=optAt('sides');
   return !!(s&&/verso/i.test(s.n));
 }
-function computeTotal(){
-  let t=cur.price[sel.qty];
-  (cur.opts||[]).forEach(o=>{
-    const c=o.c[sel[o.k]||0];
-    if(c&&c.p)t*=(1+c.p);
-  });
-  return Math.round(t*100)/100;
+// Price is never computed client-side. It's fetched from the `price` action of the
+// Edge Function, which is the only place that reads the pricing formula (products.price_grid
+// / products.opts[].c[].p/d — never exposed to the browser). curPrice/curDays cache the last
+// server response for the current selection; invalidatePrice() clears it whenever the
+// selection changes so the UI shows a loading state until the new price arrives.
+let curPrice=null,curDays=null,priceReqId=0,priceDebounce=null;
+function selIndices(){
+  const s={};
+  (cur.opts||[]).forEach(o=>{s[o.k]=sel[o.k]||0;});
+  return s;
 }
-function computeDays(){
-  let d=baseDays(cur);
-  (cur.opts||[]).forEach(o=>{
-    const c=o.c[sel[o.k]||0];
-    if(c&&c.d)d+=c.d;
-  });
-  return Math.max(2,d);
+function invalidatePrice(){curPrice=null;curDays=null;}
+function schedulePriceFetch(){
+  clearTimeout(priceDebounce);
+  priceDebounce=setTimeout(fetchPrice,150);
+}
+async function fetchPrice(){
+  if(!cur)return;
+  const myReq=++priceReqId;
+  const q=Number(sel.qty)||1;
+  try{
+    const r=await fetch(MOLLIE_FUNCTION_URL,{method:'POST',headers:await authHeaders(),
+      body:JSON.stringify({action:'price',pid:cur.id,qty:q,sel:selIndices(),country:country})});
+    const out=await r.json();
+    if(myReq!==priceReqId)return;
+    if(!r.ok||out.error||typeof out.price!=='number'){curPrice=null;curDays=null;}
+    else{curPrice=out.price;curDays=out.days;}
+  }catch(e){
+    if(myReq!==priceReqId)return;
+    curPrice=null;curDays=null;
+  }
+  applyPriceToUI();
+}
+function applyPriceToUI(){
+  if(!cur)return;
+  const q=Number(sel.qty)||1;
+  const sh=SHIPPING[country];
+  const btn=document.getElementById('addBtn');
+  if(curPrice==null){
+    document.getElementById('pbUnit').textContent='';
+    document.getElementById('pbTotal').textContent='…';
+    document.getElementById('pbTva').textContent='';
+    document.getElementById('delivDate').textContent='';
+    document.getElementById('delivDetail').textContent='';
+    btn.disabled=true;
+    btn.textContent='Calcul du prix…';
+    return;
+  }
+  const tot=curPrice,nd=curDays;
+  document.getElementById('pbUnit').textContent=euro(tot/q)+' /ex.';
+  document.getElementById('pbTotal').textContent=euro(tot);
+  document.getElementById('pbTva').textContent='+ '+euro(tot*VAT);
+  document.getElementById('delivDate').textContent=fmtDate(addBizDays(new Date(),nd));
+  document.getElementById('delivDetail').textContent=' ('+nd+' j. ouvrables'+(cur.design?' — BAT compris':' — '+sh.label)+')';
+  const need=cur.design?true:(isRV()?(fR&&fV):!!fR);
+  btn.disabled=!need;
+  btn.textContent=need?'Ajouter au panier — '+euro(tot)+' HTVA'
+    :(fR?'Uploadez votre fichier verso':'Uploadez votre fichier recto');
 }
 function confText(){
   const parts=[];
-  if(!(cur.design&&Object.keys(cur.price).length===1))
+  if(!(cur.design&&cur.qtys.length===1))
     parts.push(Number(sel.qty).toLocaleString('fr-BE')+' ex.');
   (cur.opts||[]).forEach(o=>{
     const c=o.c[sel[o.k]||0];
@@ -1692,30 +1694,20 @@ function setCountry(c){
   country=c;
   const a=document.getElementById('cfgCountry');if(a)a.value=c;
   const b=document.getElementById('ckCountry');if(b)b.value=c;
-  if(cur)refresh();
+  if(cur){invalidatePrice();refresh();}
   renderGrid();
   if(document.getElementById('page-cart').classList.contains('open'))renderCart();
 }
 function refresh(){
   if(!cur)return;
-  const tot=computeTotal(),q=Number(sel.qty)||1;
   const sh=SHIPPING[country];
   const fv=document.getElementById('fVerso');
   if(fv)fv.style.display=(!cur.design&&isRV())?'block':'none';
   document.getElementById('pbConf').textContent=confText();
-  document.getElementById('pbUnit').textContent=euro(tot/q)+' /ex.';
   document.getElementById('pbShip').textContent=cur.design?'Sans objet (fichier numérique)'
     :sh.label+' — offerte dès '+sh.free+' € · sinon '+euro(sh.price);
-  document.getElementById('pbTotal').textContent=euro(tot);
-  document.getElementById('pbTva').textContent='+ '+euro(tot*VAT);
-  const nd=computeDays();
-  document.getElementById('delivDate').textContent=fmtDate(addBizDays(new Date(),nd));
-  document.getElementById('delivDetail').textContent=' ('+nd+' j. ouvrables'+(cur.design?' — BAT compris':' — '+sh.label)+')';
-  const need=cur.design?true:(isRV()?(fR&&fV):!!fR);
-  const btn=document.getElementById('addBtn');
-  btn.disabled=!need;
-  btn.textContent=need?'Ajouter au panier — '+euro(tot)+' HTVA'
-    :(fR?'Uploadez votre fichier verso':'Uploadez votre fichier recto');
+  applyPriceToUI();
+  if(curPrice==null)schedulePriceFetch();
   const dr=document.getElementById('dlR'),dv=document.getElementById('dlV');
   dr.disabled=!fR;dv.disabled=!(isRV()&&fV);
   build3D();
@@ -1808,7 +1800,7 @@ const obj=document.getElementById('obj3d'),stage=document.getElementById('stage'
 function faceHTML(f,fallback){
   if(f&&!f.isPdf)return '<img src="'+f.data+'" alt="">';
   if(f&&f.isPdf)return '<div class="ph">\uD83D\uDCC4 '+f.name+'<br><small>PDF — aperçu non affiché,<br>fichier imprimé tel quel</small></div>';
-  return '<div class="ph">'+fallback+'</div>';
+  return '<div class="ph"><b>'+fallback+'</b><small>Glissez votre fichier pour l’aperçu</small></div>';
 }
 function fitBox(w,h,maxW,maxH){
   const r=h/w;let W=maxW,H=W*r;
@@ -1821,12 +1813,12 @@ function build3D(){
   const s=cur.shape||{t:'flat',w:100,h:100};
   const front=faceHTML(fR,'Votre visuel recto');
   const back=isRV()?faceHTML(fV,'Votre visuel verso')
-    :'<div class="ph" style="color:#777">PIXEL PRINT<br><small>verso non imprimé</small></div>';
+    :'<div class="ph"><b>PIXEL PRINT</b><small>verso non imprimé</small></div>';
 
   if(s.t==='design'){
     obj.style.width='240px';obj.style.height='150px';
     obj.innerHTML='<div class="face" style="width:240px;height:150px;border-radius:8px;background:linear-gradient(135deg,#2a2320,#171310);border:1px dashed rgba(214,160,96,.5)">'+
-      '<div class="ph" style="color:#d6a060">\uD83C\uDFA8<br><b>Création sur mesure</b><br>'+
+      '<div class="ph" style="color:#d6a060">\uD83C\uDFA8<br><b style="color:#d6a060">Création sur mesure</b>'+
       '<small style="color:rgba(228,225,220,.55)">Nous dessinons votre visuel<br>et vous l\'envoyons pour validation</small></div></div>';
     applyRot();return;
   }
@@ -1852,7 +1844,7 @@ function build3D(){
       '<div class="ru-pole" style="width:6px;height:'+box.H+'px;left:'+(box.W/2-3)+'px;bottom:18px;transform:translateZ(-8px)"></div>'+
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;bottom:20px;border-radius:2px">'+front+'</div>'+
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;bottom:20px;border-radius:2px;transform:rotateY(180deg)">'+
-      '<div class="ph" style="background:#e8e8e8;width:100%;height:100%;display:flex;align-items:center;justify-content:center">dos gris</div></div>';
+      '<div class="ph" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center"><b>PIXEL PRINT</b><small>dos non imprimé</small></div></div>';
   }
   else if(s.t==='banner'){
     const box=fitBox(s.w,s.h,300,190);
@@ -1866,7 +1858,7 @@ function build3D(){
     obj.innerHTML=
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;border-radius:3px;transform:translateZ(1px)">'+front+eyelets+'</div>'+
       '<div class="face" style="width:'+box.W+'px;height:'+box.H+'px;border-radius:3px;transform:rotateY(180deg) translateZ(1px)">'+
-      '<div class="ph" style="background:#ededed;width:100%;height:100%;display:flex;align-items:center;justify-content:center">dos</div></div>';
+      '<div class="ph" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center"><b>PIXEL PRINT</b><small>dos non imprimé</small></div></div>';
   }
   else{
     const box=fitBox(s.w,s.h,235,300);
@@ -1910,9 +1902,10 @@ if(stage){
 }
 
 function addToCart(){
-  const tot=computeTotal();
+  if(curPrice==null)return;
+  const tot=curPrice;
   const item={pid:cur.id,ico:cur.ico,name:cur.name,supDays:cur.supDays,design:!!cur.design,
-    qty:Number(sel.qty)||1,conf:confText(),days:computeDays(),price:tot,
+    qty:Number(sel.qty)||1,conf:confText(),days:curDays,price:tot,sel:selIndices(),
     fileR:fR?fR.name:null,fileV:(isRV()&&fV)?fV.name:null,
     rawR:fR?fR.raw:null,rawV:(isRV()&&fV)?fV.raw:null,
     thumb:(fR&&!fR.isPdf)?fR.data:null};
@@ -1992,10 +1985,11 @@ function buildMenu(){
         '<span>'+c.n+' <span class="n">('+list.length+')</span></span>'+
         '<span class="ch">&#10095;</span></button>'+
       '<div class="sub">'+list.map(function(p){
+        const fp=FROM_PRICES[p.id];
         return '<button onclick="pickProduct(\''+p.id+'\')">'+
           '<span class="ic">'+p.ico+'</span>'+
           '<span class="tx"><b>'+p.name+'</b><i>'+p.fmt+'</i></span>'+
-          '<span class="pr">'+euro(minPrice(p))+'</span></button>';
+          '<span class="pr">'+(fp!=null?euro(fp):'…')+'</span></button>';
       }).join('')+'</div></div>';
   }).join('');
 }
@@ -2315,8 +2309,7 @@ async function confirmPay(){
       const res=await fetch(MOLLIE_FUNCTION_URL,{
         method:'POST',headers:await authHeaders(),
         body:JSON.stringify({ref:ref,country:country,method:MOLLIE_METHOD[payMethod],
-          items:cart.map(function(c){return {pid:c.pid,qty:c.qty,
-            paper:c.opt_paper||'',sides:c.opt_sides||''};}),
+          items:cart.map(function(c){return {pid:c.pid,qty:c.qty,sel:c.sel||{}};}),
           order:Object.assign({},order,{user_id:user.id||null})})
       });
       const out=await res.json();
