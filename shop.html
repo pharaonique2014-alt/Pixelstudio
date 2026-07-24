@@ -834,7 +834,7 @@ const store={
 
 (function(){
   const v=document.getElementById('bgVideo');
-  if(window.innerWidth>900){
+  if(v&&window.innerWidth>900){
     v.addEventListener('canplay',function(){v.style.display='block'});
     v.load();
   }else if(v&&v.parentNode){v.parentNode.removeChild(v);}
@@ -1113,6 +1113,11 @@ const ART_DEFS =
  '<linearGradient id="alu" x1="0" y1="0" x2="1" y2="0">'+
   '<stop offset="0" stop-color="#6b6b6b"/><stop offset=".35" stop-color="#cfcfcf"/>'+
   '<stop offset=".62" stop-color="#8f8f8f"/><stop offset="1" stop-color="#5a5a5a"/></linearGradient>'+
+ '<linearGradient id="plastic" x1="0" y1="0" x2=".6" y2="1">'+
+  '<stop offset="0" stop-color="#f6f7f8"/><stop offset=".5" stop-color="#e3e6e9"/>'+
+  '<stop offset="1" stop-color="#c6ccd2"/></linearGradient>'+
+ '<linearGradient id="floorSheen" x1="0" y1="0" x2="0" y2="1">'+
+  '<stop offset="0" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'+
  '<filter id="sh" x="-45%" y="-45%" width="200%" height="200%">'+
   '<feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#000" flood-opacity=".62"/></filter>'+
  '<filter id="shs" x="-40%" y="-40%" width="190%" height="190%">'+
@@ -1126,6 +1131,7 @@ function svgWrap(inner){
     '<rect width="320" height="158" fill="url(#glow)"/>'+
     inner+
     '<ellipse cx="160" cy="150" rx="128" ry="11" fill="#000" opacity=".38"/>'+
+    '<rect x="0" y="151" width="320" height="7" fill="url(#floorSheen)"/>'+
     '</svg>';
 }
 
@@ -1146,10 +1152,39 @@ function printedFace(W,H,dark){
    '<rect x="'+tx+'" y="'+(H*0.79)+'" width="'+(W*0.3)+'" height="'+(H*0.028)+'" rx="'+(H*0.014)+'" fill="#d9772b"/>';
 }
 
-function artCard(r,square){
+function cardContent(W,H,variant){
+  if(variant==='pvc'){
+    const u=Math.min(W,H)/100;
+    return '<g transform="translate('+(W*0.11)+','+(H*0.34)+')">'+
+        '<rect width="'+(24*u)+'" height="'+(18*u)+'" rx="'+(3*u)+'" fill="url(#alu)"/>'+
+        '<rect x="'+(2*u)+'" y="'+(2*u)+'" width="'+(20*u)+'" height="'+(1.6*u)+'" fill="#fff" opacity=".45"/>'+
+        '<rect x="'+(2*u)+'" y="'+(7*u)+'" width="'+(9*u)+'" height="'+(1.6*u)+'" fill="#3a3a3a" opacity=".45"/>'+
+      '</g>'+
+      '<rect x="'+(W*0.11)+'" y="'+(H*0.7)+'" width="'+(W*0.58)+'" height="'+(H*0.06)+'" rx="'+(H*0.03)+'" fill="#2b2621"/>'+
+      '<rect x="'+(W*0.11)+'" y="'+(H*0.82)+'" width="'+(W*0.36)+'" height="'+(H*0.035)+'" rx="'+(H*0.017)+'" fill="rgba(43,38,33,.5)"/>';
+  }
+  if(variant==='stamp'){
+    const u=Math.min(W,H)/100;
+    const cols=4,rows=2,rr=Math.min(W,H)*0.072;
+    const ox=W*0.14,oy=H*0.4,gx=(W*0.72)/(cols-1),gy=(H*0.4)/(rows-1);
+    let dots='';
+    for(let ry=0;ry<rows;ry++)for(let rx=0;rx<cols;rx++){
+      const cx=ox+rx*gx, cy=oy+ry*gy, filled=(ry*cols+rx)<3;
+      dots+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rr+'" fill="'+(filled?'url(#accent)':'none')+'" stroke="'+(filled?'none':'#c8bfae')+'" stroke-width="1.3" stroke-dasharray="'+(filled?'0':'2.2 2')+'"/>';
+      if(filled)dots+='<path d="M'+(cx-rr*.45)+' '+cy+' l'+(rr*.35)+' '+(rr*.42)+' l'+(rr*.62)+' -'+(rr*.8)+'" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+    return '<g transform="translate('+(W*0.11)+','+(H*0.12)+')">'+
+        '<rect width="'+(11*u)+'" height="'+(11*u)+'" rx="'+(1.6*u)+'" fill="url(#accent)"/>'+
+      '</g>'+dots+
+      '<rect x="'+(W*0.11)+'" y="'+(H*0.86)+'" width="'+(W*0.36)+'" height="'+(H*0.045)+'" rx="'+(H*0.022)+'" fill="#d9772b"/>';
+  }
+  return printedFace(W,H,false);
+}
+function artCard(r,square,variant){
   r=r||3;
   const W=square?104:168, H=square?104:104;
   const x=square?(160-W/2):86, y=square?26:28;
+  const isPvc=variant==='pvc';
   const layer=function(dx,dy,op,rot){
     return '<g transform="translate('+(x+dx)+','+(y+dy)+') rotate('+rot+' '+(W/2)+' '+(H/2)+')" opacity="'+op+'">'+
       '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="url(#paperB)" filter="url(#shs)"/></g>';
@@ -1157,20 +1192,29 @@ function artCard(r,square){
   return svgWrap(
     layer(16,20,.62,-3)+layer(9,11,.8,-6)+
     '<g transform="translate('+x+','+y+') rotate(-9 '+(W/2)+' '+(H/2)+')" filter="url(#sh)">'+
-      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="url(#paper)"/>'+
-      printedFace(W,H,false)+
+      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="'+(isPvc?'url(#plastic)':'url(#paper)')+'"/>'+
+      cardContent(W,H,variant)+
       '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="url(#gloss)"/>'+
-      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width=".8"/>'+
+      '<rect width="'+W+'" height="'+H+'" rx="'+r+'" fill="none" stroke="#fff" stroke-opacity="'+(isPvc?'.7':'.55')+'" stroke-width="'+(isPvc?'1.1':'.8')+'"/>'+
     '</g>');
 }
 function artSquare(){return artCard(3,true);}
 
-function artFlat(w,h){
+function artFlat(w,h,fold){
   const ratio=h/w;
   let H=112,W=Math.round(H/ratio);
   if(W>150){W=150;H=Math.round(W*ratio);}
   if(H>124){H=124;W=Math.round(H/ratio);}
   const x=Math.round(160-W/2), y=Math.round(79-H/2);
+  let folds='';
+  if(fold===1){
+    const fx=Math.round(W/2);
+    folds='<line x1="'+fx+'" y1="0" x2="'+fx+'" y2="'+H+'" stroke="#c9c0b2" stroke-width="1.2" opacity=".65"/>';
+  }else if(fold===2){
+    [Math.round(W/3),Math.round(W*2/3)].forEach(function(fx){
+      folds+='<line x1="'+fx+'" y1="0" x2="'+fx+'" y2="'+H+'" stroke="#c9c0b2" stroke-width="1.1" opacity=".6"/>';
+    });
+  }
   return svgWrap(
     '<g transform="translate('+(x+18)+','+(y+13)+') rotate(7 '+(W/2)+' '+(H/2)+')" opacity=".55">'+
       '<rect width="'+W+'" height="'+H+'" rx="2" fill="url(#paperB)" filter="url(#shs)"/></g>'+
@@ -1181,7 +1225,24 @@ function artFlat(w,h){
       '<path d="M0 0 H'+W+' V'+Math.round(H*.38)+' Q'+(W/2)+' '+Math.round(H*.46)+' 0 '+Math.round(H*.38)+' Z" fill="url(#accent)"/>'+
       '<circle cx="'+Math.round(W*.74)+'" cy="'+Math.round(H*.17)+'" r="'+Math.round(W*.1)+'" fill="#fff" opacity=".2"/>'+
       printedFace(W,H,false)+
+      folds+
       '<rect width="'+W+'" height="'+H+'" rx="2" fill="url(#gloss)"/>'+
+    '</g>');
+}
+
+function artGlass(){
+  const W=190,H=124,x=160-W/2,y=17;
+  return svgWrap(
+    '<g filter="url(#sh)">'+
+      '<rect x="'+x+'" y="'+y+'" width="'+W+'" height="'+H+'" rx="4" fill="rgba(210,225,232,.14)" stroke="rgba(255,255,255,.35)" stroke-width="1.4"/>'+
+      '<line x1="'+(x+W/2)+'" y1="'+y+'" x2="'+(x+W/2)+'" y2="'+(y+H)+'" stroke="rgba(255,255,255,.22)" stroke-width="2"/>'+
+      '<line x1="'+x+'" y1="'+(y+H/2)+'" x2="'+(x+W)+'" y2="'+(y+H/2)+'" stroke="rgba(255,255,255,.16)" stroke-width="1.6"/>'+
+      '<path d="M'+(x+14)+' '+(y+H-10)+' L'+(x+70)+' '+y+' L'+(x+110)+' '+y+' L'+(x+54)+' '+(y+H-10)+' Z" fill="rgba(255,255,255,.12)"/>'+
+      '<g transform="translate('+(x+W*0.28)+','+(y+H*0.32)+')">'+
+        '<rect width="'+(W*0.44)+'" height="'+(H*0.4)+'" rx="4" fill="url(#accent)" opacity=".92"/>'+
+        '<rect x="10" y="10" width="'+(W*0.44-20)+'" height="6" rx="3" fill="#fff" opacity=".85"/>'+
+        '<rect x="10" y="22" width="'+(W*0.3)+'" height="4.5" rx="2.2" fill="#fff" opacity=".55"/>'+
+      '</g>'+
     '</g>');
 }
 
@@ -1337,52 +1398,36 @@ function artDesign(){
     '</g>');
 }
 
-const PX='https://images.pexels.com/photos/';
-const PXQ='?auto=compress&cs=tinysrgb&w=760&h=420&fit=crop';
-const PXPNG={8066713:1};
-const px=function(id){return PX+id+'/pexels-photo-'+id+(PXPNG[id]?'.png':'.jpeg')+PXQ;};
-
-const PHOTOS={
-  cdv:        px(5706020),
-  'cdv-sq':   px(5706015),
-  'cdv-rd':   px(8066713),
-  'cdv-pvc':  px(4466448),
-  fid:        px(6373857),
-  fla6:       px(6565754),
-  fla5:       px(7648514),
-  fla4:       px(7648514),
-  dep1:       px(7180485),
-  dep3:       px(29452731),
-  affA3:      px(2250136),
-  affA2:      px(22890323),
-  aff70:      px(22890323),
-  rollup:     px(22890323),
-  rollup100:  px(22890323),
-  entete:     px(5420976),
-  bloc:       px(8490097),
-  fpn:        px(8490063),
-  fpm:        px(12445622),
-  inv:        px(9878733),
-  rem:        px(12048935),
-  menu:       px(8490061),
-  'design-r':  px(8293676),
-  'design-rv': px(7180485)
-
-};
+// Ancienne tentative d'illustrations photo (Pexels) désactivée : plusieurs
+// produits sans rapport pointaient vers la même image (ex. rollup, affiche A2
+// et affiche 70×100 partageaient la même photo), et ces URLs ne sont pas
+// vérifiables depuis l'environnement de build. Voir productArt() plus bas.
+const PHOTOS={};
 function fallbackArt(p){
   const s=p.shape||{};
   if(s.t==='design')return artDesign();
   if(s.t==='rollup')return artRollup();
   if(s.t==='banner')return artBanner();
-  if(s.t==='card')return artCard(s.w===s.h?3:(s.r>6?9:3));
-  if(p.cat==='stick')return artSticker(!!s.round);
+  if(p.id==='vitro')return artGlass();
   if(p.id==='enveloppe')return artEnvelope();
   if(p.id==='bloc')return artNotepad();
   if(p.id==='panneau')return artPanel();
+  if(p.cat==='stick')return artSticker(!!s.round);
+  if(s.t==='card'){
+    if(p.id==='cdv-pvc')return artCard(9,s.w===s.h,'pvc');
+    if(p.id==='fid')return artCard(3,s.w===s.h,'stamp');
+    return artCard(s.r>6?9:3,s.w===s.h);
+  }
+  if(p.id==='dep1')return artFlat(s.w||210,s.h||148,1);
+  if(p.id==='dep3')return artFlat(s.w||99,s.h||210,2);
   if(s.w===s.h)return artSquare();
   return artFlat(s.w||100,s.h||140);
 }
 function productArt(p){
+  // Aucune photo externe vérifiable depuis cet environnement (accès réseau
+  // restreint) — illustration vectorielle systématique pour un rendu fiable
+  // et cohérent. Remplir PHOTOS[id] avec une URL d'image réellement
+  // vérifiée réactive ce chemin sans autre changement de code.
   const src=PHOTOS[p.id]||p.photo;
   if(src)return '<img src="'+src+'" alt="'+p.name+'" loading="lazy" data-fb="'+p.id+'">';
   return fallbackArt(p);
