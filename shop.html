@@ -154,6 +154,18 @@ section{margin-top:56px;scroll-margin-top:80px}
 .opt-info.open,.opt-info:hover{border-color:var(--gold2);color:var(--gold2)}
 .opt-tooltip{position:fixed;z-index:400;background:#1b1712;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:11.5px;line-height:1.5;color:var(--txt2);max-width:230px;box-shadow:0 12px 32px rgba(0,0,0,.55);display:none}
 .opt-tooltip.show{display:block}
+.checkline{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5;color:var(--muted);cursor:pointer;background:rgba(217,119,43,.06);border:1px solid rgba(214,160,96,.3);border-radius:10px;padding:11px 13px}
+.checkline input{margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--gold)}
+.checkline.warn{border-color:rgba(212,84,58,.5);background:rgba(212,84,58,.08)}
+.pos-editor{margin-top:9px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel2)}
+.pos-editor .pe-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.pos-box{position:relative;width:100%;max-width:180px;margin:0 auto;overflow:hidden;border-radius:6px;border:1px solid var(--line);background:#111;cursor:grab;touch-action:none}
+.pos-box:active{cursor:grabbing}
+.pos-box img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
+.pos-controls{display:flex;align-items:center;gap:8px;margin-top:9px}
+.pos-controls input[type=range]{flex:1;accent-color:var(--gold)}
+.pos-controls button{background:transparent;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:5px 9px;font-size:11px}
+.pos-hint{font-size:10.5px;color:var(--muted);margin-top:6px;text-align:center}
 .upzone{border:1.5px dashed var(--line);border-radius:12px;padding:17px;text-align:center;color:var(--muted);font-size:13px;transition:.2s;cursor:pointer;margin-bottom:8px}
 .upzone.done{border-style:solid;border-color:var(--ok);color:var(--ok)}
 .upnote{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.6}
@@ -504,6 +516,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
             </div>
             <input type="file" id="fileR" accept=".pdf,.jpg,.jpeg,.png" hidden>
             <div id="fileMsgR"></div>
+            <div id="posEditorR"></div>
           </div>
           <div class="field" id="fVerso" style="display:none">
             <label>Fichier verso</label>
@@ -512,10 +525,17 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
             </div>
             <input type="file" id="fileV" accept=".pdf,.jpg,.jpeg,.png" hidden>
             <div id="fileMsgV"></div>
+            <div id="posEditorV"></div>
           </div>
           <div class="upnote">Format recommandé : PDF 300 dpi, CMJN, fonds perdus 3 mm — max 8 Mo par fichier.
             Votre fichier n'est jamais modifié. Pas de fichier ?
             <a href="#" onclick="openConfig('design-r');return false">Nous créons votre design</a>.</div>
+          <div class="field" id="fileConfirmZone" style="display:none">
+            <label class="checkline">
+              <input type="checkbox" id="fileConfirm" onchange="refresh()">
+              <span>Je confirme avoir vérifié mon fichier (texte, orthographe, résolution, couleurs, cadrage) — il sera imprimé exactement tel quel, sans relecture de notre part.</span>
+            </label>
+          </div>
         </div>
 
         <div id="briefZone" style="display:none">
@@ -1888,10 +1908,16 @@ function applyPriceToUI(){
   document.getElementById('pbTva').textContent='+ '+euro(tot*VAT);
   document.getElementById('delivDate').textContent=fmtDate(addBizDays(new Date(),nd));
   document.getElementById('delivDetail').textContent=' ('+nd+' j. ouvrables'+(cur.design?' — BAT compris':' — '+sh.label)+')';
-  const need=cur.design?true:(isRV()?(fR&&fV):!!fR);
+  const filesOk=cur.design?true:(isRV()?(fR&&fV):!!fR);
+  const confirmZone=document.getElementById('fileConfirmZone');
+  if(confirmZone)confirmZone.style.display=(!cur.design&&filesOk)?'block':'none';
+  const cf=document.getElementById('fileConfirm');
+  const fileConfirmed=cur.design?true:(cf?cf.checked:false);
+  const need=filesOk&&fileConfirmed;
   btn.disabled=!need;
   btn.textContent=need?'Ajouter au panier — '+euro(tot)+' HTVA'
-    :(fR?'Uploadez votre fichier verso':'Uploadez votre fichier recto');
+    :(!filesOk?(fR?'Uploadez votre fichier verso':'Uploadez votre fichier recto')
+      :'Confirmez avoir vérifié votre fichier');
 }
 function confText(){
   const parts=[];
@@ -1943,6 +1969,8 @@ function resetUp(side){
     (side==='B'?'PDF, JPG, PNG — facultatif':'PDF, JPG ou PNG — imprimé tel quel')+'</small>';
   const inp=document.getElementById('file'+side); if(inp)inp.value='';
   const box=document.getElementById('fileMsg'+side); if(box)box.innerHTML='';
+  const pe=document.getElementById('posEditor'+side); if(pe)pe.innerHTML='';
+  const cf=document.getElementById('fileConfirm'); if(cf)cf.checked=false;
 }
 
 function qualityCheck(side,img){
@@ -1974,17 +2002,20 @@ function handleFile(f,side){
   const r=new FileReader();
   r.onload=function(){
     const obj={name:f.name,isPdf:isPdf,mime:f.type||(isPdf?'application/pdf':'image/jpeg'),
-      data:isPdf?'PDF':r.result,raw:r.result};
+      data:isPdf?'PDF':r.result,raw:r.result,posX:50,posY:50,zoom:1};
     if(side==='R')fR=obj;else if(side==='V')fV=obj;else fB=obj;
     const zone=document.getElementById('upzone'+side);
     zone.classList.add('done');
-    document.getElementById('upTxt'+side).innerHTML='\u2714 <b>'+f.name+'</b> reçu<br><small>Cliquez pour remplacer</small>';
+    document.getElementById('upTxt'+side).innerHTML='✔ <b>'+f.name+'</b> reçu<br><small>Cliquez pour remplacer</small>';
     const box=document.getElementById('fileMsg'+side);
+    const cf=document.getElementById('fileConfirm'); if(cf)cf.checked=false;
+    const pe=document.getElementById('posEditor'+side);
+    if(pe)pe.innerHTML='';
     if(box){
-      if(isPdf)box.innerHTML='<div class="fileok">\u2714 PDF reçu — vérifiez qu\'il est en 300 dpi, CMJN, avec 3 mm de fonds perdus.</div>';
+      if(isPdf)box.innerHTML='<div class="fileok">✔ PDF reçu — vérifiez qu\'il est en 300 dpi, CMJN, avec 3 mm de fonds perdus.</div>';
       else{
         const im=new Image();
-        im.onload=function(){qualityCheck(side,im);};
+        im.onload=function(){qualityCheck(side,im);if(side==='R'||side==='V')renderPosEditor(side);};
         im.onerror=function(){box.innerHTML='';};
         im.src=r.result;
       }
@@ -1992,6 +2023,59 @@ function handleFile(f,side){
     refresh();
   };
   r.readAsDataURL(f);
+}
+function fileOf(side){return side==='R'?fR:(side==='V'?fV:fB);}
+function renderPosEditor(side){
+  const host=document.getElementById('posEditor'+side);
+  const f=fileOf(side);
+  if(!host||!f||f.isPdf){if(host)host.innerHTML='';return;}
+  const s=(cur&&cur.shape)||{};
+  const ratio=(s.w&&s.h)?s.h/s.w:1;
+  host.innerHTML=
+    '<div class="pos-editor">'+
+      '<div class="pe-label">Cadrage de votre visuel</div>'+
+      '<div class="pos-box" id="posBox'+side+'" style="aspect-ratio:1/'+ratio+'">'+
+        '<img id="posImg'+side+'" src="'+f.data+'" alt="" style="object-position:'+f.posX+'% '+f.posY+'%;transform:scale('+f.zoom+')">'+
+      '</div>'+
+      '<div class="pos-controls">'+
+        '<span style="font-size:11px;color:var(--muted)">Zoom</span>'+
+        '<input type="range" id="posZoom'+side+'" min="100" max="250" value="'+Math.round(f.zoom*100)+'">'+
+        '<button type="button" onclick="resetPos(\''+side+'\')">Recentrer</button>'+
+      '</div>'+
+      '<div class="pos-hint">Glissez l\'image pour la repositionner dans la zone d\'impression.</div>'+
+    '</div>';
+  const box=document.getElementById('posBox'+side);
+  const zoomInp=document.getElementById('posZoom'+side);
+  let dragging=false,lx=0,ly=0;
+  const applyPos=function(){
+    const img=document.getElementById('posImg'+side);
+    if(img){img.style.objectPosition=f.posX+'% '+f.posY+'%';img.style.transform='scale('+f.zoom+')';}
+    if(cur&&fileOf(side)===f)build3D();
+  };
+  box.addEventListener('pointerdown',function(e){dragging=true;lx=e.clientX;ly=e.clientY;try{box.setPointerCapture(e.pointerId);}catch(err){}});
+  box.addEventListener('pointerup',function(){dragging=false;});
+  box.addEventListener('pointercancel',function(){dragging=false;});
+  box.addEventListener('pointermove',function(e){
+    if(!dragging)return;
+    e.preventDefault();
+    const r=box.getBoundingClientRect();
+    const dx=(e.clientX-lx)/r.width*100,dy=(e.clientY-ly)/r.height*100;
+    f.posX=Math.max(0,Math.min(100,f.posX-dx));
+    f.posY=Math.max(0,Math.min(100,f.posY-dy));
+    lx=e.clientX;ly=e.clientY;
+    applyPos();
+  });
+  zoomInp.addEventListener('input',function(){
+    f.zoom=Number(zoomInp.value)/100;
+    applyPos();
+  });
+}
+function resetPos(side){
+  const f=fileOf(side);
+  if(!f)return;
+  f.posX=50;f.posY=50;f.zoom=1;
+  renderPosEditor(side);
+  if(cur)build3D();
 }
 function dlFace(side){
   const f=side==='R'?fR:fV;
@@ -2011,7 +2095,7 @@ let rotX=-12,rotY=24,spinOn=true,rafId=null,dragging=false,lx=0,ly=0;
 const obj=document.getElementById('obj3d'),stage=document.getElementById('stage');
 
 function faceHTML(f,fallback){
-  if(f&&!f.isPdf)return '<img src="'+f.data+'" alt="">';
+  if(f&&!f.isPdf)return '<img src="'+f.data+'" alt="" style="object-position:'+(f.posX==null?50:f.posX)+'% '+(f.posY==null?50:f.posY)+'%;transform:scale('+(f.zoom||1)+')">';
   if(f&&f.isPdf)return '<div class="ph">\uD83D\uDCC4 '+f.name+'<br><small>PDF — aperçu non affiché,<br>fichier imprimé tel quel</small></div>';
   if(window.__catalogSnapshot)return '<div class="ph-logo"><img src="x-pixel.png" alt="Pixel Studio"><b>PIXEL STUDIO</b></div>';
   return '<div class="ph"><b>'+fallback+'</b><small>Glissez votre fichier pour l’aperçu</small></div>';
@@ -2131,12 +2215,20 @@ if(stage){
 
 function addToCart(){
   if(curPrice==null)return;
+  if(!cur.design){
+    const cf=document.getElementById('fileConfirm');
+    if(!cf||!cf.checked){toast('Merci de confirmer avoir vérifié votre fichier avant de continuer.');return;}
+  }
   const tot=curPrice;
   const item={pid:cur.id,ico:cur.ico,name:cur.name,supDays:cur.supDays,design:!!cur.design,
     qty:Number(sel.qty)||1,conf:confText(),days:curDays,price:tot,sel:selIndices(),
     fileR:fR?fR.name:null,fileV:(isRV()&&fV)?fV.name:null,
     rawR:fR?fR.raw:null,rawV:(isRV()&&fV)?fV.raw:null,
-    thumb:(fR&&!fR.isPdf)?fR.data:null};
+    thumb:(fR&&!fR.isPdf)?fR.data:null,
+    posR:(fR&&!fR.isPdf)?{x:fR.posX,y:fR.posY,zoom:fR.zoom}:null,
+    posV:(isRV()&&fV&&!fV.isPdf)?{x:fV.posX,y:fV.posY,zoom:fV.zoom}:null,
+    fileConfirmed:!cur.design,
+    fileConfirmedAt:!cur.design?new Date().toISOString():null};
   (cur.opts||[]).forEach(o=>{item['opt_'+o.k]=(o.c[sel[o.k]||0]||{}).n;});
   if(cur.design){
     item.brief=document.getElementById('brief').value.trim();
