@@ -149,6 +149,11 @@ section{margin-top:56px;scroll-margin-top:80px}
 .opts button.sel{border-color:var(--gold);background:var(--gold);color:#111;font-weight:700}
 .opts button .sup{opacity:.62;font-size:10px;font-style:italic;letter-spacing:.02em}
 .opts button.sel .sup{opacity:.85}
+.opt-item{display:inline-flex;align-items:center;gap:4px}
+.opt-info{width:17px;height:17px;flex-shrink:0;border-radius:50%;background:transparent;border:1px solid var(--muted);color:var(--muted);font-size:10px;font-style:italic;font-family:Georgia,serif;line-height:1;padding:0;display:flex;align-items:center;justify-content:center}
+.opt-info.open,.opt-info:hover{border-color:var(--gold2);color:var(--gold2)}
+.opt-tooltip{position:fixed;z-index:400;background:#1b1712;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:11.5px;line-height:1.5;color:var(--txt2);max-width:230px;box-shadow:0 12px 32px rgba(0,0,0,.55);display:none}
+.opt-tooltip.show{display:block}
 .upzone{border:1.5px dashed var(--line);border-radius:12px;padding:17px;text-align:center;color:var(--muted);font-size:13px;transition:.2s;cursor:pointer;margin-bottom:8px}
 .upzone.done{border-style:solid;border-color:var(--ok);color:var(--ok)}
 .upnote{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.6}
@@ -865,6 +870,107 @@ const store={
 
 const HANDLING=2;
 
+// Descriptions courtes affichées via le (i) à côté de chaque option, indexées
+// par clé d'option (o.k) puis par libellé exact du choix (c.n).
+const OPT_INFO={
+  paper:{
+    '350 g couché mat':'Papier épais à surface mate, look premium sans reflets.',
+    '350 g couché brillant':'Papier épais à surface brillante, couleurs vives et éclatantes.',
+    '400 g extra-épais':'Le plus épais et rigide de nos supports, sensation très haut de gamme.',
+    '350 g recyclé':'Papier 100% recyclé, aspect légèrement texturé, démarche éco-responsable.',
+    'Kraft naturel':'Papier brun naturel non blanchi, look artisanal et brut.',
+    'PVC blanc brillant':'Plastique rigide façon carte bancaire, fini brillant.',
+    'PVC blanc mat':'Plastique rigide façon carte bancaire, fini mat sans reflets.',
+    '350 g inscriptible':'Surface qui accroche l\'encre, idéale pour écrire au stylo ou tamponner.',
+    '135 g brillant':'Papier standard fin, fini brillant, économique.',
+    '170 g brillant':'Papier un peu plus épais que le 135g, fini brillant.',
+    '250 g mat':'Papier épais à toucher mat, plus rigide et qualitatif.',
+    '170 g recyclé':'Papier recyclé de grammage standard.',
+    '150 g dos bleu':'Papier affiche avec dos bleu opaque, empêche la transparence en vitrine.',
+    'Bâche PVC 510 g':'Bâche PVC standard, résistante aux intempéries, pour usage extérieur.',
+    'Bâche anti-feu M1':'Bâche ignifugée aux normes M1, souvent obligatoire dans les lieux recevant du public.',
+    'Toile textile':'Bâche en textile polyester, sans reflet, rendu plus doux qu\'une bâche PVC.',
+    'PVC 510 g':'Bâche PVC standard 510g, bon rapport résistance/prix.',
+    'PVC 650 g renforcé':'Bâche PVC renforcée, pour un usage extérieur intensif ou prolongé.',
+    'Mesh micro-perforé':'Toile micro-perforée qui laisse passer le vent, idéale sur façade ou balcon.',
+    'Forex 3 mm':'Panneau PVC expansé léger de 3mm, usage intérieur.',
+    'Forex 5 mm':'Panneau PVC expansé plus rigide de 5mm, meilleure tenue.',
+    'Dibond alu 3 mm':'Panneau aluminium composite, très rigide, adapté à l\'extérieur.',
+    'Vinyle blanc brillant':'Adhésif vinyle blanc fini brillant.',
+    'Vinyle blanc mat':'Adhésif vinyle blanc fini mat.',
+    'Vinyle transparent':'Adhésif transparent, seul le visuel imprimé reste visible.',
+    'Papier recyclé':'Sticker en papier recyclé, non résistant à l\'eau.',
+    'Vinyle monomère':'Adhésif standard, pose facile, tenue 2-3 ans.',
+    'Vinyle polymère (longue durée)':'Adhésif haut de gamme, tenue 7-10 ans, idéal véhicules et extérieur durable.',
+    'Dépoli / sablé':'Effet vitre givrée, laisse passer la lumière tout en floutant la vue.',
+    '90 g offset':'Papier fin standard pour courrier et documents.',
+    '120 g offset':'Papier plus épais que le 90g, meilleure tenue en main.',
+    '100 g recyclé':'Papier recyclé pour un usage courrier écoresponsable.',
+    '300 g mat':'Papier épais à toucher mat, standard pour faire-part et cartons.',
+    '300 g nacré':'Papier épais avec un léger effet nacré selon la lumière.',
+    '350 g texturé':'Papier épais avec un grain en relief, toucher distinctif.',
+    '300 g recyclé':'Papier épais 100% recyclé.',
+    '300 g brillant':'Papier épais à surface brillante.'
+  },
+  sides:{
+    'Recto':'Impression sur une seule face.',
+    'Recto/Verso':'Impression sur les deux faces.'
+  },
+  pell:{
+    'Sans pelliculage':'Aucune protection, le papier reste dans son état naturel.',
+    'Pelliculage mat':'Film de protection satiné, look sobre et anti-traces de doigts.',
+    'Pelliculage brillant':'Film de protection brillant, couleurs plus intenses.',
+    'Soft-touch':'Film velouté au toucher très doux, effet premium très recherché.'
+  },
+  luxe:{
+    'Aucune':'Pas de finition supplémentaire.',
+    'Vernis sélectif UV':'Vernis brillant appliqué localement pour faire ressortir un détail (logo, texte).',
+    'Dorure à chaud':'Estampage doré (ou autre couleur métallique) en relief, effet très haut de gamme.'
+  },
+  speed:{
+    'Standard':'Délai de fabrication habituel, sans supplément.',
+    'Express':'Fabrication accélérée en priorité, supplément appliqué.',
+    'Standard (48 h)':'Proposition de design sous 48h ouvrables.',
+    'Express (24 h)':'Proposition de design accélérée sous 24h, supplément appliqué.'
+  },
+  radius:{
+    '3 mm':'Coins légèrement arrondis, à peine perceptible au toucher.',
+    '6 mm':'Coins arrondis modérés, le plus courant.',
+    '10 mm':'Coins très arrondis, look doux et distinctif.'
+  },
+  base:{
+    'Alu standard':'Pied en aluminium standard, léger et suffisant en intérieur.',
+    'Alu premium (base large)':'Pied élargi pour une meilleure stabilité, recommandé en extérieur ou zone de passage.'
+  },
+  finish:{
+    'Ourlets + œillets':'Bords cousus avec œillets métalliques pour accrocher ou tendre la bâche.',
+    'Sans finition':'Bâche brute sans ourlet ni œillet.',
+    'Fourreaux haut/bas':'Poches cousues en haut et en bas pour glisser des tasseaux ou câbles de tension.'
+  },
+  lam:{
+    'Sans':'Aucune protection supplémentaire, le vinyle est laissé brut.',
+    'Laminage brillant':'Film de protection brillant, résiste mieux aux rayures et à l\'usure.',
+    'Laminage mat':'Film de protection mat, résiste mieux aux rayures avec un rendu sobre.'
+  },
+  corner:{
+    'Droits':'Coins classiques à angle droit.',
+    'Arrondis':'Coins arrondis pour un rendu plus doux.'
+  },
+  reliure:{
+    'Spirale':'Reliure à spirale métallique, les pages tournent bien à plat.',
+    'Œillet':'Simple trou œillet pour accrocher au mur, sans spirale.'
+  },
+  support:{
+    'Carte de visite':'Création graphique d\'une carte de visite complète.',
+    'Flyer':'Création graphique d\'un flyer publicitaire.',
+    'Affiche':'Création graphique d\'une affiche grand format.',
+    'Roll-up':'Création graphique adaptée au format roll-up.',
+    'Faire-part':'Création graphique d\'un faire-part personnalisé.',
+    'Logo simple':'Création d\'un logo simple, livré en fichier vectoriel.',
+    'Dépliant':'Création graphique d\'un dépliant à plusieurs volets.'
+  }
+};
+
 const PRODUCTS=[
 
 {id:'cdv',cat:'carterie',ico:'💳',name:'Cartes de visite classiques',fmt:'85 × 55 mm',tag:'Best-seller',
@@ -1046,6 +1152,52 @@ const PRODUCTS=[
  shape:{"t":"design"},supDays:2,design:true,
  qtys:[1],
  opts:[{k:'support',l:'Support à créer',c:[{n:'Carte de visite'},{n:'Flyer'},{n:'Dépliant'},{n:'Faire-part'}]},{k:'speed',l:'Délai',c:[{n:'Standard (48 h)'},{n:'Express (24 h)'}]}]},
+
+// --- Nouvelles variantes (partenariat print.com) — uniquement des formes 3D déjà
+// éprouvées (carte/à-plat/roll-up). tbd:true = prix pas encore calculable (API à
+// connecter), la fiche affiche "Prix à venir" et le panier reste désactivé.
+
+{id:'totem',cat:'signa',ico:'🗼',name:'Totems publicitaires',fmt:'150 × 220 cm',tag:'Nouveau',tbd:true,
+ desc:'Structure autoportante grand format pour accueils, salons et points de vente.',
+ shape:{"t":"rollup","w":150,"h":220},supDays:9,
+ qtys:[1,2,3],
+ opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g'},{n:'Toile textile'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
+
+{id:'xbanner',cat:'signa',ico:'❌',name:'X-Banners',fmt:'60 × 160 cm',tag:null,tbd:true,
+ desc:'Structure légère en X, montage express. Idéal complément de stand.',
+ shape:{"t":"rollup","w":60,"h":160},supDays:7,
+ qtys:[1,2,3],
+ opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g'},{n:'Toile textile'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
+
+{id:'lbanner',cat:'signa',ico:'📐',name:'L-Banners',fmt:'80 × 200 cm',tag:null,tbd:true,
+ desc:'Structure en L, base large très stable. Visibilité optimale en intérieur.',
+ shape:{"t":"rollup","w":80,"h":200},supDays:7,
+ qtys:[1,2,3],
+ opts:[{k:'paper',l:'Support',c:[{n:'Bâche PVC 510 g'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
+
+{id:'chevalet',cat:'signa',ico:'🔺',name:'Chevalets de table',fmt:'100 × 150 mm',tag:null,tbd:true,
+ desc:'Présentoir recto/verso pour tables et comptoirs. Menus, promotions, informations.',
+ shape:{"t":"card","w":100,"h":150,"r":2},supDays:6,
+ qtys:[1,5,10,25],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'400 g extra-épais'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
+
+{id:'stickersheet',cat:'stick',ico:'🧩',name:'Planches d\'autocollants',fmt:'A5 — 148 × 210 mm',tag:null,tbd:true,
+ desc:'Plusieurs stickers découpés sur une même planche. Idéal packaging, goodies et étiquetage.',
+ shape:{"t":"flat","w":148,"h":210},supDays:6,
+ qtys:[1,10,25,50],
+ opts:[{k:'paper',l:'Matériau',c:[{n:'Vinyle blanc brillant'},{n:'Vinyle blanc mat'},{n:'Vinyle transparent'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
+
+{id:'pochette',cat:'pap',ico:'🗂️',name:'Pochettes à rabats',fmt:'A4 — 220 × 310 mm',tag:null,tbd:true,
+ desc:'Pochette de présentation avec rabats, pour vos dossiers commerciaux et supports événementiels.',
+ shape:{"t":"flat","w":220,"h":310},supDays:6,
+ qtys:[1,25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'350 g couché mat'},{n:'350 g couché brillant'}]},{k:'pell',l:'Pelliculage',c:[{n:'Sans pelliculage'},{n:'Pelliculage mat'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
+
+{id:'calend',cat:'pap',ico:'📅',name:'Calendriers muraux',fmt:'A3 — 297 × 420 mm',tag:null,tbd:true,
+ desc:'Calendrier 12 mois personnalisé, spirale ou œillet. Un cadeau client qui reste toute l\'année.',
+ shape:{"t":"flat","w":297,"h":420},supDays:8,
+ qtys:[1,25,50,100],
+ opts:[{k:'paper',l:'Support',c:[{n:'250 g mat'},{n:'300 g brillant'}]},{k:'reliure',l:'Reliure',c:[{n:'Spirale'},{n:'Œillet'}]},{k:'speed',l:'Délai',c:[{n:'Standard'},{n:'Express'}]}]},
 
 ];
 
@@ -1459,15 +1611,18 @@ function baseDays(p){
 function card(p){
   const el=document.createElement('div');el.className='pcard';
   const fp=FROM_PRICES[p.id];
-  const priceHTML=fp!=null
-    ? (p.design?'':'dès ')+'<b>'+euro(fp)+'</b> HTVA'
-    : '<span style="opacity:.55">calcul du prix…</span>';
-  el.innerHTML=(p.tag?'<span class="tag">'+p.tag+'</span>':'')+
+  const priceHTML=p.tbd
+    ? '<span style="opacity:.7;color:var(--gold2)">Prix à venir</span>'
+    : (fp!=null
+      ? (p.design?'':'dès ')+'<b>'+euro(fp)+'</b> HTVA'
+      : '<span style="opacity:.55">calcul du prix…</span>');
+  const dlHTML=p.tbd?'Nouveauté — délai à confirmer':(p.design?'Proposition sous 48 h ouvrables':'Livré en '+baseDays(p)+' j. ouvrables');
+  el.innerHTML=(p.tag?'<span class="tag">'+p.tag+'</span>':(p.tbd?'<span class="tag" style="background:rgba(214,160,96,.16);color:var(--gold2);border-color:rgba(214,160,96,.4)">Bientôt disponible</span>':''))+
     '<div class="art">'+productArt(p)+'<span class="badge-fmt">'+p.fmt+'</span></div>'+
     '<h3>'+p.name+'</h3>'+
     '<p>'+p.desc+'</p>'+
     '<div class="from">'+priceHTML+'</div>'+
-    '<div class="dl">'+(p.design?'Proposition sous 48 h ouvrables':'Livré en '+baseDays(p)+' j. ouvrables')+'</div>'+
+    '<div class="dl">'+dlHTML+'</div>'+
     '<button>'+(p.design?'Demander un design':'Configurer')+'</button>';
   el.querySelector('button').onclick=function(){openConfig(p.id);};
   guardPhoto(el.querySelector('.art'),p);
@@ -1610,15 +1765,56 @@ function optGroup(label,key,items){
   const l=document.createElement('label');l.textContent=label;f.appendChild(l);
   const box=document.createElement('div');box.className='opts';
   items.forEach(it=>{
+    const wrap=document.createElement('span');wrap.className='opt-item';
     const b=document.createElement('button');
     b.innerHTML=it.n;
     if(String(it.v)===String(sel[key]))b.classList.add('sel');
     b.onclick=function(){sel[key]=it.v;invalidatePrice();renderOptions();refresh();};
-    box.appendChild(b);
+    wrap.appendChild(b);
+    const info=OPT_INFO[key]&&OPT_INFO[key][it.n];
+    if(info){
+      const ib=document.createElement('button');
+      ib.type='button';ib.className='opt-info';ib.textContent='i';
+      ib.setAttribute('aria-label','En savoir plus sur '+it.n);
+      ib.onclick=function(e){e.stopPropagation();toggleOptInfo(ib,info);};
+      wrap.appendChild(ib);
+    }
+    box.appendChild(wrap);
   });
   f.appendChild(box);
   return f;
 }
+let optTooltipEl=null,optTooltipAnchor=null;
+function toggleOptInfo(anchor,text){
+  if(optTooltipAnchor===anchor){hideOptInfo();return;}
+  if(!optTooltipEl){
+    optTooltipEl=document.createElement('div');
+    optTooltipEl.className='opt-tooltip';
+    document.body.appendChild(optTooltipEl);
+  }
+  optTooltipEl.textContent=text;
+  optTooltipEl.classList.add('show');
+  optTooltipAnchor=anchor;
+  anchor.classList.add('open');
+  const r=anchor.getBoundingClientRect();
+  optTooltipEl.style.left='0px';optTooltipEl.style.top='0px';
+  const tw=optTooltipEl.offsetWidth,th=optTooltipEl.offsetHeight;
+  let left=r.left+r.width/2-tw/2;
+  left=Math.max(10,Math.min(left,window.innerWidth-tw-10));
+  let top=r.top-th-9;
+  if(top<8)top=r.bottom+9;
+  optTooltipEl.style.left=left+'px';
+  optTooltipEl.style.top=top+'px';
+}
+function hideOptInfo(){
+  if(optTooltipEl)optTooltipEl.classList.remove('show');
+  if(optTooltipAnchor)optTooltipAnchor.classList.remove('open');
+  optTooltipAnchor=null;
+}
+document.addEventListener('click',function(e){
+  if(optTooltipAnchor&&!e.target.closest('.opt-info'))hideOptInfo();
+});
+document.addEventListener('scroll',hideOptInfo,true);
 function optAt(key){
   const g=(cur.opts||[]).find(o=>o.k===key);
   if(!g)return null;
@@ -1666,6 +1862,16 @@ function applyPriceToUI(){
   const q=Number(sel.qty)||1;
   const sh=SHIPPING[country];
   const btn=document.getElementById('addBtn');
+  if(cur.tbd){
+    document.getElementById('pbUnit').textContent='';
+    document.getElementById('pbTotal').textContent='Prix à venir';
+    document.getElementById('pbTva').textContent='';
+    document.getElementById('delivDate').textContent='';
+    document.getElementById('delivDetail').textContent='Article bientôt disponible à la commande';
+    btn.disabled=true;
+    btn.textContent='Bientôt disponible';
+    return;
+  }
   if(curPrice==null){
     document.getElementById('pbUnit').textContent='';
     document.getElementById('pbTotal').textContent='…';
@@ -1714,7 +1920,7 @@ function refresh(){
   document.getElementById('pbShip').textContent=cur.design?'Sans objet (fichier numérique)'
     :sh.label+' — offerte dès '+sh.free+' € · sinon '+euro(sh.price);
   applyPriceToUI();
-  if(curPrice==null)schedulePriceFetch();
+  if(curPrice==null&&!cur.tbd)schedulePriceFetch();
   const dr=document.getElementById('dlR'),dv=document.getElementById('dlV');
   dr.disabled=!fR;dv.disabled=!(isRV()&&fV);
   build3D();
