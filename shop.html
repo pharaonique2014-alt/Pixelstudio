@@ -2622,7 +2622,9 @@ async function confirmPay(){
     status:payMethod==='vir'?'En attente de paiement':'En attente de paiement',
     pay:PAY_LABELS[payMethod]||'Virement',total:t.total,cust:cust,
     items:cart.map(function(c){return {ico:c.ico,name:c.name,conf:c.conf,price:c.price,
-      fileR:c.fileR,fileV:c.fileV,brief:c.brief||''};})};
+      fileR:c.fileR,fileV:c.fileV,brief:c.brief||'',
+      posR:c.posR||null,posV:c.posV||null,
+      fileConfirmed:!!c.fileConfirmed,fileConfirmedAt:c.fileConfirmedAt||null};})};
 
   try{order.fileLinks=await uploadFilesToSupabase(ref);}catch(e){order.fileLinks=[];}
 
