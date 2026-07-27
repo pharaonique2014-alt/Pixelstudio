@@ -727,6 +727,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     <div id="passHint" style="font-size:12.5px;margin:-6px 0 12px"></div>
     <div id="passRules" style="display:none;font-size:12px;color:var(--muted);margin:-4px 0 12px">8 caractères minimum, avec majuscule, minuscule, chiffre et caractère spécial.</div>
     <input class="inp" id="authPass2" type="password" placeholder="Confirmez le mot de passe" autocomplete="new-password" style="display:none" onkeydown="if(event.key==='Enter')doAuth()">
+    <div id="turnstileBox" style="display:none;margin:4px 0 8px"></div>
     <button class="btn-main" style="width:100%" id="authAction" onclick="doAuth()">Se connecter</button>
     <div class="switch" id="authForgot"><a href="#" onclick="forgotPassword();return false">Mot de passe oublié ?</a></div>
     <div class="switch" id="authSwitch">Pas encore de compte ? <a href="#" onclick="toggleAuth();return false">Créer un compte</a></div>
@@ -880,6 +881,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad" async defer></script>
 <script src="shop-app.min.js"></script>
 <script src="shop-suivi.js"></script>
 <script src="theme.js"></script>
@@ -888,13 +890,30 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 (function(){
   var regFields = document.getElementById('regFields');
   var pass2 = document.getElementById('authPass2');
+  var tsBox = document.getElementById('turnstileBox');
   if (!regFields || !pass2) return;
+
+  var TURNSTILE_SITE_KEY = '0x4AAAAAAD_DO8YW4n_UurdV';
+  var turnstileWidgetId = null;
+  var turnstileToken = null;
+
+  window.onTurnstileLoad = function(){
+    if (!window.turnstile || !tsBox) return;
+    turnstileWidgetId = turnstile.render(tsBox, {
+      sitekey: TURNSTILE_SITE_KEY,
+      theme: 'auto',
+      callback: function (token) { turnstileToken = token; },
+      'expired-callback': function () { turnstileToken = null; },
+      'error-callback': function () { turnstileToken = null; }
+    });
+  };
 
   function isSignup(){ return getComputedStyle(regFields).display !== 'none'; }
   function syncVisibility(){
     var signup = isSignup();
     pass2.style.display = signup ? 'block' : 'none';
     if (!signup) pass2.value = '';
+    if (tsBox) tsBox.style.display = signup ? 'block' : 'none';
   }
   syncVisibility();
   new MutationObserver(syncVisibility).observe(regFields, { attributes: true, attributeFilter: ['style', 'class'] });
@@ -910,6 +929,13 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
           if (msg) { msg.textContent = 'Les mots de passe ne correspondent pas.'; msg.className = 'msg err'; }
           return;
         }
+        if (tsBox && !turnstileToken) {
+          var msg2 = document.getElementById('authMsg');
+          if (msg2) { msg2.textContent = 'Merci de valider le contrôle de sécurité avant de continuer.'; msg2.className = 'msg err'; }
+          return;
+        }
+        if (turnstile && turnstileWidgetId !== null) { turnstile.reset(turnstileWidgetId); }
+        turnstileToken = null;
       }
       return originalDoAuth.apply(this, arguments);
     };
