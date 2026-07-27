@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aide &amp; FAQ | Pixel Studio</title>
+<meta name="description" content="Questions fréquentes : délais, paiement, fichiers, livraison, compte client. Toutes les réponses sur l'impression en ligne Pixel Studio.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.faq-wrap{max-width:840px;margin:120px auto 90px;padding:0 24px;color:#e4e1dc;font-family:Montserrat,Helvetica,Arial,sans-serif;line-height:1.75}
+.faq-wrap h1{font-family:'Playfair Display',Georgia,serif;font-size:32px;color:#edeae5;margin-bottom:8px;font-weight:600}
+.faq-wrap .maj{color:rgba(228,225,220,.55);font-size:13px;margin-bottom:30px}
+.faq-search{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#edeae5;border-radius:12px;padding:14px 18px;font-size:14.5px;font-family:inherit;margin-bottom:14px}
+.faq-search:focus{outline:none;border-color:#d6a060}
+.faq-jump{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:44px}
+.faq-jump a{background:rgba(217,119,43,.1);border:1px solid rgba(214,160,96,.35);color:#d6a060;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600;letter-spacing:.02em}
+.faq-cat{margin:0 0 40px}
+.faq-cat h2{font-size:19px;color:#d6a060;margin:0 0 14px;font-weight:700;font-family:'Playfair Display',Georgia,serif;scroll-margin-top:100px}
+.faq-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;margin-bottom:9px;overflow:hidden}
+.faq-item[open]{border-color:rgba(214,160,96,.4)}
+.faq-item summary{list-style:none;cursor:pointer;padding:15px 18px;font-size:14.5px;font-weight:600;color:#edeae5;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:'+';color:#d6a060;font-size:19px;font-weight:400;flex-shrink:0;transition:transform .2s}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item .a{padding:0 18px 17px;color:rgba(228,225,220,.75);font-size:13.8px;line-height:1.75}
+.faq-item .a b{color:#edeae5}
+.faq-item .a a{color:#d6a060}
+.faq-hidden{display:none !important}
+.faq-empty{color:rgba(228,225,220,.5);font-size:13.5px;padding:20px 0;display:none}
+.faq-cta{margin-top:10px;background:rgba(217,119,43,.07);border:1px solid rgba(214,160,96,.3);border-radius:14px;padding:24px 26px;text-align:center}
+.faq-cta p{color:rgba(228,225,220,.75);font-size:13.5px;margin-bottom:14px}
+.faq-cta a{display:inline-block;background:#d9772b;color:#111;font-weight:700;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:12px 26px;border-radius:24px}
+</style>
+</head>
+<body>
+<video class="bg-video" autoplay muted loop playsinline>
+  <source src="fond-v2.mp4" type="video/mp4">
+</video>
+<div class="bg-overlay"></div>
+
+<nav class="main-nav">
+  <div class="burger" id="burger"><span></span><span></span><span></span></div>
+  <ul class="menu" id="menu">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="portfolio.html">Portfolio</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="aide.html">Aide</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<main class="faq-wrap">
+  <h1>Aide &amp; questions fréquentes</h1>
+  <p class="maj">Tout ce qu'il faut savoir avant, pendant et après votre commande.</p>
+
+  <input class="faq-search" id="faqSearch" placeholder="Rechercher une question (délai, fichier, paiement…)" oninput="faqFilter(this.value)">
+
+  <nav class="faq-jump">
+    <a href="#cat-commande">Commande &amp; paiement</a>
+    <a href="#cat-livraison">Livraison &amp; délais</a>
+    <a href="#cat-fichiers">Fichiers &amp; impression</a>
+    <a href="#cat-compte">Mon compte</a>
+    <a href="#cat-reclamation">Réclamations</a>
+    <a href="#cat-design">Création graphique</a>
+    <a href="#cat-securite">Sécurité &amp; données</a>
+  </nav>
+
+  <div class="faq-empty" id="faqEmpty">Aucune question ne correspond à votre recherche — <a href="contact.html" style="color:#d6a060">contactez-nous</a> directement.</div>
+
+  <section class="faq-cat" id="cat-commande">
+    <h2>Commande &amp; paiement</h2>
+
+    <details class="faq-item"><summary>Comment passer commande ?</summary>
+      <div class="a">En quatre étapes : vous choisissez un produit et le configurez, vous uploadez votre fichier (l'aperçu 3D montre le rendu recto/verso et vous pouvez repositionner votre visuel), vous cochez la case de validation du fichier puis ajoutez au panier, et enfin vous renseignez vos coordonnées pour payer. Une confirmation arrive aussitôt par e-mail.</div></details>
+
+    <details class="faq-item"><summary>Quels moyens de paiement acceptez-vous ?</summary>
+      <div class="a"><b>Bancontact</b>, <b>iDEAL</b>, <b>KBC/CBC</b>, <b>Belfius</b>, <b>Klarna</b> (paiement comptant, différé ou en plusieurs fois — réservé aux particuliers) et le <b>virement bancaire</b>. Les paiements en ligne passent par Mollie, prestataire agréé belge — vos données bancaires ne transitent jamais par notre site.</div></details>
+
+    <details class="faq-item"><summary>Dois-je créer un compte pour commander ?</summary>
+      <div class="a">Oui, un compte est nécessaire pour valider un paiement — c'est ce qui rattache votre commande, vos fichiers et vos factures à vous seul. La création prend 30 secondes : e-mail et mot de passe, rien de plus.</div></details>
+
+    <details class="faq-item"><summary>Les prix affichés incluent-ils la TVA ?</summary>
+      <div class="a">Les prix sont affichés hors TVA (HTVA) ; la TVA belge de 21 % est ajoutée avant validation. Un professionnel hors Belgique avec un numéro de TVA valide bénéficie de l'autoliquidation (0 %), vérifié en direct auprès du registre européen VIES.</div></details>
+
+    <details class="faq-item"><summary>Puis-je obtenir une facture ?</summary>
+      <div class="a">Oui, elle est disponible dans votre espace client après chaque commande. Les professionnels belges peuvent télécharger un fichier Peppol conforme.</div></details>
+
+    <details class="faq-item"><summary>Je me suis trompé juste après avoir payé, que faire ?</summary>
+      <div class="a">Écrivez-nous ou appelez tout de suite au <b>0470 55 73 56</b> — tant que la commande n'est pas encore partie en impression, on peut souvent encore la corriger. Une fois en production, la commande est définitive : nos produits personnalisés ne bénéficient pas du droit de rétractation de 14 jours (art. VI.53, 3° du Code de droit économique).</div></details>
+
+    <details class="faq-item"><summary>J'ai un gros volume à commander, une remise est possible ?</summary>
+      <div class="a">Pas de remise ad-hoc au cas par cas, mais pour un vrai gros volume ou un format qui sort de l'ordinaire, nous établissons un devis personnalisé sous 24 h ouvrables.</div></details>
+  </section>
+
+  <section class="faq-cat" id="cat-livraison">
+    <h2>Livraison &amp; délais</h2>
+
+    <details class="faq-item"><summary>Quels sont les délais de production ?</summary>
+      <div class="a">En jours ouvrables : cartes de visite, flyers et affiches, roll-up — 5 jours ; stickers et banderoles — 6 jours ; papeterie — 6 à 7 jours ; création de design — proposition sous 48 h puis impression. Les finitions ajoutent un peu (pelliculage +1, soft-touch +2, vernis +2, dorure +3). L'option Express retire 2 jours. La date exacte s'affiche dans le configurateur, week-ends et jours fériés belges déduits.</div></details>
+
+    <details class="faq-item"><summary>Où livrez-vous ?</summary>
+      <div class="a">Belgique (5,95 €, offerte dès 49 €), Pays-Bas et Luxembourg (7,95 €, offerte dès 75 €, +1 jour). Vous pouvez aussi faire livrer à une autre adresse que votre adresse de facturation.</div></details>
+
+    <details class="faq-item"><summary>Livrez-vous en France ou ailleurs ?</summary>
+      <div class="a">Pas pour l'instant. Écrivez-nous : nous étudions chaque demande hors Benelux et pouvons établir un devis avec les frais de port adaptés.</div></details>
+
+    <details class="faq-item"><summary>L'option Express, comment ça marche ?</summary>
+      <div class="a">Elle retire 2 jours ouvrables sur la plupart des produits et se coche dans le configurateur, avec un léger supplément affiché immédiatement. Pour une vraie urgence, appelez-nous : selon la charge de l'atelier, on arrive parfois à faire encore mieux.</div></details>
+  </section>
+
+  <section class="faq-cat" id="cat-fichiers">
+    <h2>Fichiers &amp; impression</h2>
+
+    <details class="faq-item"><summary>Quel format de fichier dois-je envoyer ?</summary>
+      <div class="a">PDF de préférence (JPG et PNG acceptés), 300 dpi minimum, mode CMJN, 3 mm de fonds perdus sur chaque bord, textes à 5 mm des coupes, 8 Mo maximum. À l'upload, la résolution et les proportions sont vérifiées automatiquement.</div></details>
+
+    <details class="faq-item"><summary>Je n'ai pas de logiciel de graphisme, je peux quand même commander ?</summary>
+      <div class="a">Oui : Canva, Word ou PowerPoint conviennent très bien, du moment que vous exportez en PDF à la fin. Si vous utilisez une police un peu spéciale, pensez à l'incorporer au PDF (ou à passer le texte en courbes) pour qu'elle ne soit pas remplacée à l'impression.</div></details>
+
+    <details class="faq-item"><summary>Puis-je repositionner mon visuel sur le produit ?</summary>
+      <div class="a">Oui, directement sur l'aperçu 3D : vous pouvez déplacer et zoomer votre image pour ajuster le cadrage avant de valider. Une case à cocher vous demande ensuite de confirmer votre fichier — une fois validé, il est imprimé tel quel.</div></details>
+
+    <details class="faq-item"><summary>Pourquoi mes couleurs sont différentes de mon écran ?</summary>
+      <div class="a">Votre écran affiche en RGB (lumière), très saturé, alors que l'impression utilise l'encre en CMJN — certains tons très vifs (bleus électriques, verts fluo) ne sont physiquement pas reproductibles à l'identique sur papier. Exportez votre fichier en mode CMJN avant l'envoi pour limiter l'écart.</div></details>
+
+    <details class="faq-item"><summary>Mon fichier dépasse 8 Mo, que faire ?</summary>
+      <div class="a">Réduisez la résolution à 300 dpi ou compressez le PDF (export « qualité web/impression standard »), ou écrivez-nous et on trouve une solution.</div></details>
+  </section>
+
+  <section class="faq-cat" id="cat-compte">
+    <h2>Mon compte</h2>
+
+    <details class="faq-item"><summary>Comment créer un compte ?</summary>
+      <div class="a">E-mail et mot de passe, rien de plus. Un e-mail de confirmation est à valider avant la première connexion. Le mot de passe demande 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.</div></details>
+
+    <details class="faq-item"><summary>J'ai oublié mon mot de passe</summary>
+      <div class="a">Un lien de réinitialisation vous est envoyé par e-mail depuis l'écran de connexion de votre espace client.</div></details>
+
+    <details class="faq-item"><summary>Comment suivre ma commande ?</summary>
+      <div class="a">Donnez sa référence (type PX-123456, présente dans votre e-mail de confirmation) à Pixie, notre assistante, ou consultez directement votre espace client qui affiche la progression étape par étape.</div></details>
+  </section>
+
+  <section class="faq-cat" id="cat-reclamation">
+    <h2>Réclamations</h2>
+
+    <details class="faq-item"><summary>Mon produit arrive avec un défaut, que faire ?</summary>
+      <div class="a">Écrivez-nous à projets@pxlstudio.be dans les 7 jours calendrier suivant la réception, photos à l'appui. En cas de défaut avéré imputable à Pixel Studio, nous réimprimons ou remboursons, sans discussion.</div></details>
+
+    <details class="faq-item"><summary>Puis-je annuler ou me rétracter ?</summary>
+      <div class="a">Nos produits étant personnalisés, le droit de rétractation de 14 jours ne s'applique pas (art. VI.53, 3° du Code de droit économique). Une commande validée et payée est définitive, sauf erreur repérée à temps avant le départ en impression (contactez-nous vite).</div></details>
+  </section>
+
+  <section class="faq-cat" id="cat-design">
+    <h2>Création graphique</h2>
+
+    <details class="faq-item"><summary>Je n'ai pas de visuel, pouvez-vous le créer ?</summary>
+      <div class="a">Oui, c'est très courant : recto seul 65 € HTVA, recto/verso 90 € HTVA. Vous décrivez votre activité et ce que vous aimez, nous envoyons une proposition sous 48 h ouvrables. Une série de retouches est comprise, et l'impression ne démarre qu'après votre validation.</div></details>
+  </section>
+
+  <section class="faq-cat" id="cat-securite">
+    <h2>Sécurité &amp; données</h2>
+
+    <details class="faq-item"><summary>Mes données sont-elles en sécurité ?</summary>
+      <div class="a">Vos données sont traitées selon le RGPD et hébergées en Europe (Irlande). Vos fichiers d'impression sont dans un espace privé, accessible à vous seul. Les paiements passent par Mollie : aucune donnée bancaire ne transite par notre site. Détails complets dans notre <a href="politique-de-confidentialite.html">politique de confidentialité</a>.</div></details>
+  </section>
+
+  <div class="faq-cta">
+    <p>Vous n'avez pas trouvé votre réponse ?</p>
+    <a href="contact.html">Nous contacter</a>
+  </div>
+</main>
+
+<footer>
+  <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
+  <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
+  <p><a href="politique-de-confidentialite.html">Politique de confidentialité</a></p>
+</footer>
+
+<script>
+function faqFilter(q){
+  q=q.trim().toLowerCase();
+  var items=document.querySelectorAll('.faq-item');
+  var cats=document.querySelectorAll('.faq-cat');
+  var any=false;
+  items.forEach(function(it){
+    var txt=it.textContent.toLowerCase();
+    var match=!q||txt.indexOf(q)>=0;
+    it.classList.toggle('faq-hidden',!match);
+    if(match)any=true;
+    if(q&&match)it.setAttribute('open','');
+    else if(q)it.removeAttribute('open');
+  });
+  cats.forEach(function(c){
+    var visible=c.querySelectorAll('.faq-item:not(.faq-hidden)').length>0;
+    c.classList.toggle('faq-hidden',!visible);
+  });
+  document.getElementById('faqEmpty').style.display=(q&&!any)?'block':'none';
+}
+</script>
+<script src="menu.js"></script>
+<script src="pixie.js"></script>
+</body>
+</html>
