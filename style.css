@@ -774,3 +774,261 @@ footer a:hover { color: #d6a060; }
 @media (max-width: 480px) {
   .portfolio-grid { grid-template-columns: 1fr; }
 }
+
+/* =========================
+   THEME TOGGLE BUTTON
+========================= */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: rgba(255, 255, 255, .06);
+  color: #e4e1dc;
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  margin-left: 14px;
+  transition: border-color .25s, background .25s, transform .2s;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: #d6a060;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .theme-toggle { margin-left: 0; }
+}
+
+/* =========================
+   LIGHT THEME
+========================= */
+[data-theme="light"] body {
+  background-color: #f3efe6;
+  color: #241f1a;
+}
+
+[data-theme="light"] .bg-overlay {
+  background: rgba(255, 255, 255, .55);
+}
+
+[data-theme="light"] body.bg-image-light .bg-video {
+  display: none;
+}
+
+[data-theme="light"] body.bg-image-light {
+  background: url('fond-clair-shop.jpg') center center / cover fixed no-repeat, #f3efe6;
+}
+
+[data-theme="light"] body.bg-image-light .bg-overlay {
+  background: rgba(255, 255, 255, .5);
+}
+
+[data-theme="light"] .main-nav {
+  background: rgba(255, 251, 244, .88);
+  border-bottom: 1px solid rgba(0, 0, 0, .08);
+}
+
+[data-theme="light"] .menu a {
+  color: #241f1a;
+}
+
+[data-theme="light"] .menu a:hover,
+[data-theme="light"] .menu a.active {
+  color: #b5732a;
+}
+
+[data-theme="light"] .burger span {
+  background: #241f1a;
+}
+
+[data-theme="light"] .theme-toggle {
+  border-color: rgba(0, 0, 0, .15);
+  background: rgba(0, 0, 0, .04);
+  color: #241f1a;
+}
+
+[data-theme="light"] .tagline .text {
+  color: #241f1a;
+}
+
+[data-theme="light"] .page-header h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3 {
+  color: #1c1712;
+  text-shadow: none;
+}
+
+[data-theme="light"] p {
+  color: #3a352d;
+}
+
+[data-theme="light"] .btn-hero {
+  border-color: rgba(36, 31, 26, .4);
+  color: #241f1a;
+}
+
+[data-theme="light"] .btn-hero:hover {
+  border-color: #b5732a;
+  color: #b5732a;
+}
+
+[data-theme="light"] .home-intro,
+[data-theme="light"] .home-cta,
+[data-theme="light"] .service-section {
+  border-top-color: rgba(0, 0, 0, .08);
+}
+
+[data-theme="light"] .service-card,
+[data-theme="light"] .service-item,
+[data-theme="light"] .formule-card,
+[data-theme="light"] .faq-item {
+  background: rgba(0, 0, 0, .03);
+  border-color: rgba(0, 0, 0, .1);
+}
+
+[data-theme="light"] .service-card:hover {
+  background: rgba(181, 115, 42, .08);
+  border-color: rgba(181, 115, 42, .4);
+}
+
+[data-theme="light"] .formule-card.featured {
+  background: rgba(217, 119, 43, .08);
+}
+
+[data-theme="light"] .item-desc {
+  opacity: .85;
+}
+
+[data-theme="light"] .section-divider {
+  background: rgba(0, 0, 0, .08);
+}
+
+[data-theme="light"] .filter-btn {
+  border-color: rgba(0, 0, 0, .18);
+  color: #241f1a;
+}
+
+[data-theme="light"] .filter-btn:hover,
+[data-theme="light"] .filter-btn.active {
+  background: #b5732a;
+  border-color: #b5732a;
+  color: #fff;
+}
+
+[data-theme="light"] .response-note {
+  color: rgba(36, 31, 26, .65);
+}
+
+[data-theme="light"] .form-group label {
+  color: rgba(36, 31, 26, .75);
+}
+
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background: rgba(0, 0, 0, .03);
+  border-color: rgba(0, 0, 0, .15);
+  color: #241f1a;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: rgba(36, 31, 26, .4);
+}
+
+[data-theme="light"] select option {
+  background: #fff;
+  color: #241f1a;
+}
+
+[data-theme="light"] .modal-content {
+  background: #fbf8f2;
+  border-color: rgba(181, 115, 42, .35);
+  color: #241f1a;
+}
+
+[data-theme="light"] footer {
+  border-top-color: rgba(0, 0, 0, .08);
+  color: rgba(36, 31, 26, .6);
+}
+
+[data-theme="light"] footer a {
+  color: rgba(36, 31, 26, .6);
+}
+
+[data-theme="light"] footer a:hover {
+  color: #b5732a;
+}
+
+/* Pages with an inline <style> knowledge block (aide.html / politique-de-confidentialite.html) */
+[data-theme="light"] .faq-wrap,
+[data-theme="light"] .legal-wrap {
+  color: #241f1a;
+}
+
+[data-theme="light"] .faq-wrap h1,
+[data-theme="light"] .legal-wrap h1 {
+  color: #1c1712;
+}
+
+[data-theme="light"] .faq-wrap .maj,
+[data-theme="light"] .legal-wrap .maj {
+  color: rgba(36, 31, 26, .55);
+}
+
+[data-theme="light"] .faq-search {
+  background: rgba(0, 0, 0, .03);
+  border-color: rgba(0, 0, 0, .15);
+  color: #241f1a;
+}
+
+[data-theme="light"] .faq-jump a {
+  background: rgba(217, 119, 43, .08);
+  border-color: rgba(181, 115, 42, .35);
+  color: #b5732a;
+}
+
+[data-theme="light"] .faq-cat h2,
+[data-theme="light"] .legal-wrap h2 {
+  color: #b5732a;
+}
+
+[data-theme="light"] .faq-item[open] {
+  border-color: rgba(181, 115, 42, .4);
+}
+
+[data-theme="light"] .faq-item summary {
+  color: #1c1712;
+}
+
+[data-theme="light"] .faq-item .a {
+  color: rgba(36, 31, 26, .78);
+}
+
+[data-theme="light"] .faq-item .a b {
+  color: #1c1712;
+}
+
+[data-theme="light"] .faq-empty {
+  color: rgba(36, 31, 26, .5);
+}
+
+[data-theme="light"] .faq-cta {
+  background: rgba(217, 119, 43, .06);
+  border-color: rgba(181, 115, 42, .3);
+}
+
+[data-theme="light"] .faq-cta p {
+  color: rgba(36, 31, 26, .78);
+}
+
+[data-theme="light"] .legal-wrap p,
+[data-theme="light"] .legal-wrap li {
+  color: rgba(36, 31, 26, .78);
+}

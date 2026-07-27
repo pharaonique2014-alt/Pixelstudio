@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Politique de confidentialité | Pixel Studio</title>
@@ -20,7 +21,7 @@
 .legal-wrap a{color:#d6a060}
 </style>
 </head>
-<body>
+<body class="bg-image-light">
 <video class="bg-video" autoplay muted loop playsinline>
   <source src="fond-v2.mp4" type="video/mp4">
 </video>
@@ -36,6 +37,7 @@
     <li><a href="aide.html">Aide</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
+  <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
 </nav>
 
 <main class="legal-wrap">
@@ -89,8 +91,24 @@
   <h2>8. Réclamation</h2>
   <p>Vous pouvez introduire une réclamation auprès de l'Autorité de protection des données
   belge (<a href="https://www.autoriteprotectiondonnees.be" target="_blank" rel="noopener">autoriteprotectiondonnees.be</a>).</p>
+
+  <h2>9. Cookies</h2>
+  <p>Notre site utilise Google Tag Manager pour mesurer la fréquentation et améliorer nos services.
+  Ces cookies de mesure d'audience ne sont déposés qu'après votre consentement, recueilli via la
+  bannière affichée lors de votre première visite. Vous pouvez à tout moment accepter, refuser ou
+  modifier votre choix via le lien « Gérer les cookies » présent en bas de chaque page.</p>
+  <p>Nous utilisons également le stockage local de votre navigateur (localStorage), qui n'est pas un
+  cookie, pour mémoriser votre préférence d'affichage (mode clair / sombre) et le contenu de votre
+  panier. Ce stockage est strictement fonctionnel et ne nécessite pas de consentement.</p>
 </main>
 
+<footer>
+  <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative — Belgique</p>
+  <p><a href="aide.html">Aide &amp; FAQ</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
+</footer>
+
 <script src="menu.js"></script>
+<script src="theme.js"></script>
+<script src="cookie-consent.js"></script>
 </body>
 </html>

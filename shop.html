@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+<script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<!-- Google Tag Manager (loaded only after cookie consent, see cookie-consent.js) -->
+<script>
+window.__loadGTM = function(){
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WMJ9VSPC');</script>
+})(window,document,'script','dataLayer','GTM-WMJ9VSPC');
+};
+</script>
 <!-- End Google Tag Manager -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,6 +48,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   --muted:rgba(228,225,220,.6); --gold:#d9772b; --gold2:#d6a060;
   --ok:#5fe0a0; --err:#ff6b81; --radius:14px;
 }
+:root[data-theme="light"]{
+  --bg:#f3efe6; --panel:rgba(0,0,0,.03); --panel2:rgba(0,0,0,.05);
+  --line:rgba(0,0,0,.12); --txt:#241f1a; --txt2:#1c1712;
+  --muted:rgba(36,31,26,.62); --gold:#c46a24; --gold2:#b5732a;
+  --ok:#1f9d63; --err:#d1435a;
+}
+[data-theme="light"] .pxbg{
+  background:radial-gradient(ellipse at 30% 10%,rgba(255,255,255,.15),rgba(243,239,230,.35) 70%),url('fond-clair-shop.jpg') center center/cover no-repeat;
+  background-color:#f3efe6;
+}
+[data-theme="light"] .bg-overlay{background:rgba(255,255,255,.35)}
+[data-theme="light"] nav.main{background:#faf6ee}
+[data-theme="light"] .cats{background:#faf6ee}
+[data-theme="light"] .pcard .art{background:linear-gradient(150deg,#efe9dc,#e2dac9)}
+[data-theme="light"] .opt-tooltip{background:#fbf8f2;color:var(--txt)}
+[data-theme="light"] .pos-box{background:#efe9dc}
+[data-theme="light"] .stage{background:radial-gradient(circle at 50% 28%,#efe4cf,#f3efe6 74%)}
+[data-theme="light"] #navMenu,
+[data-theme="light"] #accMenu,
+[data-theme="light"] #drawer{background:#faf6ee}
+[data-theme="light"] .toast{background:#fbf8f2;color:var(--txt)}
+[data-theme="light"] #toTop{background:#fbf8f2}
+[data-theme="light"] .theme-toggle{border-color:rgba(0,0,0,.15);background:rgba(0,0,0,.04);color:var(--txt)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:auto;overflow-x:hidden;width:100%}
 body{background:var(--bg);color:var(--txt);font-family:'Montserrat',sans-serif;line-height:1.65;min-height:100vh;overflow-x:hidden;width:100%;max-width:100vw;position:relative;overflow-wrap:anywhere}
@@ -72,6 +100,8 @@ nav.main{position:sticky;top:0;z-index:60;background:#0d0b09;border-bottom:1px s
 .cartbtn{position:relative;background:transparent;border:1px solid var(--line);color:var(--txt);border-radius:22px;padding:8px 15px;font-size:12px;font-weight:600}
 .cartbtn .badge{position:absolute;top:-8px;right:-8px;background:var(--gold);color:#111;font-weight:700;border-radius:50%;min-width:19px;height:19px;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 4px}
 .accbtn{background:var(--gold);border:1px solid var(--gold);color:#111;font-weight:700;border-radius:22px;padding:9px 16px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;transition:.2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--txt);font-size:15px;flex-shrink:0;transition:.2s}
+.theme-toggle:hover{border-color:var(--gold2)}
 
 .hero{position:relative;text-align:center;padding:70px 20px 46px;border-bottom:1px solid var(--line);overflow:hidden}
 .hero .logo-x{height:64px;margin-bottom:22px}
@@ -441,6 +471,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </button>
       <button class="cartbtn" onclick="openCart()">&#128722; <span class="badge" id="cartBadge">0</span></button>
       <button class="accbtn" id="accBtn" onclick="go('account')">Se connecter</button>
+      <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
     </div>
   </div>
 </nav>
@@ -793,7 +824,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <footer>
   <img src="x-pixel.png" alt="" onerror="this.style.display='none'"><br>
   © Pixel Studio 2026 — Pixel Print · <a href="index.html">pxlstudio.be</a> · BCE : BE 1032.720.495<br>
-  <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a> · <a href="aide.html">Aide &amp; FAQ</a> · <a href="#" onclick="go('cgv');return false">Conditions générales de vente</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a>
+  <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a> · <a href="aide.html">Aide &amp; FAQ</a> · <a href="#" onclick="go('cgv');return false">Conditions générales de vente</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a>
 </footer>
 <div id="drawerBack" onclick="closeAll()"></div>
 <nav id="navMenu" aria-label="Catalogue">
@@ -850,6 +881,8 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shop-app.min.js"></script>
 <script src="shop-suivi.js"></script>
+<script src="theme.js"></script>
+<script src="cookie-consent.js"></script>
 <script src="pixie.js"></script>
 </body>
 </html>

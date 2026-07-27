@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+<script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<!-- Google Tag Manager (loaded only after cookie consent, see cookie-consent.js) -->
+<script>
+window.__loadGTM = function(){
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WMJ9VSPC');</script>
+})(window,document,'script','dataLayer','GTM-WMJ9VSPC');
+};
+</script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <title>Pixel Studio – Agence Marketing Digital & Créative</title>
@@ -279,8 +284,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
   <video class="bg-video" autoplay muted loop playsinline>
-    <source src="fond-v2.mp4" type="video/mp4">
+    <source id="bgVideoSource" type="video/mp4">
   </video>
+  <script>document.getElementById('bgVideoSource').src=(document.documentElement.getAttribute('data-theme')==='light')?'fond-clair.mp4':'fond-v2.mp4';document.querySelector('.bg-video').load();</script>
   <div class="bg-overlay"></div>
 
   <nav class="main-nav">
@@ -294,6 +300,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <li><a href="aide.html">Aide</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
+    <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
   </nav>
 
   <!-- HERO -->
@@ -528,12 +535,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <footer>
     <p>© Pixel Studio 2026 — Agence Marketing Digital & Créative —  Belgique</p>
     <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
-    <p><a href="aide.html">Aide &amp; FAQ</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a></p>
+    <p><a href="aide.html">Aide &amp; FAQ</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
   </footer>
 
   <script src="logo-morph.js"></script>
   <script src="scroll-slider.js"></script>
   <script src="menu.js"></script>
+  <script src="theme.js"></script>
+  <script src="cookie-consent.js"></script>
   <script src="pixie.js"></script>
 
 </body>

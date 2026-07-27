@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aide &amp; FAQ | Pixel Studio</title>
@@ -36,7 +37,7 @@
 .faq-cta a{display:inline-block;background:#d9772b;color:#111;font-weight:700;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:12px 26px;border-radius:24px}
 </style>
 </head>
-<body>
+<body class="bg-image-light">
 <video class="bg-video" autoplay muted loop playsinline>
   <source src="fond-v2.mp4" type="video/mp4">
 </video>
@@ -52,6 +53,7 @@
     <li><a href="aide.html">Aide</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
+  <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
 </nav>
 
 <main class="faq-wrap">
@@ -178,7 +180,7 @@
 <footer>
   <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
   <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
-  <p><a href="politique-de-confidentialite.html">Politique de confidentialité</a></p>
+  <p><a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
 </footer>
 
 <script>
@@ -203,6 +205,8 @@ function faqFilter(q){
 }
 </script>
 <script src="menu.js"></script>
+<script src="theme.js"></script>
+<script src="cookie-consent.js"></script>
 <script src="pixie.js"></script>
 </body>
 </html>
