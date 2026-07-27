@@ -726,6 +726,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     <input class="inp" id="authPass" type="password" placeholder="Mot de passe" autocomplete="current-password" oninput="checkPass()" onkeydown="if(event.key==='Enter')doAuth()">
     <div id="passHint" style="font-size:12.5px;margin:-6px 0 12px"></div>
     <div id="passRules" style="display:none;font-size:12px;color:var(--muted);margin:-4px 0 12px">8 caractères minimum, avec majuscule, minuscule, chiffre et caractère spécial.</div>
+    <input class="inp" id="authPass2" type="password" placeholder="Confirmez le mot de passe" autocomplete="new-password" style="display:none" onkeydown="if(event.key==='Enter')doAuth()">
     <button class="btn-main" style="width:100%" id="authAction" onclick="doAuth()">Se connecter</button>
     <div class="switch" id="authForgot"><a href="#" onclick="forgotPassword();return false">Mot de passe oublié ?</a></div>
     <div class="switch" id="authSwitch">Pas encore de compte ? <a href="#" onclick="toggleAuth();return false">Créer un compte</a></div>
@@ -883,6 +884,38 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <script src="shop-suivi.js"></script>
 <script src="theme.js"></script>
 <script src="cookie-consent.js"></script>
+<script>
+(function(){
+  var regFields = document.getElementById('regFields');
+  var pass2 = document.getElementById('authPass2');
+  if (!regFields || !pass2) return;
+
+  function isSignup(){ return getComputedStyle(regFields).display !== 'none'; }
+  function syncVisibility(){
+    var signup = isSignup();
+    pass2.style.display = signup ? 'block' : 'none';
+    if (!signup) pass2.value = '';
+  }
+  syncVisibility();
+  new MutationObserver(syncVisibility).observe(regFields, { attributes: true, attributeFilter: ['style', 'class'] });
+
+  var originalDoAuth = window.doAuth;
+  if (typeof originalDoAuth === 'function') {
+    window.doAuth = function(){
+      if (isSignup()) {
+        var p1 = document.getElementById('authPass').value;
+        var p2 = pass2.value;
+        if (!p2 || p1 !== p2) {
+          var msg = document.getElementById('authMsg');
+          if (msg) { msg.textContent = 'Les mots de passe ne correspondent pas.'; msg.className = 'msg err'; }
+          return;
+        }
+      }
+      return originalDoAuth.apply(this, arguments);
+    };
+  }
+})();
+</script>
 <script src="pixie.js"></script>
 </body>
 </html>
