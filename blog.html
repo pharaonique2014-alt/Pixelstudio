@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <title>Blog – Conseils impression | Pixel Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conseils pratiques sur l'impression : préparer son fichier, choisir son papier, comprendre les couleurs CMJN, créer son design. Par Pixel Studio, Belgique.">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source id="bgVideoSource" type="video/mp4">
+  </video>
+  <script>document.getElementById('bgVideoSource').src=(document.documentElement.getAttribute('data-theme')==='light')?'fond-clair.mp4':'fond-v2.mp4';document.querySelector('.bg-video').load();</script>
+  <div class="bg-overlay"></div>
+
+  <nav class="main-nav">
+    <div class="burger" id="burger">
+      <span></span><span></span><span></span>
+    </div>
+    <ul class="menu" id="menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="aide.html">Aide</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
+  </nav>
+
+  <div class="page-header reveal">
+    <div class="container">
+      <h1>Le blog Pixel Print</h1>
+      <div class="tagline">
+        <span class="line"></span>
+        <span class="text">Conseils pratiques pour réussir vos impressions</span>
+        <span class="line"></span>
+      </div>
+    </div>
+  </div>
+
+  <section class="home-services">
+    <div class="container">
+      <div class="blog-grid">
+
+        <a class="blog-card" href="blog-preparer-fichier-impression.html">
+          <img src="https://images.pexels.com/photos/6620992/pexels-photo-6620992.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Presse d'impression, encrage d'un rouleau" loading="lazy" onerror="this.style.display='none'">
+          <div class="bc-body">
+            <span class="bc-cat">Fichiers & impression</span>
+            <h3>Comment bien préparer son fichier pour l'impression</h3>
+            <p>Fonds perdus, résolution, CMJN : les 5 points à vérifier avant d'envoyer votre fichier, pour éviter les mauvaises surprises.</p>
+            <div class="bc-meta">6 min de lecture</div>
+          </div>
+        </a>
+
+        <a class="blog-card" href="blog-rgb-cmjn.html">
+          <img src="https://images.pexels.com/photos/1573825/pexels-photo-1573825.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Nuancier de couleurs" loading="lazy" onerror="this.style.display='none'">
+          <div class="bc-body">
+            <span class="bc-cat">Fichiers & impression</span>
+            <h3>RGB vs CMJN : pourquoi vos couleurs changent à l'impression</h3>
+            <p>Votre écran et votre imprimante ne parlent pas le même langage de couleur. On vous explique pourquoi, simplement.</p>
+            <div class="bc-meta">5 min de lecture</div>
+          </div>
+        </a>
+
+        <a class="blog-card" href="blog-choisir-papier.html">
+          <img src="https://images.pexels.com/photos/269843/pexels-photo-269843.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Cartes de visite empilées" loading="lazy" onerror="this.style.display='none'">
+          <div class="bc-body">
+            <span class="bc-cat">Produits</span>
+            <h3>Quel papier choisir pour vos cartes de visite ?</h3>
+            <p>Mat, brillant, recyclé, kraft, extra-épais... Ce que chaque support dit de votre image, et pour qui il est fait.</p>
+            <div class="bc-meta">7 min de lecture</div>
+          </div>
+        </a>
+
+        <a class="blog-card" href="blog-creer-design.html">
+          <img src="https://images.pexels.com/photos/13451104/pexels-photo-13451104.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Graphiste travaillant sur un ordinateur" loading="lazy" onerror="this.style.display='none'">
+          <div class="bc-body">
+            <span class="bc-cat">Création graphique</span>
+            <h3>Créer son design soi-même ou faire appel à un professionnel ?</h3>
+            <p>Les vrais critères pour trancher : budget, délai, image de marque — sans discours commercial.</p>
+            <div class="bc-meta">5 min de lecture</div>
+          </div>
+        </a>
+
+        <a class="blog-card" href="blog-frequence-cartes-visite.html">
+          <img src="https://images.pexels.com/photos/4348404/pexels-photo-4348404.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Personne travaillant sur un design depuis un ordinateur portable" loading="lazy" onerror="this.style.display='none'">
+          <div class="bc-body">
+            <span class="bc-cat">Bonnes pratiques</span>
+            <h3>Cartes de visite : combien en commander et à quelle fréquence ?</h3>
+            <p>Éviter le stock qui dort ou la rupture au mauvais moment — quelques repères concrets selon votre activité.</p>
+            <div class="bc-meta">4 min de lecture</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
+    <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
+    <p><a href="aide.html">Aide &amp; FAQ</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
+  </footer>
+
+  <script src="scroll-slider.js"></script>
+  <script src="menu.js"></script>
+  <script src="theme.js"></script>
+  <script src="cookie-consent.js"></script>
+  <script src="pixie.js"></script>
+</body>
+</html>

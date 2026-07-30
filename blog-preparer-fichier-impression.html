@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <title>Comment bien préparer son fichier pour l'impression | Blog Pixel Print</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fonds perdus, résolution, CMJN : les points à vérifier avant d'envoyer votre fichier à l'impression, pour un résultat sans surprise.">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source id="bgVideoSource" type="video/mp4">
+  </video>
+  <script>document.getElementById('bgVideoSource').src=(document.documentElement.getAttribute('data-theme')==='light')?'fond-clair.mp4':'fond-v2.mp4';document.querySelector('.bg-video').load();</script>
+  <div class="bg-overlay"></div>
+
+  <nav class="main-nav">
+    <div class="burger" id="burger"><span></span><span></span><span></span></div>
+    <ul class="menu" id="menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="aide.html">Aide</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
+  </nav>
+
+  <div class="page-header reveal" style="padding-bottom:20px">
+    <div class="container"></div>
+  </div>
+
+  <main class="article-wrap">
+    <img class="article-hero-img" src="https://images.pexels.com/photos/6620992/pexels-photo-6620992.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Encrage d'un rouleau de presse d'impression" onerror="this.style.display='none'">
+    <p class="article-credit">Photo : Antoni Shkraba Studio / <a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a></p>
+
+    <div class="article-meta">Fichiers &amp; impression · 6 min de lecture</div>
+    <h1>Comment bien préparer son fichier pour l'impression</h1>
+
+    <div class="article-body">
+      <p>Un fichier mal préparé est la première cause de mauvaise surprise à la réception d'une commande : texte coupé, bande blanche sur un bord, couleurs ternes. Rien de compliqué à corriger — encore faut-il savoir quoi vérifier avant d'envoyer.</p>
+
+      <h2>1. Travaillez en 300 dpi minimum</h2>
+      <p>La résolution détermine la netteté de l'impression. En dessous de 300 dpi (points par pouce) à la taille réelle du document, le rendu apparaît flou ou pixelisé — ce qui ne se voit quasiment jamais à l'écran, mais saute aux yeux sur papier. Si votre logiciel affiche la résolution en pixels, vérifiez qu'elle correspond bien à 300 dpi une fois rapportée au format final (une carte de visite de 85 × 55 mm en 300 dpi fait environ 1004 × 650 pixels).</p>
+
+      <h2>2. Passez en mode colorimétrique CMJN</h2>
+      <p>Les écrans affichent en RGB (lumière), les presses impriment en CMJN (encre). Un fichier laissé en RGB sera converti automatiquement à l'impression, et certaines teintes très saturées — bleus électriques, verts fluo — perdent en intensité lors de cette conversion. Exporter vous-même en CMJN avant l'envoi permet de voir et d'ajuster ce changement plutôt que de le découvrir sur le produit fini.</p>
+
+      <h2>3. Prévoyez 3 mm de fonds perdus</h2>
+      <p>La découpe après impression n'est jamais parfaite au millimètre près. Si votre fond de couleur ou votre image s'arrête exactement au bord du document, un léger décalage de coupe laisse apparaître un fin liseré blanc. La solution : prolonger vos fonds et visuels de 3 mm au-delà du format final sur chaque bord — cette marge, invisible sur le produit fini, absorbe l'imprécision de la découpe.</p>
+
+      <h2>4. Gardez le texte à distance des bords</h2>
+      <p>À l'inverse des fonds perdus, le texte doit rester éloigné des bords de coupe — 5 mm minimum est une bonne règle. Un texte trop proche du bord risque d'être rogné si la découpe dévie légèrement dans l'autre sens.</p>
+
+      <h2>5. Vérifiez les polices et le poids du fichier</h2>
+      <p>Si vous utilisez une police un peu spécifique, incorporez-la dans le PDF (ou convertissez le texte en courbes/tracés) — sinon elle risque d'être remplacée par une police par défaut à l'impression, changeant complètement la mise en page. Enfin, gardez un œil sur le poids du fichier : au-delà de 8 Mo, il est souvent préférable de réexporter en « qualité impression standard » plutôt qu'en qualité maximale, sans perte visible à l'usage.</p>
+
+      <h2>En résumé</h2>
+      <ul>
+        <li>300 dpi minimum, à la taille réelle du document</li>
+        <li>Mode colorimétrique CMJN, pas RGB</li>
+        <li>3 mm de fonds perdus sur chaque bord</li>
+        <li>Texte à 5 mm minimum des bords de coupe</li>
+        <li>Polices incorporées ou converties en courbes</li>
+        <li>PDF, JPG ou PNG, 8 Mo maximum</li>
+      </ul>
+
+      <p>Pas envie de vous plonger dans les réglages ? Notre <a href="shop.html">configurateur en ligne</a> vérifie automatiquement la résolution et les proportions à l'upload, et notre équipe peut aussi <a href="index.html#catalogue">créer votre design sur mesure</a> si vous préférez repartir d'une page blanche.</p>
+    </div>
+
+    <div class="article-cta">
+      <p>Prêt à passer commande ? Notre configurateur vous guide à chaque étape.</p>
+      <a href="shop.html" class="btn-gold">Découvrir le shop</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
+    <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
+    <p><a href="blog.html">← Retour au blog</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
+  </footer>
+
+  <script src="menu.js"></script>
+  <script src="theme.js"></script>
+  <script src="cookie-consent.js"></script>
+  <script src="pixie.js"></script>
+</body>
+</html>

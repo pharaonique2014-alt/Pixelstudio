@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <title>RGB vs CMJN : pourquoi vos couleurs changent à l'impression | Blog Pixel Print</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pourquoi les couleurs de votre écran ne sont jamais exactement celles du papier imprimé — explication simple du RGB, du CMJN, et comment limiter l'écart.">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source id="bgVideoSource" type="video/mp4">
+  </video>
+  <script>document.getElementById('bgVideoSource').src=(document.documentElement.getAttribute('data-theme')==='light')?'fond-clair.mp4':'fond-v2.mp4';document.querySelector('.bg-video').load();</script>
+  <div class="bg-overlay"></div>
+
+  <nav class="main-nav">
+    <div class="burger" id="burger"><span></span><span></span><span></span></div>
+    <ul class="menu" id="menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="aide.html">Aide</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
+  </nav>
+
+  <div class="page-header reveal" style="padding-bottom:20px">
+    <div class="container"></div>
+  </div>
+
+  <main class="article-wrap">
+    <img class="article-hero-img" src="https://images.pexels.com/photos/1573825/pexels-photo-1573825.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Nuancier de couleurs tenu à la main" onerror="this.style.display='none'">
+    <p class="article-credit">Photo : Pexels</p>
+
+    <div class="article-meta">Fichiers &amp; impression · 5 min de lecture</div>
+    <h1>RGB vs CMJN : pourquoi vos couleurs changent à l'impression</h1>
+
+    <div class="article-body">
+      <p>C'est l'une des questions qui revient le plus souvent : « pourquoi mes couleurs ne sont plus aussi vives sur le produit imprimé que sur mon écran ? ». La réponse tient en deux mots — RGB et CMJN — deux façons complètement différentes de fabriquer une couleur.</p>
+
+      <h2>RGB : la couleur par la lumière</h2>
+      <p>Un écran (téléphone, ordinateur) affiche les couleurs en mélangeant de la <strong>lumière</strong> rouge, verte et bleue (Red, Green, Blue). En combinant ces trois lumières à pleine intensité, on obtient du blanc. C'est un système additif : plus on ajoute de lumière, plus c'est clair. Ce procédé permet une gamme de couleurs très large, avec des teintes très saturées et lumineuses — normal, c'est de la lumière pure.</p>
+
+      <h2>CMJN : la couleur par l'encre</h2>
+      <p>Une presse d'impression, elle, dépose de l'<strong>encre</strong> — cyan, magenta, jaune et noir (CMJN, ou Key pour le noir) — sur une feuille blanche. C'est un système soustractif : chaque couche d'encre absorbe une partie de la lumière plutôt que d'en émettre. Le blanc, ici, n'est pas fabriqué : c'est simplement le papier laissé vierge. Cette technique couvre une gamme de couleurs plus restreinte que le RGB, en particulier sur les bleus très électriques, les verts fluo et certains oranges très vifs — des teintes que l'encre ne peut physiquement pas reproduire à l'identique.</p>
+
+      <h2>Ce que ça change concrètement pour vous</h2>
+      <p>Un fichier créé et visualisé en RGB peut contenir des couleurs qui n'existent tout simplement pas en CMJN. Au moment de l'impression, ces couleurs sont automatiquement ramenées dans la gamme reproductible — le résultat est généralement une teinte plus proche, mais légèrement moins éclatante que ce qui s'affichait à l'écran.</p>
+
+      <h2>Comment limiter l'écart</h2>
+      <ul>
+        <li><strong>Travaillez directement en CMJN</strong> dans votre logiciel de création si possible, plutôt que de laisser la conversion se faire au dernier moment.</li>
+        <li><strong>Évitez les couleurs trop saturées</strong> pour les aplats larges (fonds, logos) — préférez des teintes légèrement moins vives, le rendu papier sera plus fidèle à ce que vous avez prévu.</li>
+        <li><strong>Ne vous fiez pas à un seul écran</strong> : deux écrans non calibrés peuvent déjà afficher la même couleur différemment, avant même de parler d'impression.</li>
+        <li><strong>Demandez un aperçu</strong> si la fidélité exacte de la couleur est critique pour votre marque (logo avec une teinte de charte précise, par exemple).</li>
+      </ul>
+
+      <p>Ce n'est pas un défaut de l'impression : c'est simplement deux technologies différentes, avec chacune ses forces. Comprendre cette différence permet d'anticiper plutôt que de découvrir l'écart à la réception du colis.</p>
+    </div>
+
+    <div class="article-cta">
+      <p>Une question sur un visuel précis avant de commander ? Notre équipe peut vous conseiller.</p>
+      <a href="contact.html" class="btn-gold">Nous contacter</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
+    <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
+    <p><a href="blog.html">← Retour au blog</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
+  </footer>
+
+  <script src="menu.js"></script>
+  <script src="theme.js"></script>
+  <script src="cookie-consent.js"></script>
+  <script src="pixie.js"></script>
+</body>
+</html>
