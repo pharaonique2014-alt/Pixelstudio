@@ -1063,6 +1063,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
         }).then(function (r) { return r.json(); }).then(function (data) {
           if (data && data.valid) {
             promoInput.dataset.applied = code;
+            promoInput.dataset.appliedPercent = data.percent;
             if (typeof data.discount === 'number') {
               setPromoMsg('✓ Code ' + data.code + ' appliqué : -' + String(data.discount).replace('.', ',') + ' € — recalculé au moment du paiement.', true);
             } else {
@@ -1082,9 +1083,57 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
   }
 
   var isPayCall = function (url) { return /\/functions\/v1\/mollie3(\?|$)/.test(url); };
+  // Le virement (SEPA) ne passe pas par mollie3 : le client insère directement sa
+  // commande dans `orders` (autorisé par la policy RLS "client cree ses commandes",
+  // qui ne vérifie que auth.uid()=user_id, pas le contenu). Le calcul du -10% vit
+  // uniquement côté serveur (action:"promo"), donc cette commande-là ne le recevait
+  // jamais. On revalide le code ici (même vérification serveur que le bouton
+  // Appliquer) puis on ajuste sous-total/TVA/total avant l'insertion, pour que la
+  // réduction soit bien celle appliquée à la commande ET reprise sur la facture.
+  var isOrdersInsert = function (url) { return /\/rest\/v1\/orders(\?|$)/.test(url); };
+
+  function applyPromoToOrderInsert(input, init, code) {
+    var client = getClient();
+    if (!client) return originalFetch.call(window, input, init);
+    return client.auth.getSession().then(function (res) {
+      var session = res && res.data && res.data.session;
+      if (!session) return originalFetch.call(window, input, init);
+      return fetch(MOLLIE3_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: PUBLISHABLE_KEY, Authorization: 'Bearer ' + session.access_token },
+        body: JSON.stringify({ action: 'promo', code: code }),
+      }).then(function (r) { return r.json(); }).then(function (promoData) {
+        if (!promoData || !promoData.valid) {
+          if (promoData && promoData.error) { promoMsg.textContent = promoData.error; promoMsg.style.color = 'var(--err)'; }
+          return originalFetch.call(window, input, init);
+        }
+        var body;
+        try { body = JSON.parse(init.body); } catch (e) { return originalFetch.call(window, input, init); }
+        var d = body && body.data;
+        if (!d || typeof d.subtotal !== 'number' || typeof d.shipping !== 'number' || typeof d.vatRate !== 'number') {
+          return originalFetch.call(window, input, init);
+        }
+        var discount = Math.round(d.subtotal * (promoData.percent / 100) * 100) / 100;
+        var pretax = Math.round((d.subtotal - discount + d.shipping) * 100) / 100;
+        var vat = Math.round(pretax * d.vatRate * 100) / 100;
+        d.promo = { code: promoData.code, percent: promoData.percent, discount: discount };
+        d.vat = vat;
+        d.total = Math.round((pretax + vat) * 100) / 100;
+        var newInit = Object.assign({}, init, { body: JSON.stringify(body) });
+        promoMsg.textContent = '✓ Code ' + promoData.code + ' appliqué : -' + String(discount).replace('.', ',') + ' € sur cette commande.';
+        promoMsg.style.color = 'var(--ok)';
+        return originalFetch.call(window, input, newInit);
+      });
+    }).catch(function () { return originalFetch.call(window, input, init); });
+  }
+
   var originalFetch = window.fetch;
   window.fetch = function (input, init) {
     var url = typeof input === 'string' ? input : (input && input.url) || '';
+    if (isOrdersInsert(url) && init && init.method === 'POST' && typeof init.body === 'string') {
+      var ordersCode = promoInput.value.trim();
+      if (ordersCode) return applyPromoToOrderInsert(input, init, ordersCode);
+    }
     if (isPayCall(url) && init && init.method === 'POST' && typeof init.body === 'string') {
       try {
         var body = JSON.parse(init.body);
