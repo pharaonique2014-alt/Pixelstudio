@@ -436,6 +436,30 @@ footer img{height:24px;opacity:.85;margin-bottom:11px}
 .btn-gold:hover{background:transparent;color:var(--gold2);border-color:var(--gold2)}
 .cats button:hover{border-color:rgba(214,160,96,.5);color:var(--txt)}
 .pcard:hover{transform:translateY(-4px);border-color:rgba(214,160,96,.45);box-shadow:0 22px 50px -24px rgba(0,0,0,.6)}
+
+.browse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:18px}
+.browse-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 22px;cursor:pointer;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;text-align:left}
+.browse-card:hover{transform:translateY(-4px);border-color:rgba(214,160,96,.45);box-shadow:0 22px 50px -24px rgba(0,0,0,.6)}
+.browse-card .ico{font-size:26px;margin-bottom:10px;display:block}
+.browse-card h3{font-size:15px;margin:0 0 5px;color:var(--txt2)}
+.browse-card p{font-size:12.5px;color:var(--muted);margin:0}
+
+.catview-crumb{padding:100px 20px 0;max-width:1240px;margin:0 auto}
+.catview-crumb a{color:var(--gold2);font-size:13px}
+.catview-hero{max-width:1240px;margin:0 auto;padding:18px 20px 8px}
+.catview-hero h1{font-size:clamp(24px,3.4vw,34px);margin-bottom:8px}
+.catview-hero p{color:var(--muted);font-size:14px;max-width:620px}
+.catview-grid{max-width:1240px;margin:20px auto 90px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.catview-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:8px;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.catview-card:hover{transform:translateY(-4px);border-color:rgba(214,160,96,.45);box-shadow:0 22px 50px -24px rgba(0,0,0,.6)}
+.catview-card .tag{align-self:flex-start;background:rgba(217,119,43,.12);color:var(--gold2);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.catview-card h3{font-size:16px;margin:0;color:var(--txt2)}
+.catview-card .fmt{font-size:12px;color:var(--muted)}
+.catview-card .desc{font-size:12.5px;color:var(--muted);line-height:1.5;flex:1}
+.catview-card .from{font-size:13px;color:var(--txt2);font-weight:700}
+.catview-card .from b{color:var(--gold2);font-size:17px}
+.catview-card button{margin-top:4px;background:var(--gold);color:#111;border:1px solid var(--gold);border-radius:22px;padding:9px 0;font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+.catview-empty{color:var(--muted);font-size:13px;padding:30px 0}
 .pcard button:hover{background:var(--gold);border-color:var(--gold);color:#111}
 .opts button:hover{border-color:rgba(214,160,96,.5)}
 .upzone:hover,.upzone.drag{border-color:var(--gold2);color:var(--gold2)}
@@ -530,6 +554,11 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
       <div><span class="stat-logos"><span class="stat-logo"><img src="https://cdn.jsdelivr.net/gh/datatrans/payment-logos/assets/apm/bancontact.svg" alt="Bancontact"></span><span class="stat-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzIwMl8zMzMpIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl8yMDJfMzMzKSIvPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDFfMjAyXzMzMykiPgo8cGF0aCBvcGFjaXR5PSIwLjEiIGQ9Ik03MC4zMTI1IDEzNUMxMDIuOTMyIDEzNSAxMjkuMzc1IDEwOC41NTcgMTI5LjM3NSA3NS45Mzc1QzEyOS4zNzUgNDMuMzE4MiAxMDIuOTMyIDE2Ljg3NSA3MC4zMTI1IDE2Ljg3NUMzNy42OTMyIDE2Ljg3NSAxMS4yNSA0My4zMTgyIDExLjI1IDc1LjkzNzVDMTEuMjUgMTA4LjU1NyAzNy42OTMyIDEzNSA3MC4zMTI1IDEzNVoiIGZpbGw9InVybCgjcGFpbnQxX2xpbmVhcl8yMDJfMzMzKSIvPgo8cGF0aCBvcGFjaXR5PSIwLjEiIGQ9Ik0xMi4xODc1IDkwQzI5LjI3MzggOTAgNDMuMTI1IDc2LjE0ODggNDMuMTI1IDU5LjA2MjVDNDMuMTI1IDQxLjk3NjIgMjkuMjczOCAyOC4xMjUgMTIuMTg3NSAyOC4xMjVDLTQuODk4ODEgMjguMTI1IC0xOC43NSA0MS45NzYyIC0xOC43NSA1OS4wNjI1Qy0xOC43NSA3Ni4xNDg4IC00Ljg5ODgxIDkwIDEyLjE4NzUgOTBaIiBmaWxsPSJ1cmwoI3BhaW50Ml9saW5lYXJfMjAyXzMzMykiLz4KPHBhdGggb3BhY2l0eT0iMC4xIiBkPSJNNzkuNjg3NSA0Ni44NzVDMTA3LjEyOSA0Ni44NzUgMTI5LjM3NSAyNC42MjkyIDEyOS4zNzUgLTIuODEyNUMxMjkuMzc1IC0zMC4yNTQxIDEwNy4xMjkgLTUyLjUgNzkuNjg3NSAtNTIuNUM1Mi4yNDU5IC01Mi41IDMwIC0zMC4yNTQxIDMwIC0yLjgxMjVDMzAgMjQuNjI5MiA1Mi4yNDU5IDQ2Ljg3NSA3OS42ODc1IDQ2Ljg3NVoiIGZpbGw9InVybCgjcGFpbnQzX2xpbmVhcl8yMDJfMzMzKSIvPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyMF9kXzIwMl8zMzMpIj4KPHBhdGggZD0iTTE4Ljc1IDI2LjI1SDkuMzc1QzguMzM5NDcgMjYuMjUgNy41IDI3LjA4OTUgNy41IDI4LjEyNVYzMy43NUM3LjUgMzQuNzg1NSA4LjMzOTQ3IDM1LjYyNSA5LjM3NSAzNS42MjVIMTguNzVDMTkuNzg1NSAzNS42MjUgMjAuNjI1IDM0Ljc4NTUgMjAuNjI1IDMzLjc1VjI4LjEyNUMyMC42MjUgMjcuMDg5NSAxOS43ODU1IDI2LjI1IDE4Ljc1IDI2LjI1WiIgZmlsbD0iYmxhY2siLz4KPC9nPgo8cGF0aCBkPSJNMTguNzUgMjYuMjVIOS4zNzVDOC4zMzk0NyAyNi4yNSA3LjUgMjcuMDg5NSA3LjUgMjguMTI1VjMzLjc1QzcuNSAzNC43ODU1IDguMzM5NDcgMzUuNjI1IDkuMzc1IDM1LjYyNUgxOC43NUMxOS43ODU1IDM1LjYyNSAyMC42MjUgMzQuNzg1NSAyMC42MjUgMzMuNzVWMjguMTI1QzIwLjYyNSAyNy4wODk1IDE5Ljc4NTUgMjYuMjUgMTguNzUgMjYuMjVaIiBmaWxsPSJ1cmwoI3BhaW50NF9saW5lYXJfMjAyXzMzMykiLz4KPHBhdGggb3BhY2l0eT0iMC4zIiBkPSJNMTEuMjUgMjguMTI1SDkuMzc1VjMzLjc1SDExLjI1VjI4LjEyNVoiIGZpbGw9IiM3QTM4MDIiLz4KPHBhdGggb3BhY2l0eT0iMC4zIiBkPSJNMTUgMjguMTI1SDEzLjEyNVYzMy43NUgxNVYyOC4xMjVaIiBmaWxsPSIjN0EzODAyIi8+CjxwYXRoIG9wYWNpdHk9IjAuMyIgZD0iTTE4Ljc1IDI4LjEyNUgxNi44NzVWMzMuNzVIMTguNzVWMjguMTI1WiIgZmlsbD0iIzdBMzgwMiIvPgo8cGF0aCBkPSJNMTYuODc1IDQxLjI1SDcuNVY0My4xMjVIMTYuODc1VjQxLjI1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjxwYXRoIGQ9Ik0xMy4xMjUgNDVINy41VjQ2Ljg3NUgxMy4xMjVWNDVaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjgiLz4KPHBhdGggZD0iTTIwLjYyNSA0NUgxNVY0Ni44NzVIMjAuNjI1VjQ1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjxwYXRoIGQ9Ik0yOC4xMjUgNDVIMjIuNVY0Ni44NzVIMjguMTI1VjQ1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjxwYXRoIGQ9Ik0yOC4xMjUgNDEuMjVIMTguNzVWNDMuMTI1SDI4LjEyNVY0MS4yNVoiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuOCIvPgo8cGF0aCBkPSJNMzkuMzc1IDQxLjI1SDMwVjQzLjEyNUgzOS4zNzVWNDEuMjVaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjgiLz4KPHBhdGggZD0iTTUwLjYyNSA0MS4yNUg0MS4yNVY0My4xMjVINTAuNjI1VjQxLjI1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjwvZz4KPC9nPgo8ZGVmcz4KPGZpbHRlciBpZD0iZmlsdGVyMF9kXzIwMl8zMzMiIHg9IjYuMjUiIHk9IjI2LjI1IiB3aWR0aD0iMTUuNjI1IiBoZWlnaHQ9IjExLjg3NSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVDb2xvck1hdHJpeCBpbj0iU291cmNlQWxwaGEiIHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAxMjcgMCIgcmVzdWx0PSJoYXJkQWxwaGEiLz4KPGZlT2Zmc2V0IGR5PSIxLjI1Ii8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjAuNjI1Ii8+CjxmZUNvbG9yTWF0cml4IHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwLjEgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18yMDJfMzMzIi8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iZWZmZWN0MV9kcm9wU2hhZG93XzIwMl8zMzMiIHJlc3VsdD0ic2hhcGUiLz4KPC9maWx0ZXI+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8yMDJfMzMzIiB4MT0iMCIgeTE9IjY0IiB4Mj0iNjQiIHkyPSIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwNjBCMEUiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjU0NzY0Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhcl8yMDJfMzMzIiB4MT0iNDMuODkzOCIgeTE9IjQ2Ljk2ODUiIHgyPSIzNy45MzQ0IiB5Mj0iMzAuNjM4OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0id2hpdGUiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzIwMl8zMzMiIHgxPSIxMi4xODc1IiB5MT0iOTAiIHgyPSI1LjM0NTk4IiB5Mj0iNjIuNDgzIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjAiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJ3aGl0ZSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXJfMjAyXzMzMyIgeDE9IjY4LjY5OTYiIHkxPSIyLjY4MDk1IiB4Mj0iNzkuNjg3NSIgeTI9IjQ2Ljg3NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0id2hpdGUiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDRfbGluZWFyXzIwMl8zMzMiIHgxPSIxNC4wNjI1IiB5MT0iMjYuMjUiIHgyPSIxNC4wNjI1IiB5Mj0iMzUuNjI1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNGQUQ5NjEiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRjc5NTVEIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMjAyXzMzMyI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAxXzIwMl8zMzMiPgo8cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==" alt="Carte bancaire"></span><span class="stat-logo"><img src="https://cdn.jsdelivr.net/gh/datatrans/payment-logos/assets/apm/ideal.svg" alt="iDEAL"></span><span class="stat-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwMEFDRUYiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yNi43MDE5IDM1LjIwMzlDMjguMDc4MSAzNi4wNDggMjkuNzYxMSAzNi41NTYxIDMxLjYzNjMgMzYuNTU2MUMzMy41OTE1IDM2LjU1NjEgMzUuNDcxNiAzNS42NTg3IDM2Ljg3NyAzNC4yNjhMNTIgMzIuODc3VjQwLjIzNTNIMTJWMzYuNTU2MUwyNi43MDE5IDM1LjIwMzlaTTMyLjkwOSAzMi44NzdDMjkuMzk0NSAzMi44NzcgMjYuNTQ1NCAyOS45OTQ0IDI2LjU0NTQgMjYuNDM4NUMyNi41NDU0IDIyLjg4MjYgMjkuMzk0NSAyMCAzMi45MDkgMjBDMzYuNDIzNSAyMCAzOS4yNzI2IDIyLjg4MjYgMzkuMjcyNiAyNi40Mzg1QzM5LjI3MjYgMjkuOTk0NCAzNi40MjM1IDMyLjg3NyAzMi45MDkgMzIuODc3WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==" alt="KBC/CBC"></span><span class="stat-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiNENTAwNDMiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xOCAyMi43MTgyQzE4IDIwLjExMjQgMjAuMTA0NiAxOCAyMi43MTgyIDE4SDQxLjI4MThDNDMuODg3NiAxOCA0NiAyMC4xMDQ2IDQ2IDIyLjcxODJWNDZIMjIuNzE4MkMyMC4xMTI0IDQ2IDE4IDQzLjg5NTUgMTggNDEuMjgxOFYyMi43MTgyWk0yNCAyNy43NjYxVjI4LjIzMzlDMjQgMjkuMTkwNSAyNC43OTQgMzAgMjUuNzczNCAzMEgzOC4yMjY2QzM5LjIwNjYgMzAgNDAgMjkuMjA5MyA0MCAyOC4yMzM5VjI3Ljc2NjFDNDAgMjYuODA5NSAzOS4yMDYgMjYgMzguMjI2NiAyNkgyNS43NzM0QzI0Ljc5MzQgMjYgMjQgMjYuNzkwNyAyNCAyNy43NjYxWk0yNCAzNS43NjYxVjM2LjIzMzlDMjQgMzcuMTkwNSAyNC43OTQgMzggMjUuNzczNCAzOEgzOC4yMjY2QzM5LjIwNjYgMzggNDAgMzcuMjA5MyA0MCAzNi4yMzM5VjM1Ljc2NjFDNDAgMzQuODA5NSAzOS4yMDYgMzQgMzguMjI2NiAzNEgyNS43NzM0QzI0Ljc5MzQgMzQgMjQgMzQuNzkwNyAyNCAzNS43NjYxWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==" alt="Belfius"></span><span class="stat-logo"><img src="https://cdn.jsdelivr.net/gh/datatrans/payment-logos/assets/apm/klarna.svg" alt="Klarna"></span></span><span>Paiement sécurisé</span></div>
     </div>
   </div>
+
+  <section id="browse-cats">
+    <div class="sec-title"><div class="section-label">Par catégorie</div><h2>Parcourez notre offre</h2></div>
+    <div class="browse-grid" id="browseGrid"></div>
+  </section>
 
   <section id="catalogue">
     <div class="sec-title"><div class="section-label">Notre catalogue</div><h2>Que voulez-vous imprimer ?</h2></div>
@@ -645,6 +674,15 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
       </div>
     </div>
   </section>
+</div>
+
+<div class="page" id="page-catview">
+  <div class="catview-crumb"><a href="#" onclick="closeCatView();return false">&#8592; Toutes les catégories</a></div>
+  <div class="catview-hero">
+    <h1 id="catviewTitle"></h1>
+    <p id="catviewIntro"></p>
+  </div>
+  <div class="catview-grid" id="catviewGrid"></div>
 </div>
 
 <div class="page" id="page-cart">
@@ -964,6 +1002,106 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
   new MutationObserver(update).observe(pbTotal, { childList: true, characterData: true, subtree: true });
   new MutationObserver(update).observe(pbTva, { childList: true, characterData: true, subtree: true });
   update();
+})();
+</script>
+<script>
+(function(){
+  var CATS = [
+    { id: 'carterie', name: 'Cartes de visite', icon: '&#128218;', tagline: 'Formats standard, carré, coins arrondis — sur papier ou PVC.' },
+    { id: 'pub', name: 'Flyers & affiches', icon: '&#128240;', tagline: 'Du flyer A6 à l\'affiche 70×100 cm, pour vos campagnes et événements.' },
+    { id: 'signa', name: 'Roll-up & signalétique', icon: '&#128204;', tagline: 'Roll-up, banderoles et panneaux pour salons et vitrines.' },
+    { id: 'stick', name: 'Stickers', icon: '&#127991;&#65039;', tagline: 'Ronds, carrés ou vitrophanie adhésive, à l\'unité ou en planche.' },
+    { id: 'pap', name: 'Papeterie', icon: '&#128196;', tagline: 'Papier à en-tête, enveloppes et blocs-notes personnalisés.' },
+    { id: 'part', name: 'Faire-parts & événements', icon: '&#128172;', tagline: 'Naissance, mariage, invitations et menus sur mesure.' },
+    { id: 'design', name: 'Création de design', icon: '&#127912;', tagline: 'Pas de visuel ? Notre équipe crée votre design sur mesure.' }
+  ];
+
+  var browseGrid = document.getElementById('browseGrid');
+  if (browseGrid) {
+    browseGrid.innerHTML = CATS.map(function (c) {
+      return '<div class="browse-card" data-cat="' + c.id + '"><span class="ico">' + c.icon + '</span><h3>' + c.name + '</h3><p>' + c.tagline + '</p></div>';
+    }).join('');
+    browseGrid.addEventListener('click', function (e) {
+      var card = e.target.closest('.browse-card');
+      if (!card) return;
+      var cat = CATS.find(function (c) { return c.id === card.dataset.cat; });
+      if (cat) openCatView(cat);
+    });
+  }
+
+  var sbClient = null;
+  function getClient() {
+    if (sbClient) return sbClient;
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
+    sbClient = window.supabase.createClient(
+      'https://pgqoojmmovsoalruxomj.supabase.co',
+      'sb_publishable_jcHMFzAW--xyy8VKeVNt2Q_-BRdSBO8'
+    );
+    return sbClient;
+  }
+
+  function euro(n) {
+    return n.toFixed(2).replace('.', ',') + ' €';
+  }
+
+  function minPrice(priceGrid) {
+    if (!priceGrid) return null;
+    var vals = Object.values(priceGrid).filter(function (v) { return typeof v === 'number'; });
+    if (!vals.length) return null;
+    return Math.min.apply(null, vals);
+  }
+
+  window.openCatView = function (cat) {
+    document.getElementById('catviewTitle').textContent = cat.name;
+    document.getElementById('catviewIntro').textContent = cat.tagline;
+    var grid = document.getElementById('catviewGrid');
+    grid.innerHTML = '<div class="catview-empty">Chargement…</div>';
+    document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('open'); });
+    document.getElementById('page-catview').classList.add('open');
+    window.scrollTo({ top: 0 });
+
+    var client = getClient();
+    if (!client) {
+      grid.innerHTML = '<div class="catview-empty">Catalogue momentanément indisponible — réessayez dans un instant ou <a href="#" onclick="go(\'shop\');return false" style="color:var(--gold2)">retournez à la boutique</a>.</div>';
+      return;
+    }
+
+    client.from('products').select('id,name,fmt,tag,description,price_grid,active').eq('cat', cat.id).eq('active', true)
+      .then(function (res) {
+        var rows = res.data || [];
+        if (res.error || !rows.length) {
+          grid.innerHTML = '<div class="catview-empty">Aucun produit disponible pour le moment dans cette catégorie.</div>';
+          return;
+        }
+        grid.innerHTML = rows.map(function (p) {
+          var from = minPrice(p.price_grid);
+          return '<div class="catview-card">' +
+            (p.tag ? '<span class="tag">' + p.tag + '</span>' : '') +
+            '<h3>' + p.name + '</h3>' +
+            (p.fmt ? '<span class="fmt">' + p.fmt + '</span>' : '') +
+            '<p class="desc">' + (p.description || '') + '</p>' +
+            (from !== null ? '<span class="from">à partir de <b>' + euro(from) + '</b> HTVA</span>' : '') +
+            '<button type="button" data-product="' + p.id + '">Configurer</button>' +
+            '</div>';
+        }).join('');
+      })
+      .catch(function () {
+        grid.innerHTML = '<div class="catview-empty">Catalogue momentanément indisponible.</div>';
+      });
+  };
+
+  window.closeCatView = function () {
+    document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('open'); });
+    document.getElementById('page-shop').classList.add('open');
+  };
+
+  document.getElementById('catviewGrid').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-product]');
+    if (!btn) return;
+    var id = btn.dataset.product;
+    if (window.go) go('shop');
+    setTimeout(function () { if (window.openConfig) openConfig(id); }, 50);
+  });
 })();
 </script>
 <script>
