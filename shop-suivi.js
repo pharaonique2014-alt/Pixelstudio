@@ -89,10 +89,14 @@ function stepIndex(s) {
   return 0;
 }
 
+const ICO_WARN = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>';
+const ICO_PACKAGE = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>';
+const ICO_PRINTER = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h9l3 3v3"/><path d="M6 18H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg>';
+
 function timelineHTML(o) {
   if (stepIndex(o.status) === -1) {
     return `<div class="tl-track" style="border-color:rgba(255,107,129,.4);background:rgba(255,107,129,.08)">
-      &#9888; ${esc(o.status)} — écrivez-nous à ${ORDER_EMAIL} si vous pensez qu'il s'agit d'une erreur.</div>`;
+      ${ICO_WARN} ${esc(o.status)} — écrivez-nous à ${ORDER_EMAIL} si vous pensez qu'il s'agit d'une erreur.</div>`;
   }
   const cur = stepIndex(o.status);
   const steps = STEPS.map(function (s, i) {
@@ -101,7 +105,7 @@ function timelineHTML(o) {
     return `<div class="tl-step ${cls}"><span class="tl-dot">${dot}</span><span class="tl-lbl">${s}</span></div>`;
   }).join('');
   const tr = o.tracking
-    ? `<div class="tl-track">&#128230; Numéro de suivi : <b>${esc(o.tracking)}</b></div>` : '';
+    ? `<div class="tl-track">${ICO_PACKAGE} Numéro de suivi : <b>${esc(o.tracking)}</b></div>` : '';
   return `<div class="tl">${steps}</div>${tr}`;
 }
 
@@ -120,7 +124,7 @@ window.reorder = function (ref) {
 
 function orderCard(o, isAdmin) {
   const thumbs = (o.items || []).map(function (i) {
-    return `<div class="othumb">${esc(i.ico || '🖨')}</div>`;
+    return `<div class="othumb">${i.ico ? esc(i.ico) : ICO_PRINTER}</div>`;
   }).join('');
 
   const items = (o.items || []).map(function (i) {

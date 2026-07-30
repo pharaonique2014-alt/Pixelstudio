@@ -657,7 +657,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
           <div class="freeship-text" id="freeShipText"></div>
           <div class="freeship-track"><div class="freeship-fill" id="freeShipFill"></div></div>
         </div>
-        <div class="deliv">&#128230; Livraison estimée <b id="delivDate">…</b><span id="delivDetail" style="font-size:12px"></span></div>
+        <div class="deliv"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;flex-shrink:0"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg> Livraison estimée <b id="delivDate">…</b><span id="delivDetail" style="font-size:12px"></span></div>
         <button class="addcart" id="addBtn" disabled onclick="addToCart()">Uploadez votre fichier recto</button>
         <div class="stat-logos" id="pricePayLogos" style="justify-content:center;margin-top:10px"></div>
       </div>
@@ -989,7 +989,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     bar.style.display = 'block';
     if (ttc >= threshold) {
       text.className = 'freeship-text done';
-      text.textContent = '🎉 Livraison offerte sur cette commande';
+      text.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg> Livraison offerte sur cette commande';
       fill.style.width = '100%';
     } else {
       var remaining = threshold - ttc;
