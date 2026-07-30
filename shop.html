@@ -187,6 +187,11 @@ section{margin-top:56px;scroll-margin-top:80px}
 .opt-tooltip{position:fixed;z-index:400;background:#1b1712;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:11.5px;line-height:1.5;color:var(--txt2);max-width:230px;box-shadow:0 12px 32px rgba(0,0,0,.55);display:none}
 .opt-tooltip.show{display:block}
 .checkline{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5;color:var(--muted);cursor:pointer;background:rgba(217,119,43,.06);border:1px solid rgba(214,160,96,.3);border-radius:10px;padding:11px 13px}
+.checklist-note{font-size:12px;color:var(--muted);margin-bottom:9px;padding:11px 13px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.checklist-note b{color:var(--txt2);display:block;margin-bottom:5px}
+.checklist-note ul{margin:0;padding-left:18px}
+.checklist-note li{margin-bottom:2px}
+[data-theme="light"] .checklist-note{background:rgba(0,0,0,.03)}
 .checkline input{margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--gold)}
 .checkline.warn{border-color:rgba(212,84,58,.5);background:rgba(212,84,58,.08)}
 .pos-editor{margin-top:9px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel2)}
@@ -564,9 +569,17 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
             Votre fichier n'est jamais modifié. Pas de fichier ?
             <a href="#" onclick="openConfig('design-r');return false">Nous créons votre design</a>.</div>
           <div class="field" id="fileConfirmZone" style="display:none">
+            <div class="checklist-note">
+              <b>Vérifiez avant de continuer :</b>
+              <ul>
+                <li>Le texte est correct et bien orthographié</li>
+                <li>La résolution et les couleurs sont bonnes</li>
+                <li>Le cadrage et les fonds perdus sont respectés</li>
+              </ul>
+            </div>
             <label class="checkline">
               <input type="checkbox" id="fileConfirm" onchange="refresh()">
-              <span>Je confirme avoir vérifié mon fichier (texte, orthographe, résolution, couleurs, cadrage) — il sera imprimé exactement tel quel, sans relecture de notre part.</span>
+              <span>Je confirme avoir vérifié mon fichier — il sera imprimé exactement tel quel, sans relecture de notre part.</span>
             </label>
           </div>
         </div>
