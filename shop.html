@@ -773,6 +773,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     <label style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;display:block;margin:14px 0 8px">Code promo</label>
     <div class="frow" style="align-items:flex-start">
       <input class="inp" id="promoCode" placeholder="Ex. NEW10" style="text-transform:uppercase" autocapitalize="characters">
+      <button type="button" class="btn-ghost" id="promoApply" style="flex:0 0 auto">Appliquer</button>
     </div>
     <div id="promoMsg" style="font-size:12.5px;margin:-6px 0 12px"></div>
     <div class="cgvline">
@@ -1014,7 +1015,69 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 (function(){
   var promoInput = document.getElementById('promoCode');
   var promoMsg = document.getElementById('promoMsg');
+  var promoBtn = document.getElementById('promoApply');
   if (!promoInput || !promoMsg) return;
+
+  var MOLLIE3_URL = 'https://pgqoojmmovsoalruxomj.supabase.co/functions/v1/mollie3';
+  var PUBLISHABLE_KEY = 'sb_publishable_jcHMFzAW--xyy8VKeVNt2Q_-BRdSBO8';
+  var sbClient = null;
+  function getClient() {
+    if (sbClient) return sbClient;
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
+    sbClient = window.supabase.createClient('https://pgqoojmmovsoalruxomj.supabase.co', PUBLISHABLE_KEY);
+    return sbClient;
+  }
+
+  function setPromoMsg(text, ok) {
+    promoMsg.textContent = text;
+    promoMsg.style.color = ok ? 'var(--ok)' : 'var(--err)';
+  }
+
+  if (promoBtn) {
+    promoBtn.addEventListener('click', function () {
+      var code = promoInput.value.trim();
+      if (!code) { setPromoMsg('Entrez un code.', false); return; }
+      var client = getClient();
+      if (!client) { setPromoMsg('Indisponible pour le moment, réessayez.', false); return; }
+      promoBtn.disabled = true;
+      var prevLabel = promoBtn.textContent;
+      promoBtn.textContent = 'Vérification…';
+      setPromoMsg('', true);
+
+      client.auth.getSession().then(function (res) {
+        var session = res && res.data && res.data.session;
+        if (!session) {
+          setPromoMsg('Connectez-vous pour utiliser un code promo.', false);
+          return;
+        }
+        return fetch(MOLLIE3_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: PUBLISHABLE_KEY,
+            Authorization: 'Bearer ' + session.access_token,
+          },
+          body: JSON.stringify({ action: 'promo', code: code }),
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          if (data && data.valid) {
+            promoInput.dataset.applied = code;
+            if (typeof data.discount === 'number') {
+              setPromoMsg('✓ Code ' + data.code + ' appliqué : -' + String(data.discount).replace('.', ',') + ' € — recalculé au moment du paiement.', true);
+            } else {
+              setPromoMsg('✓ Code ' + data.code + ' valide : -' + data.percent + '% appliqué automatiquement au paiement.', true);
+            }
+          } else {
+            setPromoMsg((data && data.error) || 'Code promo invalide.', false);
+          }
+        });
+      }).catch(function () {
+        setPromoMsg('Erreur réseau, réessayez.', false);
+      }).finally(function () {
+        promoBtn.disabled = false;
+        promoBtn.textContent = prevLabel;
+      });
+    });
+  }
 
   var isPayCall = function (url) { return /\/functions\/v1\/mollie3(\?|$)/.test(url); };
   var originalFetch = window.fetch;

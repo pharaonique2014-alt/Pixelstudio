@@ -33,7 +33,8 @@ const css = `
 .tl-step.done::before{background:var(--gold)}
 .tl-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);flex-shrink:0;background:var(--bg);z-index:1}
 .tl-step.done .tl-dot{border-color:var(--gold);background:var(--gold);color:#111}
-.tl-step.now .tl-dot{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 4px rgba(217,119,43,.15)}
+.tl-step.now .tl-dot{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 4px rgba(217,119,43,.15);animation:tlPulse 1.8s ease-in-out infinite}
+@keyframes tlPulse{0%,100%{box-shadow:0 0 0 4px rgba(217,119,43,.15);opacity:1}50%{box-shadow:0 0 0 8px rgba(217,119,43,.05);opacity:.7}}
 .tl-lbl{font-size:12.5px;color:var(--muted)}
 .tl-step.done .tl-lbl{color:var(--txt2)}
 .tl-step.now .tl-lbl{color:var(--gold2);font-weight:700}
