@@ -1115,6 +1115,77 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 </script>
 <script>
 (function(){
+  // Le calcul de prix (action:"price" sur mollie3) n'avait ni délai maximal ni
+  // nouvelle tentative : une requête qui échoue ou traîne (réseau mobile instable,
+  // edge function lente à démarrer) laissait le panneau bloqué indéfiniment sur
+  // « Calcul du prix… », ce qui empêchait aussi l'affichage de la checklist de
+  // vérification du fichier et l'activation du bouton d'ajout au panier (les deux
+  // dépendent du même calcul). Ce correctif ajoute un délai + 2 nouvelles tentatives,
+  // puis un message d'erreur explicite avec un bouton « Réessayer » si tout échoue —
+  // sans toucher au bundle applicatif.
+  var PRICE_URL_RE = /\/functions\/v1\/mollie3(\?|$)/;
+  var origFetch = window.fetch;
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    if (!PRICE_URL_RE.test(url) || !init || typeof init.body !== 'string') {
+      return origFetch.apply(this, arguments);
+    }
+    var payload;
+    try { payload = JSON.parse(init.body); } catch (e) { payload = null; }
+    if (!payload || payload.action !== 'price') {
+      return origFetch.apply(this, arguments);
+    }
+    var maxAttempts = 3;
+    function attempt(n) {
+      var timedOut = false;
+      var timeoutP = new Promise(function (_, reject) {
+        setTimeout(function () { timedOut = true; reject(new Error('price-timeout')); }, 9000);
+      });
+      return Promise.race([origFetch.call(window, input, init), timeoutP])
+        .then(function (res) {
+          clearPriceRetry();
+          return res;
+        })
+        .catch(function (err) {
+          if (n < maxAttempts) {
+            return new Promise(function (resolve) { setTimeout(resolve, 700 * n); })
+              .then(function () { return attempt(n + 1); });
+          }
+          showPriceRetry(payload);
+          throw err;
+        });
+    }
+    return attempt(1);
+  };
+
+  function clearPriceRetry() {
+    var b = document.getElementById('priceRetryBanner');
+    if (b) b.remove();
+  }
+
+  function showPriceRetry(payload) {
+    if (document.getElementById('priceRetryBanner')) return;
+    var box = document.querySelector('.price-box');
+    if (!box || !box.parentNode) return;
+    var div = document.createElement('div');
+    div.id = 'priceRetryBanner';
+    div.style.cssText = 'margin-top:10px;padding:11px 13px;background:rgba(255,107,129,.08);border:1px solid rgba(255,107,129,.35);border-radius:10px;font-size:12.5px;color:var(--txt2);line-height:1.6';
+    div.textContent = 'Le calcul du prix a échoué (connexion instable). ';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = 'Réessayer';
+    btn.style.cssText = 'background:none;border:none;padding:0;color:var(--gold2);text-decoration:underline;cursor:pointer;font:inherit';
+    btn.onclick = function () {
+      div.remove();
+      if (window.openConfig && payload && payload.pid) openConfig(payload.pid);
+    };
+    div.appendChild(btn);
+    box.parentNode.insertBefore(div, box.nextSibling);
+  }
+})();
+</script>
+<script>
+(function(){
   var CATS = [
     { id: 'carterie', name: 'Cartes de visite', icon: '&#128218;', tagline: 'Formats standard, carré, coins arrondis — sur papier ou PVC.' },
     { id: 'pub', name: 'Flyers & affiches', icon: '&#128240;', tagline: 'Du flyer A6 à l\'affiche 70×100 cm, pour vos campagnes et événements.' },
