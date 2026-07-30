@@ -619,6 +619,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
         </div>
         <div class="deliv">&#128230; Livraison estimée <b id="delivDate">…</b><span id="delivDetail" style="font-size:12px"></span></div>
         <button class="addcart" id="addBtn" disabled onclick="addToCart()">Uploadez votre fichier recto</button>
+        <div class="stat-logos" id="pricePayLogos" style="justify-content:center;margin-top:10px"></div>
       </div>
       <div>
         <div class="stage" id="stage">
@@ -837,6 +838,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 </main>
 
 <footer>
+  <div class="stat-logos" id="footerPayLogos" style="justify-content:center;margin-bottom:14px"></div>
   <img src="x-pixel.png" alt="" onerror="this.style.display='none'"><br>
   © Pixel Studio 2026 — Pixel Print · <a href="index.html">pxlstudio.be</a> · BCE : BE 1032.720.495<br>
   <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a> · <a href="aide.html">Aide &amp; FAQ</a> · <a href="#" onclick="go('cgv');return false">Conditions générales de vente</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a>
@@ -899,6 +901,16 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <script src="shop-suivi.js"></script>
 <script src="theme.js"></script>
 <script src="cookie-consent.js"></script>
+<script>
+(function(){
+  var source = document.querySelector('.stat-logos');
+  if (!source) return;
+  ['footerPayLogos', 'pricePayLogos'].forEach(function (id) {
+    var target = document.getElementById(id);
+    if (target) target.innerHTML = source.innerHTML;
+  });
+})();
+</script>
 <script>
 (function(){
   var regFields = document.getElementById('regFields');
