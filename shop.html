@@ -213,6 +213,13 @@ section{margin-top:56px;scroll-margin-top:80px}
 .price-box .row.total b{font-size:21px;color:var(--gold2);font-family:'Montserrat',sans-serif}
 .deliv{display:flex;align-items:center;gap:9px;border:1px solid rgba(214,160,96,.3);background:rgba(217,119,43,.06);border-radius:12px;padding:12px 15px;margin-top:11px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .deliv b{color:var(--gold2)}
+.freeship-bar{margin-top:10px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.freeship-text{font-size:12.5px;color:var(--muted);margin-bottom:7px}
+.freeship-text b{color:var(--gold2)}
+.freeship-text.done{color:var(--ok)}
+.freeship-track{height:6px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+[data-theme="light"] .freeship-track{background:rgba(0,0,0,.08)}
+.freeship-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .3s ease}
 .addcart{width:100%;margin-top:13px;background:var(--gold);border:1px solid var(--gold);color:#111;font-weight:700;font-size:13px;letter-spacing:.09em;text-transform:uppercase;border-radius:26px;padding:16px;transition:.2s}
 .addcart:disabled{opacity:.35;cursor:not-allowed}
 .cfg-close{position:absolute;top:16px;right:18px;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:50%;width:32px;height:32px;font-size:15px;line-height:1}
@@ -617,6 +624,10 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
           <div class="row"><span>TVA 21%</span><span id="pbTva">—</span></div>
           <div class="row" style="border-top:1px dashed var(--line);margin-top:8px;padding-top:9px;font-size:11.5px;font-style:italic;opacity:.75"><span>Tarifs provisoires</span><span>grille définitive à venir</span></div>
         </div>
+        <div class="freeship-bar" id="freeShipBar" style="display:none">
+          <div class="freeship-text" id="freeShipText"></div>
+          <div class="freeship-track"><div class="freeship-fill" id="freeShipFill"></div></div>
+        </div>
         <div class="deliv">&#128230; Livraison estimée <b id="delivDate">…</b><span id="delivDetail" style="font-size:12px"></span></div>
         <button class="addcart" id="addBtn" disabled onclick="addToCart()">Uploadez votre fichier recto</button>
         <div class="stat-logos" id="pricePayLogos" style="justify-content:center;margin-top:10px"></div>
@@ -909,6 +920,50 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     var target = document.getElementById(id);
     if (target) target.innerHTML = source.innerHTML;
   });
+})();
+</script>
+<script>
+(function(){
+  var bar = document.getElementById('freeShipBar');
+  var text = document.getElementById('freeShipText');
+  var fill = document.getElementById('freeShipFill');
+  var pbTotal = document.getElementById('pbTotal');
+  var pbTva = document.getElementById('pbTva');
+  var countrySel = document.getElementById('cfgCountry');
+  if (!bar || !text || !fill || !pbTotal || !pbTva || !countrySel) return;
+
+  var THRESHOLDS = { BE: 49, NL: 75, LU: 75 };
+
+  function parseEuro(str) {
+    if (!str) return null;
+    var m = String(str).replace(/\s/g, '').match(/([\d.,]+)/);
+    if (!m) return null;
+    var n = parseFloat(m[1].replace(/\./g, '').replace(',', '.'));
+    return isNaN(n) ? null : n;
+  }
+
+  function update() {
+    var ht = parseEuro(pbTotal.textContent);
+    var tva = parseEuro(pbTva.textContent);
+    if (ht === null || tva === null) { bar.style.display = 'none'; return; }
+    var ttc = ht + tva;
+    var threshold = THRESHOLDS[countrySel.value] || THRESHOLDS.BE;
+    bar.style.display = 'block';
+    if (ttc >= threshold) {
+      text.className = 'freeship-text done';
+      text.textContent = '🎉 Livraison offerte sur cette commande';
+      fill.style.width = '100%';
+    } else {
+      var remaining = threshold - ttc;
+      text.className = 'freeship-text';
+      text.innerHTML = 'Il vous manque <b>' + remaining.toFixed(2).replace('.', ',') + ' €</b> pour la livraison offerte';
+      fill.style.width = Math.max(4, (ttc / threshold) * 100) + '%';
+    }
+  }
+
+  new MutationObserver(update).observe(pbTotal, { childList: true, characterData: true, subtree: true });
+  new MutationObserver(update).observe(pbTva, { childList: true, characterData: true, subtree: true });
+  update();
 })();
 </script>
 <script>
