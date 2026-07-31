@@ -990,6 +990,13 @@ footer a:hover { color: #d6a060; }
   color: #241f1a;
 }
 
+@media (max-width: 768px) {
+  [data-theme="light"] .menu {
+    background: rgba(255, 251, 244, .98);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, .1);
+  }
+}
+
 [data-theme="light"] .menu a:hover,
 [data-theme="light"] .menu a.active {
   color: #b5732a;
