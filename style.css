@@ -1234,3 +1234,54 @@ footer a:hover { color: #d6a060; }
   background: rgba(217, 119, 43, .06);
   border-color: rgba(181, 115, 42, .3);
 }
+
+/* =========================
+   FICHES PRODUIT (SEO)
+========================= */
+.prod-wrap { max-width: 1000px; margin: 120px auto 90px; padding: 0 24px; color: #e4e1dc; font-family: Montserrat, Helvetica, Arial, sans-serif; line-height: 1.75; }
+.prod-crumb { font-size: 12.5px; color: rgba(228, 225, 220, .5); margin-bottom: 28px; }
+.prod-crumb a { color: rgba(228, 225, 220, .7); }
+.prod-crumb a:hover { color: #d6a060; }
+.prod-top { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; margin-bottom: 60px; }
+.prod-media { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .03); aspect-ratio: 4 / 3; }
+.prod-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prod-tag { display: inline-block; background: rgba(217, 119, 43, .12); border: 1px solid rgba(214, 160, 96, .4); color: #d6a060; border-radius: 999px; padding: 5px 14px; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 14px; }
+.prod-info h1 { font-family: "Playfair Display", Georgia, serif; font-size: 32px; color: #edeae5; font-weight: 600; margin-bottom: 6px; }
+.prod-fmt { color: rgba(228, 225, 220, .55); font-size: 13.5px; margin-bottom: 16px; }
+.prod-desc { font-size: 14.5px; color: rgba(228, 225, 220, .8); margin-bottom: 20px; }
+.prod-price { font-size: 17px; color: #edeae5; margin-bottom: 10px; }
+.prod-price b { color: #d6a060; font-size: 20px; }
+.prod-delay { font-size: 12.5px; color: rgba(228, 225, 220, .55); margin-bottom: 26px; }
+.prod-opts, .prod-qty { margin-bottom: 44px; }
+.prod-opts h2, .prod-qty h2 { font-size: 19px; color: #d6a060; margin: 0 0 16px; font-weight: 700; font-family: "Playfair Display", Georgia, serif; }
+.prod-optgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.prod-optgroup { background: rgba(255, 255, 255, .03); border: 1px solid rgba(255, 255, 255, .08); border-radius: 12px; padding: 14px 16px; }
+.prod-optgroup h3 { font-size: 13px; color: #edeae5; font-weight: 700; margin-bottom: 6px; }
+.prod-optgroup p { font-size: 12.5px; color: rgba(228, 225, 220, .7); margin: 0; }
+.prod-qty p { font-size: 14px; color: rgba(228, 225, 220, .8); }
+.prod-cta-bottom { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.prod-cta-bottom a:not(.btn-hero) { color: rgba(228, 225, 220, .6); font-size: 13px; }
+.prod-cta-bottom a:not(.btn-hero):hover { color: #d6a060; }
+@media (max-width: 760px) {
+  .prod-top { grid-template-columns: 1fr; }
+}
+
+[data-theme="light"] .prod-wrap { color: #241f1a; }
+[data-theme="light"] .prod-crumb { color: rgba(36, 31, 26, .5); }
+[data-theme="light"] .prod-crumb a { color: rgba(36, 31, 26, .7); }
+[data-theme="light"] .prod-crumb a:hover { color: #b5732a; }
+[data-theme="light"] .prod-media { background: rgba(0, 0, 0, .03); border-color: rgba(0, 0, 0, .1); }
+[data-theme="light"] .prod-tag { background: rgba(217, 119, 43, .08); border-color: rgba(181, 115, 42, .35); color: #b5732a; }
+[data-theme="light"] .prod-info h1 { color: #1c1712; }
+[data-theme="light"] .prod-fmt, [data-theme="light"] .prod-delay { color: rgba(36, 31, 26, .55); }
+[data-theme="light"] .prod-desc { color: rgba(36, 31, 26, .78); }
+[data-theme="light"] .prod-price { color: #1c1712; }
+[data-theme="light"] .prod-price b { color: #b5732a; }
+[data-theme="light"] .prod-opts h2, [data-theme="light"] .prod-qty h2 { color: #b5732a; }
+[data-theme="light"] .prod-optgroup { background: rgba(0, 0, 0, .03); border-color: rgba(0, 0, 0, .1); }
+[data-theme="light"] .prod-optgroup h3 { color: #1c1712; }
+[data-theme="light"] .prod-optgroup p { color: rgba(36, 31, 26, .7); }
+[data-theme="light"] .prod-qty p { color: rgba(36, 31, 26, .78); }
+[data-theme="light"] .prod-cta-bottom { border-top-color: rgba(0, 0, 0, .08); }
+[data-theme="light"] .prod-cta-bottom a:not(.btn-hero) { color: rgba(36, 31, 26, .6); }
+[data-theme="light"] .prod-cta-bottom a:not(.btn-hero):hover { color: #b5732a; }

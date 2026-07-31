@@ -1399,7 +1399,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
           var from = typeof p.from_price === 'number' ? p.from_price : null;
           return '<div class="catview-card">' +
             (p.tag ? '<span class="tag">' + p.tag + '</span>' : '') +
-            '<h3>' + p.name + '</h3>' +
+            '<h3><a href="produit-' + p.id + '.html" style="color:inherit;text-decoration:none">' + p.name + '</a></h3>' +
             (p.fmt ? '<span class="fmt">' + p.fmt + '</span>' : '') +
             '<p class="desc">' + (p.description || '') + '</p>' +
             (from !== null ? '<span class="from">à partir de <b>' + euro(from) + '</b> HTVA</span>' : '') +
@@ -1488,6 +1488,11 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     if (window.go) go('shop');
     setTimeout(function () { if (window.openConfig) openConfig(id); }, 50);
   });
+
+  var deepLinkPid = new URLSearchParams(window.location.search).get('p');
+  if (deepLinkPid) {
+    setTimeout(function () { if (window.openConfig) openConfig(deepLinkPid); }, 50);
+  }
 })();
 </script>
 <script>
