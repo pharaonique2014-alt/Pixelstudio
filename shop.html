@@ -46,13 +46,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   --bg:#0b0a08; --panel:rgba(255,255,255,.04); --panel2:rgba(255,255,255,.07);
   --line:rgba(255,255,255,.10); --txt:#e4e1dc; --txt2:#edeae5;
   --muted:rgba(228,225,220,.6); --gold:#d9772b; --gold2:#d6a060;
-  --ok:#5fe0a0; --err:#ff6b81; --radius:14px;
+  --ok:#5fe0a0; --err:#ff6b81; --radius:14px; --field:rgba(0,0,0,.35);
+  color-scheme:dark;
 }
 :root[data-theme="light"]{
   --bg:#f3efe6; --panel:rgba(0,0,0,.03); --panel2:rgba(0,0,0,.05);
   --line:rgba(0,0,0,.12); --txt:#241f1a; --txt2:#1c1712;
   --muted:rgba(36,31,26,.62); --gold:#c46a24; --gold2:#b5732a;
-  --ok:#1f9d63; --err:#d1435a;
+  --ok:#1f9d63; --err:#d1435a; --field:rgba(255,255,255,.65);
+  color-scheme:light;
 }
 [data-theme="light"] .pxbg{
   background:radial-gradient(ellipse at 30% 10%,rgba(255,255,255,.15),rgba(243,239,230,.35) 70%),url('fond-clair-shop.jpg') center center/cover no-repeat;
@@ -152,7 +154,7 @@ section{margin-top:56px;scroll-margin-top:80px}
 .pcard .art img{width:100%;height:100%;object-fit:cover;display:block}
 .pcard .art .badge-fmt{position:absolute;left:12px;bottom:10px;background:rgba(12,10,9,.82);border:1px solid rgba(255,255,255,.14);color:var(--gold2);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;border-radius:12px;padding:4px 10px}
 .searchbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
-.searchbar input{flex:1;min-width:200px;background:rgba(0,0,0,.35);border:1px solid var(--line);color:var(--txt);border-radius:22px;padding:12px 18px;font-size:14px}
+.searchbar input{flex:1;min-width:200px;background:var(--field);border:1px solid var(--line);color:var(--txt);border-radius:22px;padding:12px 18px;font-size:14px}
 .searchbar input:focus{outline:none;border-color:var(--gold2)}
 .devis-box{background:linear-gradient(140deg,rgba(217,119,43,.12),rgba(217,119,43,.03));border:1px solid rgba(214,160,96,.35);border-radius:16px;padding:28px;margin-top:34px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 .devis-box .txt{flex:1;min-width:240px}
@@ -230,7 +232,7 @@ section{margin-top:56px;scroll-margin-top:80px}
 .stage::after{content:'';position:absolute;left:8%;right:8%;bottom:16%;height:1px;background:linear-gradient(90deg,transparent,rgba(214,160,96,.28),transparent);pointer-events:none}
 .stage:active{cursor:grabbing}
 .stage .hint{position:absolute;bottom:11px;left:0;right:0;text-align:center;color:var(--muted);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;pointer-events:none}
-.stage .spin{position:absolute;top:11px;right:11px;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--muted);border-radius:16px;padding:6px 12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+.stage .spin{position:absolute;top:11px;right:11px;background:var(--field);border:1px solid var(--line);color:var(--txt);border-radius:16px;padding:6px 12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
 .obj3d{-webkit-transform-style:preserve-3d;transform-style:preserve-3d;position:relative;-webkit-box-reflect:below 5px linear-gradient(to bottom,transparent,transparent 55%,rgba(255,255,255,.09))}
 .face{position:absolute;background:linear-gradient(155deg,#ffffff 0%,#f7f4ef 55%,#e9e3d8 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 30px 70px -12px rgba(0,0,0,.78),0 4px 14px rgba(0,0,0,.4)}
 .face::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.08) 22%,rgba(255,255,255,0) 42%,rgba(0,0,0,.05) 100%);pointer-events:none}
@@ -264,7 +266,8 @@ section{margin-top:56px;scroll-margin-top:80px}
 .btn-main{background:var(--gold);border:1px solid var(--gold);color:#111;font-weight:700;border-radius:26px;padding:14px 25px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
 .btn-main:disabled{opacity:.5;cursor:wait}
 .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--txt);border-radius:26px;padding:12px 21px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
-.selectw,.inp{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:12px 14px;font-size:14.5px;margin-bottom:11px}
+.selectw,.inp{width:100%;background:var(--field);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:12px 14px;font-size:14.5px;margin-bottom:11px}
+.inp::placeholder{color:var(--muted);opacity:1}
 .inp:focus,.selectw:focus,textarea.inp:focus{outline:none;border-color:var(--gold2)}
 .frow{display:flex;gap:10px}
 .frow .inp{flex:1}
@@ -1242,6 +1245,52 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     };
     div.appendChild(btn);
     box.parentNode.insertBefore(div, box.nextSibling);
+  }
+})();
+</script>
+<script>
+(function(){
+  // À la création de compte, Supabase Auth envoie un e-mail de confirmation mais
+  // l'appli ne l'indiquait nulle part — le client ne savait pas qu'il devait aller
+  // cliquer un lien avant de pouvoir se connecter. On intercepte l'appel de création
+  // de compte pour afficher une boîte de dialogue explicite, quel que soit le
+  // fonctionnement interne de doAuth().
+  var SIGNUP_RE = /\/auth\/v1\/signup(\?|$)/;
+  var originalAuthFetch = window.fetch;
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    var result = originalAuthFetch.apply(this, arguments);
+    if (SIGNUP_RE.test(url)) {
+      result.then(function (res) {
+        if (!res.ok) return;
+        res.clone().json().then(function (data) {
+          var emailField = document.getElementById('authEmail');
+          var email = (data && data.email) || (emailField && emailField.value) || '';
+          showSignupConfirmDialog(email);
+        }).catch(function () {});
+      }).catch(function () {});
+    }
+    return result;
+  };
+
+  function showSignupConfirmDialog(email) {
+    if (document.getElementById('signupConfirmModal')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'signupConfirmModal';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:30px 26px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)';
+    box.innerHTML =
+      '<div style="width:48px;height:48px;margin:0 auto 16px;border-radius:50%;background:rgba(217,119,43,.12);border:1px solid var(--gold2);display:flex;align-items:center;justify-content:center">' +
+        '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--gold2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg>' +
+      '</div>' +
+      '<h3 style="font-family:\'Playfair Display\',serif;font-size:19px;color:var(--txt2);margin-bottom:10px">Vérifiez votre boîte mail</h3>' +
+      '<p style="font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:22px">Un e-mail de confirmation a été envoyé à<br><b style="color:var(--txt2)">' + String(email).replace(/</g, '&lt;') + '</b><br>Cliquez sur le lien qu\'il contient pour activer votre compte avant de vous connecter.</p>' +
+      '<button type="button" class="btn-main" style="width:100%" id="signupConfirmClose">Compris</button>';
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    document.getElementById('signupConfirmClose').onclick = function () { overlay.remove(); };
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
   }
 })();
 </script>

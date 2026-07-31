@@ -355,6 +355,29 @@ p {
   text-transform: uppercase;
 }
 
+.service-card-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-shop-link {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #d6a060;
+  opacity: 0.85;
+  transition: opacity 0.25s;
+}
+
+.service-shop-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* =========================
    HOME — CTA
 ========================= */
@@ -1028,6 +1051,10 @@ footer a:hover { color: #d6a060; }
 
 [data-theme="light"] .formule-card.featured {
   background: rgba(217, 119, 43, .08);
+}
+
+[data-theme="light"] .service-shop-link {
+  color: #b5732a;
 }
 
 [data-theme="light"] .item-desc {
