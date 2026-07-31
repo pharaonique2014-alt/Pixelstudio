@@ -995,6 +995,13 @@ footer a:hover { color: #d6a060; }
     background: rgba(255, 251, 244, .98);
     box-shadow: -8px 0 30px rgba(0, 0, 0, .1);
   }
+  /* Couleur vive, identique en clair/sombre, pour le panneau mobile : reste
+     lisible même si le fond du panneau met du temps à se mettre à jour côté
+     navigateur (cache), plutôt que de dépendre uniquement du contraste fond/texte. */
+  .menu a,
+  [data-theme="light"] .menu a {
+    color: #d9772b;
+  }
 }
 
 [data-theme="light"] .menu a:hover,
