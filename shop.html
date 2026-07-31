@@ -1487,6 +1487,39 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
   }
 })();
 </script>
+<script>
+// Filet de sécurité pour le glisser-déposer (cadrage visuel .pos-box et rotation
+// .stage) : le configurateur capture le pointeur via setPointerCapture() dans un
+// try/catch qui avale l'erreur en silence. Sur Safari iOS, cette capture est parfois
+// peu fiable et si le doigt sort — même légèrement — de l'élément pendant le
+// glissement, les événements pointermove cessent d'être livrés à cet élément et le
+// geste s'arrête net. Le petit encadré de cadrage (~180×116px) y est bien plus
+// exposé que la grande carte 3D, d'où le "seul le zoom marche" observé sur mobile.
+// Ce correctif ne réimplémente rien : il se contente de relayer vers l'élément
+// d'origine (qui a déjà son propre gestionnaire pointermove correct) les
+// événements que la capture native aurait dû lui transmettre.
+(function () {
+  var DRAGGABLE = '.pos-box, .stage';
+  var activeEl = null;
+  function stop() { activeEl = null; }
+  document.addEventListener('pointerdown', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest(DRAGGABLE) : null;
+    activeEl = el || null;
+  }, true);
+  document.addEventListener('pointerup', stop, true);
+  document.addEventListener('pointercancel', stop, true);
+  document.addEventListener('pointermove', function (e) {
+    if (!activeEl) return;
+    if (e.target === activeEl || activeEl.contains(e.target)) return;
+    try {
+      activeEl.dispatchEvent(new PointerEvent('pointermove', {
+        clientX: e.clientX, clientY: e.clientY,
+        pointerId: e.pointerId, bubbles: true, cancelable: true,
+      }));
+    } catch (err) {}
+  }, { passive: false });
+})();
+</script>
 <script src="pixie.js"></script>
 </body>
 </html>
