@@ -1098,15 +1098,42 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
   // d'instructions de virement générée par Mollie plutôt que l'encart du site.
   var isOrdersInsert = function (url) { return /\/rest\/v1\/orders(\?|$)/.test(url); };
 
+  function showPayError(msg) {
+    var payMsg = document.getElementById('payMsg');
+    if (payMsg) { payMsg.textContent = msg; payMsg.classList.add('err'); payMsg.style.display = 'block'; }
+  }
+
+  // Réponse d'échec renvoyée à l'appelant : ne JAMAIS retomber sur l'écriture directe
+  // d'origine, celle-ci est désormais bloquée par la RLS (plus de policy INSERT côté
+  // client, la création de commande passe exclusivement par mollie3/service_role) —
+  // y retomber en cas d'échec ne fait qu'échouer une seconde fois en silence, sans
+  // que la commande n'existe jamais nulle part. On échoue donc immédiatement, de façon
+  // visible (message rouge sous le bouton Payer), plutôt que de fermer le tunnel.
+  function orderFailedResponse() {
+    return Promise.resolve(new Response(JSON.stringify({ error: 'order_creation_failed' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    }));
+  }
+
   function routeVirementThroughMollie(input, init) {
     var body;
-    try { body = JSON.parse(init.body); } catch (e) { return originalFetch.call(window, input, init); }
+    try { body = JSON.parse(init.body); } catch (e) {
+      showPayError('Erreur interne, réessayez.');
+      return orderFailedResponse();
+    }
     var orderData = body && body.data;
-    if (!orderData || !orderData.ref) return originalFetch.call(window, input, init);
+    if (!orderData || !orderData.ref) {
+      showPayError('Erreur interne, réessayez.');
+      return orderFailedResponse();
+    }
 
     var client = getClient();
     var cartItems = (typeof window.readCart === 'function') ? window.readCart() : null;
-    if (!client || !cartItems || !cartItems.length) return originalFetch.call(window, input, init);
+    if (!client || !cartItems || !cartItems.length) {
+      showPayError('Impossible de valider votre panier, rechargez la page et réessayez.');
+      return orderFailedResponse();
+    }
 
     var mollieItems = cartItems.map(function (it) { return { pid: it.pid, qty: it.qty, sel: it.sel || {} }; });
     var altCountryEl = document.getElementById('alCountry');
@@ -1114,14 +1141,12 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     var country = (typeof window.isAlt === 'function' && window.isAlt() && altCountryEl) ? altCountryEl.value : (mainCountryEl ? mainCountryEl.value : 'BE');
     var code = promoInput.value.trim();
 
-    function showPayError(msg) {
-      var payMsg = document.getElementById('payMsg');
-      if (payMsg) { payMsg.textContent = msg; payMsg.classList.add('err'); payMsg.style.display = 'block'; }
-    }
-
     return client.auth.getSession().then(function (res) {
       var session = res && res.data && res.data.session;
-      if (!session) return originalFetch.call(window, input, init);
+      if (!session) {
+        showPayError('Votre session a expiré, reconnectez-vous et réessayez.');
+        return orderFailedResponse();
+      }
       var payload = { ref: orderData.ref, country: country, method: 'banktransfer', items: mollieItems, order: orderData };
       if (code) payload.promo = code;
       return fetch(MOLLIE3_URL, {
@@ -1138,9 +1163,12 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
           return new Promise(function () {});
         }
         showPayError((data && data.error) || 'Erreur lors de la création de la commande, réessayez.');
-        return originalFetch.call(window, input, init);
+        return orderFailedResponse();
       });
-    }).catch(function () { return originalFetch.call(window, input, init); });
+    }).catch(function () {
+      showPayError('Erreur réseau, réessayez.');
+      return orderFailedResponse();
+    });
   }
 
   var originalFetch = window.fetch;
