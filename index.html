@@ -643,24 +643,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var form = document.getElementById('partner-form');
     var status = document.getElementById('partner-form-status');
     if (form && status) {
+      var MOLLIE3_URL = 'https://pgqoojmmovsoalruxomj.supabase.co/functions/v1/mollie3';
       form.addEventListener('submit', async function (e) {
         e.preventDefault();
         status.textContent = 'Envoi en cours...';
         status.style.color = '#e4e1dc';
-        var data = new FormData(form);
+        var fd = new FormData(form);
+        var payload = {
+          action: 'partner',
+          company: fd.get('company') || '',
+          contact: fd.get('contact') || '',
+          email: fd.get('email') || '',
+          vat: fd.get('vat') || '',
+          phone: fd.get('phone') || '',
+          web: fd.get('web') || '',
+          event: fd.get('event') || '',
+          consent: !!fd.get('consent'),
+          _gotcha: fd.get('_gotcha') || '',
+        };
         try {
-          var res = await fetch('https://formspree.io/f/mqeveknl', {
+          var res = await fetch(MOLLIE3_URL, {
             method: 'POST',
-            body: data,
-            headers: { Accept: 'application/json' },
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
           });
           var json = await res.json();
-          if (json.ok) {
+          if (res.ok && json.ok) {
             form.reset();
-            status.textContent = 'Merci ! Un e-mail vient de vous être envoyé.';
+            status.textContent = 'Merci ! Un e-mail vient de vous être envoyé avec votre code -30%.';
             status.style.color = '#6fcf97';
           } else {
-            status.textContent = "Erreur lors de l'envoi. Réessayez.";
+            status.textContent = (json && json.error) || "Erreur lors de l'envoi. Réessayez.";
             status.style.color = '#f2a65a';
           }
         } catch (err) {
