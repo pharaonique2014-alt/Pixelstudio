@@ -560,51 +560,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="partner-slot"><span>Votre société ici</span></div>
         </div>
       </div>
-
-      <div class="partners-cta">
-        <p>Envie d'être affiché ici et de bénéficier de -30% sur vos impressions ?</p>
-        <button type="button" class="btn-gold" id="partner-toggle">Devenir partenaire</button>
-      </div>
-
-      <div class="partners-form-wrap" id="partner-form-wrap">
-        <form id="partner-form" class="partners-form">
-          <div class="form-group">
-            <label for="p-company">Nom de l'entreprise</label>
-            <input type="text" id="p-company" name="company" placeholder="Nom de votre entreprise" required>
-            <input type="text" name="_gotcha" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
-          </div>
-          <div class="form-group">
-            <label for="p-contact">Nom du contact</label>
-            <input type="text" id="p-contact" name="contact" placeholder="Votre nom" required>
-          </div>
-          <div class="form-group">
-            <label for="p-email">Email</label>
-            <input type="email" id="p-email" name="email" placeholder="votre@email.com" required>
-          </div>
-          <div class="form-group">
-            <label for="p-vat">Numéro de TVA</label>
-            <input type="text" id="p-vat" name="vat" placeholder="BE 0123.456.789">
-          </div>
-          <div class="form-group">
-            <label for="p-phone">Téléphone</label>
-            <input type="tel" id="p-phone" name="phone" placeholder="+32 4xx xx xx xx">
-          </div>
-          <div class="form-group">
-            <label for="p-web">Site web / réseaux sociaux</label>
-            <input type="text" id="p-web" name="web" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label for="p-event">Salon ou événement prévu + dates</label>
-            <input type="text" id="p-event" name="event" placeholder="Ex. Salon des Indépendants, 12-14 mars 2027">
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="p-consent" name="consent" required>
-            <label for="p-consent">J'autorise Pixel Studio à afficher le logo de mon entreprise sur cette page une fois partenaire</label>
-          </div>
-          <button type="submit" class="btn-gold btn-full">Envoyer ma demande</button>
-          <p id="partner-form-status"></p>
-        </form>
-      </div>
     </div>
   </section>
 
@@ -625,63 +580,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   (function () {
     var track = document.getElementById('partners-track');
     if (track) track.innerHTML += track.innerHTML;
-
-    var toggleBtn = document.getElementById('partner-toggle');
-    var formWrap = document.getElementById('partner-form-wrap');
-    if (toggleBtn && formWrap) {
-      toggleBtn.addEventListener('click', function () {
-        var opening = !formWrap.classList.contains('open');
-        formWrap.classList.toggle('open', opening);
-        if (opening) {
-          setTimeout(function () {
-            formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 150);
-        }
-      });
-    }
-
-    var form = document.getElementById('partner-form');
-    var status = document.getElementById('partner-form-status');
-    if (form && status) {
-      var MOLLIE3_URL = 'https://pgqoojmmovsoalruxomj.supabase.co/functions/v1/mollie3';
-      form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        status.textContent = 'Envoi en cours...';
-        status.style.color = '#e4e1dc';
-        var fd = new FormData(form);
-        var payload = {
-          action: 'partner',
-          company: fd.get('company') || '',
-          contact: fd.get('contact') || '',
-          email: fd.get('email') || '',
-          vat: fd.get('vat') || '',
-          phone: fd.get('phone') || '',
-          web: fd.get('web') || '',
-          event: fd.get('event') || '',
-          consent: !!fd.get('consent'),
-          _gotcha: fd.get('_gotcha') || '',
-        };
-        try {
-          var res = await fetch(MOLLIE3_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          var json = await res.json();
-          if (res.ok && json.ok) {
-            form.reset();
-            status.textContent = 'Merci ! Un e-mail vient de vous être envoyé avec votre code -30%.';
-            status.style.color = '#6fcf97';
-          } else {
-            status.textContent = (json && json.error) || "Erreur lors de l'envoi. Réessayez.";
-            status.style.color = '#f2a65a';
-          }
-        } catch (err) {
-          status.textContent = 'Erreur réseau. Réessayez.';
-          status.style.color = '#f2a65a';
-        }
-      });
-    }
   })();
   </script>
 
