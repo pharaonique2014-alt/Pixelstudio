@@ -121,6 +121,25 @@ nav.main{position:sticky;top:0;z-index:60;background:#0d0b09;border-bottom:1px s
 .stats-bar span{color:var(--muted);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
 .stat-logo{display:inline-flex;align-items:center;justify-content:center;background:#fff;border-radius:7px;padding:5px 11px;height:20px}
 .stat-logo img{height:100%;width:auto;object-fit:contain;display:block}
+
+.partners-section{padding:56px 0 10px;border-top:1px solid var(--line)}
+.partners-title{text-align:center;color:var(--gold2);font-family:Georgia,serif;font-size:1.7rem;margin-bottom:8px}
+.partners-sub{text-align:center;text-transform:uppercase;letter-spacing:.16em;font-size:.76rem;color:var(--muted);margin-bottom:34px}
+.partners-marquee{overflow:hidden;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.partners-track{display:flex;gap:18px;width:max-content;animation:partners-scroll 26s linear infinite}
+.partners-marquee:hover .partners-track{animation-play-state:paused}
+.partner-slot{flex:0 0 auto;width:170px;height:76px;border:1px dashed var(--line);border-radius:10px;background:var(--panel);display:flex;align-items:center;justify-content:center;text-align:center;padding:0 12px}
+.partner-slot span{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;font-weight:300}
+@keyframes partners-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.partners-cta{text-align:center;margin-top:38px}
+.partners-cta p{color:var(--txt);font-size:1rem;margin-bottom:18px;max-width:520px;margin-left:auto;margin-right:auto}
+.partners-form-wrap{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.partners-form-wrap.open{max-height:1400px}
+.partners-form{max-width:520px;margin:32px auto 0}
+.form-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
+.form-check input[type="checkbox"]{width:auto;margin-top:3px;accent-color:var(--gold2)}
+.form-check label{font-size:.8rem;color:var(--muted);text-transform:none;letter-spacing:normal;font-weight:400}
+@media(max-width:768px){.partner-slot{width:135px;height:66px}}
 .stat-logos{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
 .stat-logos .stat-logo{padding:4px 8px;height:18px}
 
@@ -455,6 +474,7 @@ footer img{height:24px;opacity:.85;margin-bottom:11px}
 .cartbtn:hover{border-color:var(--gold2)}
 .accbtn:hover{background:transparent;color:var(--gold2);border-color:var(--gold2)}
 .btn-gold:hover{background:transparent;color:var(--gold2);border-color:var(--gold2)}
+.btn-full{display:block;width:100%;text-align:center;box-sizing:border-box}
 .cats button:hover{border-color:rgba(214,160,96,.5);color:var(--txt)}
 .pcard:hover{transform:translateY(-4px);border-color:rgba(214,160,96,.45);box-shadow:0 22px 50px -24px rgba(0,0,0,.6)}
 
@@ -575,6 +595,67 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
       <div><span class="stat-logos"><span class="stat-logo"><img src="https://cdn.jsdelivr.net/gh/datatrans/payment-logos/assets/apm/bancontact.svg" alt="Bancontact"></span><span class="stat-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzIwMl8zMzMpIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl8yMDJfMzMzKSIvPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDFfMjAyXzMzMykiPgo8cGF0aCBvcGFjaXR5PSIwLjEiIGQ9Ik03MC4zMTI1IDEzNUMxMDIuOTMyIDEzNSAxMjkuMzc1IDEwOC41NTcgMTI5LjM3NSA3NS45Mzc1QzEyOS4zNzUgNDMuMzE4MiAxMDIuOTMyIDE2Ljg3NSA3MC4zMTI1IDE2Ljg3NUMzNy42OTMyIDE2Ljg3NSAxMS4yNSA0My4zMTgyIDExLjI1IDc1LjkzNzVDMTEuMjUgMTA4LjU1NyAzNy42OTMyIDEzNSA3MC4zMTI1IDEzNVoiIGZpbGw9InVybCgjcGFpbnQxX2xpbmVhcl8yMDJfMzMzKSIvPgo8cGF0aCBvcGFjaXR5PSIwLjEiIGQ9Ik0xMi4xODc1IDkwQzI5LjI3MzggOTAgNDMuMTI1IDc2LjE0ODggNDMuMTI1IDU5LjA2MjVDNDMuMTI1IDQxLjk3NjIgMjkuMjczOCAyOC4xMjUgMTIuMTg3NSAyOC4xMjVDLTQuODk4ODEgMjguMTI1IC0xOC43NSA0MS45NzYyIC0xOC43NSA1OS4wNjI1Qy0xOC43NSA3Ni4xNDg4IC00Ljg5ODgxIDkwIDEyLjE4NzUgOTBaIiBmaWxsPSJ1cmwoI3BhaW50Ml9saW5lYXJfMjAyXzMzMykiLz4KPHBhdGggb3BhY2l0eT0iMC4xIiBkPSJNNzkuNjg3NSA0Ni44NzVDMTA3LjEyOSA0Ni44NzUgMTI5LjM3NSAyNC42MjkyIDEyOS4zNzUgLTIuODEyNUMxMjkuMzc1IC0zMC4yNTQxIDEwNy4xMjkgLTUyLjUgNzkuNjg3NSAtNTIuNUM1Mi4yNDU5IC01Mi41IDMwIC0zMC4yNTQxIDMwIC0yLjgxMjVDMzAgMjQuNjI5MiA1Mi4yNDU5IDQ2Ljg3NSA3OS42ODc1IDQ2Ljg3NVoiIGZpbGw9InVybCgjcGFpbnQzX2xpbmVhcl8yMDJfMzMzKSIvPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyMF9kXzIwMl8zMzMpIj4KPHBhdGggZD0iTTE4Ljc1IDI2LjI1SDkuMzc1QzguMzM5NDcgMjYuMjUgNy41IDI3LjA4OTUgNy41IDI4LjEyNVYzMy43NUM3LjUgMzQuNzg1NSA4LjMzOTQ3IDM1LjYyNSA5LjM3NSAzNS42MjVIMTguNzVDMTkuNzg1NSAzNS42MjUgMjAuNjI1IDM0Ljc4NTUgMjAuNjI1IDMzLjc1VjI4LjEyNUMyMC42MjUgMjcuMDg5NSAxOS43ODU1IDI2LjI1IDE4Ljc1IDI2LjI1WiIgZmlsbD0iYmxhY2siLz4KPC9nPgo8cGF0aCBkPSJNMTguNzUgMjYuMjVIOS4zNzVDOC4zMzk0NyAyNi4yNSA3LjUgMjcuMDg5NSA3LjUgMjguMTI1VjMzLjc1QzcuNSAzNC43ODU1IDguMzM5NDcgMzUuNjI1IDkuMzc1IDM1LjYyNUgxOC43NUMxOS43ODU1IDM1LjYyNSAyMC42MjUgMzQuNzg1NSAyMC42MjUgMzMuNzVWMjguMTI1QzIwLjYyNSAyNy4wODk1IDE5Ljc4NTUgMjYuMjUgMTguNzUgMjYuMjVaIiBmaWxsPSJ1cmwoI3BhaW50NF9saW5lYXJfMjAyXzMzMykiLz4KPHBhdGggb3BhY2l0eT0iMC4zIiBkPSJNMTEuMjUgMjguMTI1SDkuMzc1VjMzLjc1SDExLjI1VjI4LjEyNVoiIGZpbGw9IiM3QTM4MDIiLz4KPHBhdGggb3BhY2l0eT0iMC4zIiBkPSJNMTUgMjguMTI1SDEzLjEyNVYzMy43NUgxNVYyOC4xMjVaIiBmaWxsPSIjN0EzODAyIi8+CjxwYXRoIG9wYWNpdHk9IjAuMyIgZD0iTTE4Ljc1IDI4LjEyNUgxNi44NzVWMzMuNzVIMTguNzVWMjguMTI1WiIgZmlsbD0iIzdBMzgwMiIvPgo8cGF0aCBkPSJNMTYuODc1IDQxLjI1SDcuNVY0My4xMjVIMTYuODc1VjQxLjI1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjxwYXRoIGQ9Ik0xMy4xMjUgNDVINy41VjQ2Ljg3NUgxMy4xMjVWNDVaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjgiLz4KPHBhdGggZD0iTTIwLjYyNSA0NUgxNVY0Ni44NzVIMjAuNjI1VjQ1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjxwYXRoIGQ9Ik0yOC4xMjUgNDVIMjIuNVY0Ni44NzVIMjguMTI1VjQ1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjxwYXRoIGQ9Ik0yOC4xMjUgNDEuMjVIMTguNzVWNDMuMTI1SDI4LjEyNVY0MS4yNVoiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAuOCIvPgo8cGF0aCBkPSJNMzkuMzc1IDQxLjI1SDMwVjQzLjEyNUgzOS4zNzVWNDEuMjVaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjgiLz4KPHBhdGggZD0iTTUwLjYyNSA0MS4yNUg0MS4yNVY0My4xMjVINTAuNjI1VjQxLjI1WiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjwvZz4KPC9nPgo8ZGVmcz4KPGZpbHRlciBpZD0iZmlsdGVyMF9kXzIwMl8zMzMiIHg9IjYuMjUiIHk9IjI2LjI1IiB3aWR0aD0iMTUuNjI1IiBoZWlnaHQ9IjExLjg3NSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVDb2xvck1hdHJpeCBpbj0iU291cmNlQWxwaGEiIHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAxMjcgMCIgcmVzdWx0PSJoYXJkQWxwaGEiLz4KPGZlT2Zmc2V0IGR5PSIxLjI1Ii8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjAuNjI1Ii8+CjxmZUNvbG9yTWF0cml4IHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwLjEgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18yMDJfMzMzIi8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iZWZmZWN0MV9kcm9wU2hhZG93XzIwMl8zMzMiIHJlc3VsdD0ic2hhcGUiLz4KPC9maWx0ZXI+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8yMDJfMzMzIiB4MT0iMCIgeTE9IjY0IiB4Mj0iNjQiIHkyPSIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMwNjBCMEUiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjU0NzY0Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhcl8yMDJfMzMzIiB4MT0iNDMuODkzOCIgeTE9IjQ2Ljk2ODUiIHgyPSIzNy45MzQ0IiB5Mj0iMzAuNjM4OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0id2hpdGUiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzIwMl8zMzMiIHgxPSIxMi4xODc1IiB5MT0iOTAiIHgyPSI1LjM0NTk4IiB5Mj0iNjIuNDgzIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IndoaXRlIiBzdG9wLW9wYWNpdHk9IjAiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSJ3aGl0ZSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXJfMjAyXzMzMyIgeDE9IjY4LjY5OTYiIHkxPSIyLjY4MDk1IiB4Mj0iNzkuNjg3NSIgeTI9IjQ2Ljg3NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSJ3aGl0ZSIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0id2hpdGUiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDRfbGluZWFyXzIwMl8zMzMiIHgxPSIxNC4wNjI1IiB5MT0iMjYuMjUiIHgyPSIxNC4wNjI1IiB5Mj0iMzUuNjI1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNGQUQ5NjEiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRjc5NTVEIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMjAyXzMzMyI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAxXzIwMl8zMzMiPgo8cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==" alt="Carte bancaire"></span><span class="stat-logo"><img src="https://cdn.jsdelivr.net/gh/datatrans/payment-logos/assets/apm/ideal.svg" alt="iDEAL"></span><span class="stat-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwMEFDRUYiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yNi43MDE5IDM1LjIwMzlDMjguMDc4MSAzNi4wNDggMjkuNzYxMSAzNi41NTYxIDMxLjYzNjMgMzYuNTU2MUMzMy41OTE1IDM2LjU1NjEgMzUuNDcxNiAzNS42NTg3IDM2Ljg3NyAzNC4yNjhMNTIgMzIuODc3VjQwLjIzNTNIMTJWMzYuNTU2MUwyNi43MDE5IDM1LjIwMzlaTTMyLjkwOSAzMi44NzdDMjkuMzk0NSAzMi44NzcgMjYuNTQ1NCAyOS45OTQ0IDI2LjU0NTQgMjYuNDM4NUMyNi41NDU0IDIyLjg4MjYgMjkuMzk0NSAyMCAzMi45MDkgMjBDMzYuNDIzNSAyMCAzOS4yNzI2IDIyLjg4MjYgMzkuMjcyNiAyNi40Mzg1QzM5LjI3MjYgMjkuOTk0NCAzNi40MjM1IDMyLjg3NyAzMi45MDkgMzIuODc3WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==" alt="KBC/CBC"></span><span class="stat-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiNENTAwNDMiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xOCAyMi43MTgyQzE4IDIwLjExMjQgMjAuMTA0NiAxOCAyMi43MTgyIDE4SDQxLjI4MThDNDMuODg3NiAxOCA0NiAyMC4xMDQ2IDQ2IDIyLjcxODJWNDZIMjIuNzE4MkMyMC4xMTI0IDQ2IDE4IDQzLjg5NTUgMTggNDEuMjgxOFYyMi43MTgyWk0yNCAyNy43NjYxVjI4LjIzMzlDMjQgMjkuMTkwNSAyNC43OTQgMzAgMjUuNzczNCAzMEgzOC4yMjY2QzM5LjIwNjYgMzAgNDAgMjkuMjA5MyA0MCAyOC4yMzM5VjI3Ljc2NjFDNDAgMjYuODA5NSAzOS4yMDYgMjYgMzguMjI2NiAyNkgyNS43NzM0QzI0Ljc5MzQgMjYgMjQgMjYuNzkwNyAyNCAyNy43NjYxWk0yNCAzNS43NjYxVjM2LjIzMzlDMjQgMzcuMTkwNSAyNC43OTQgMzggMjUuNzczNCAzOEgzOC4yMjY2QzM5LjIwNjYgMzggNDAgMzcuMjA5MyA0MCAzNi4yMzM5VjM1Ljc2NjFDNDAgMzQuODA5NSAzOS4yMDYgMzQgMzguMjI2NiAzNEgyNS43NzM0QzI0Ljc5MzQgMzQgMjQgMzQuNzkwNyAyNCAzNS43NjYxWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==" alt="Belfius"></span><span class="stat-logo"><img src="https://cdn.jsdelivr.net/gh/datatrans/payment-logos/assets/apm/klarna.svg" alt="Klarna"></span></span><span>Paiement sécurisé</span></div>
     </div>
   </div>
+
+  <section class="partners-section" id="partenaires">
+    <h2 class="partners-title">Partenaires</h2>
+    <p class="partners-sub">Rejoignez nos premiers partenaires</p>
+
+    <div class="partners-marquee">
+      <div class="partners-track" id="partners-track">
+        <div class="partner-slot"><span>Votre société ici</span></div>
+        <div class="partner-slot"><span>Votre société ici</span></div>
+        <div class="partner-slot"><span>Votre société ici</span></div>
+        <div class="partner-slot"><span>Votre société ici</span></div>
+        <div class="partner-slot"><span>Votre société ici</span></div>
+        <div class="partner-slot"><span>Votre société ici</span></div>
+      </div>
+    </div>
+
+    <div class="partners-cta">
+      <p>Envie d'être affiché ici et de bénéficier de -30% sur vos impressions ?</p>
+      <button type="button" class="btn-gold" id="partner-toggle">Devenir partenaire</button>
+    </div>
+
+    <div class="partners-form-wrap" id="partner-form-wrap">
+      <form id="partner-form" class="partners-form">
+        <div class="field">
+          <label>Nom de l'entreprise</label>
+          <input class="inp" type="text" id="p-company" name="company" placeholder="Nom de votre entreprise" required>
+          <input type="text" name="_gotcha" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
+        </div>
+        <div class="field">
+          <label>Nom du contact</label>
+          <input class="inp" type="text" id="p-contact" name="contact" placeholder="Votre nom" required>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input class="inp" type="email" id="p-email" name="email" placeholder="votre@email.com" required>
+        </div>
+        <div class="field">
+          <label>Numéro de TVA</label>
+          <input class="inp" type="text" id="p-vat" name="vat" placeholder="BE 0123.456.789">
+        </div>
+        <div class="field">
+          <label>Téléphone</label>
+          <input class="inp" type="tel" id="p-phone" name="phone" placeholder="+32 4xx xx xx xx">
+        </div>
+        <div class="field">
+          <label>Site web / réseaux sociaux</label>
+          <input class="inp" type="text" id="p-web" name="web" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label>Salon ou événement prévu + dates</label>
+          <input class="inp" type="text" id="p-event" name="event" placeholder="Ex. Salon des Indépendants, 12-14 mars 2027">
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="p-consent" name="consent" required>
+          <label for="p-consent">J'autorise Pixel Studio à afficher le logo de mon entreprise sur cette page une fois partenaire</label>
+        </div>
+        <button type="submit" class="btn-gold btn-full">Envoyer ma demande</button>
+        <p id="partner-form-status"></p>
+      </form>
+    </div>
+  </section>
 
   <section id="browse-cats">
     <div class="sec-title"><div class="section-label">Par catégorie</div><h2>Parcourez notre offre</h2></div>
@@ -1500,6 +1581,68 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
       }
       return originalDoAuth.apply(this, arguments);
     };
+  }
+})();
+</script>
+<script>
+(function () {
+  var track = document.getElementById('partners-track');
+  if (track) track.innerHTML += track.innerHTML;
+
+  var toggleBtn = document.getElementById('partner-toggle');
+  var formWrap = document.getElementById('partner-form-wrap');
+  if (toggleBtn && formWrap) {
+    toggleBtn.addEventListener('click', function () {
+      var opening = !formWrap.classList.contains('open');
+      formWrap.classList.toggle('open', opening);
+      if (opening) {
+        setTimeout(function () {
+          formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      }
+    });
+  }
+
+  var form = document.getElementById('partner-form');
+  var status = document.getElementById('partner-form-status');
+  if (form && status && typeof MOLLIE_FUNCTION_URL === 'string' && MOLLIE_FUNCTION_URL) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      status.textContent = 'Envoi en cours...';
+      status.style.color = 'var(--txt)';
+      var fd = new FormData(form);
+      var payload = {
+        action: 'partner',
+        company: fd.get('company') || '',
+        contact: fd.get('contact') || '',
+        email: fd.get('email') || '',
+        vat: fd.get('vat') || '',
+        phone: fd.get('phone') || '',
+        web: fd.get('web') || '',
+        event: fd.get('event') || '',
+        consent: !!fd.get('consent'),
+        _gotcha: fd.get('_gotcha') || '',
+      };
+      try {
+        var res = await fetch(MOLLIE_FUNCTION_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        var json = await res.json();
+        if (res.ok && json.ok) {
+          form.reset();
+          status.textContent = 'Merci ! Un e-mail vient de vous être envoyé avec votre code -30%.';
+          status.style.color = 'var(--ok)';
+        } else {
+          status.textContent = (json && json.error) || "Erreur lors de l'envoi. Réessayez.";
+          status.style.color = 'var(--err)';
+        }
+      } catch (err) {
+        status.textContent = 'Erreur réseau. Réessayez.';
+        status.style.color = 'var(--err)';
+      }
+    });
   }
 })();
 </script>
