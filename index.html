@@ -23,7 +23,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <link rel="shortcut icon" type="image/png" href="favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <style>
     .hero-badge {
       display: inline-block;
@@ -545,6 +545,69 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
+  <section class="partners-section reveal" id="partenaires">
+    <div class="container">
+      <h2 class="partners-title">Partenaires</h2>
+      <p class="partners-sub">Rejoignez nos premiers partenaires</p>
+
+      <div class="partners-marquee">
+        <div class="partners-track" id="partners-track">
+          <div class="partner-slot"><span>Votre société ici</span></div>
+          <div class="partner-slot"><span>Votre société ici</span></div>
+          <div class="partner-slot"><span>Votre société ici</span></div>
+          <div class="partner-slot"><span>Votre société ici</span></div>
+          <div class="partner-slot"><span>Votre société ici</span></div>
+          <div class="partner-slot"><span>Votre société ici</span></div>
+        </div>
+      </div>
+
+      <div class="partners-cta">
+        <p>Envie d'être affiché ici et de bénéficier de -30% sur vos impressions ?</p>
+        <button type="button" class="btn-gold" id="partner-toggle">Devenir partenaire</button>
+      </div>
+
+      <div class="partners-form-wrap" id="partner-form-wrap">
+        <form id="partner-form" class="partners-form">
+          <div class="form-group">
+            <label for="p-company">Nom de l'entreprise</label>
+            <input type="text" id="p-company" name="company" placeholder="Nom de votre entreprise" required>
+            <input type="text" name="_gotcha" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
+          </div>
+          <div class="form-group">
+            <label for="p-contact">Nom du contact</label>
+            <input type="text" id="p-contact" name="contact" placeholder="Votre nom" required>
+          </div>
+          <div class="form-group">
+            <label for="p-email">Email</label>
+            <input type="email" id="p-email" name="email" placeholder="votre@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="p-vat">Numéro de TVA</label>
+            <input type="text" id="p-vat" name="vat" placeholder="BE 0123.456.789">
+          </div>
+          <div class="form-group">
+            <label for="p-phone">Téléphone</label>
+            <input type="tel" id="p-phone" name="phone" placeholder="+32 4xx xx xx xx">
+          </div>
+          <div class="form-group">
+            <label for="p-web">Site web / réseaux sociaux</label>
+            <input type="text" id="p-web" name="web" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="p-event">Salon ou événement prévu + dates</label>
+            <input type="text" id="p-event" name="event" placeholder="Ex. Salon des Indépendants, 12-14 mars 2027">
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="p-consent" name="consent" required>
+            <label for="p-consent">J'autorise Pixel Studio à afficher le logo de mon entreprise sur cette page une fois partenaire</label>
+          </div>
+          <button type="submit" class="btn-gold btn-full">Envoyer ma demande</button>
+          <p id="partner-form-status"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <p>© Pixel Studio 2026 — Agence Marketing Digital & Créative —  Belgique</p>
     <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
@@ -557,6 +620,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <script src="theme.js"></script>
   <script src="cookie-consent.js"></script>
   <script src="pixie.js"></script>
+
+  <script>
+  (function () {
+    var track = document.getElementById('partners-track');
+    if (track) track.innerHTML += track.innerHTML;
+
+    var toggleBtn = document.getElementById('partner-toggle');
+    var formWrap = document.getElementById('partner-form-wrap');
+    if (toggleBtn && formWrap) {
+      toggleBtn.addEventListener('click', function () {
+        var opening = !formWrap.classList.contains('open');
+        formWrap.classList.toggle('open', opening);
+        if (opening) {
+          setTimeout(function () {
+            formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 150);
+        }
+      });
+    }
+
+    var form = document.getElementById('partner-form');
+    var status = document.getElementById('partner-form-status');
+    if (form && status) {
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        status.textContent = 'Envoi en cours...';
+        status.style.color = '#e4e1dc';
+        var data = new FormData(form);
+        try {
+          var res = await fetch('https://formspree.io/f/mqeveknl', {
+            method: 'POST',
+            body: data,
+            headers: { Accept: 'application/json' },
+          });
+          var json = await res.json();
+          if (json.ok) {
+            form.reset();
+            status.textContent = 'Merci ! Un e-mail vient de vous être envoyé.';
+            status.style.color = '#6fcf97';
+          } else {
+            status.textContent = "Erreur lors de l'envoi. Réessayez.";
+            status.style.color = '#f2a65a';
+          }
+        } catch (err) {
+          status.textContent = 'Erreur réseau. Réessayez.';
+          status.style.color = '#f2a65a';
+        }
+      });
+    }
+  })();
+  </script>
 
 </body>
 </html>
