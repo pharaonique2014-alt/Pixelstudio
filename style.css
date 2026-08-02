@@ -1291,7 +1291,7 @@ footer a:hover { color: #d6a060; }
 .partners-sub { text-align: center; text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; color: rgba(228, 225, 220, .55); margin-bottom: 10px; }
 .partners-slots { text-align: center; font-size: .8rem; font-weight: 700; color: #d6a060; margin-bottom: 34px; }
 .partners-marquee { overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-.partners-track { display: flex; gap: 22px; width: max-content; animation: partners-scroll 26s linear infinite; }
+.partners-track { display: flex; gap: 22px; width: max-content; animation: partners-scroll 10s linear infinite; }
 .partners-marquee:hover .partners-track { animation-play-state: paused; }
 .partner-slot { flex: 0 0 auto; width: 230px; height: 340px; box-sizing: border-box; border: 1px solid rgba(228, 225, 220, .16); border-radius: 14px; background: rgba(255, 255, 255, .03); display: flex; flex-direction: column; align-items: center; text-align: center; padding: 16px 14px; text-decoration: none; transition: .2s; }
 .partner-slot.partner-real:hover { border-color: #d6a060; background: rgba(255, 255, 255, .06); transform: translateY(-2px); }
