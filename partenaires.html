@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <title>Nos partenaires | Pixel Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Découvrez les entreprises partenaires de Pixel Studio en Belgique : leurs métiers, leurs coordonnées, et pourquoi nous travaillons avec elles.">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=4">
+  <style>
+    .partner-card-logo{background:#fff;padding:22px;display:flex;align-items:center;justify-content:center;height:150px}
+    .partner-card-logo img{max-width:100%;max-height:100%;object-fit:contain}
+    .partner-card .bc-meta{color:#d6a060;font-weight:600}
+  </style>
+</head>
+<body>
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source id="bgVideoSource" type="video/mp4">
+  </video>
+  <script>document.getElementById('bgVideoSource').src=(document.documentElement.getAttribute('data-theme')==='light')?'fond-clair.mp4':'fond-v2.mp4';document.querySelector('.bg-video').load();</script>
+  <div class="bg-overlay"></div>
+
+  <nav class="main-nav">
+    <div class="burger" id="burger">
+      <span></span><span></span><span></span>
+    </div>
+    <ul class="menu" id="menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="partenaires.html" class="active">Partenaires</a></li>
+      <li><a href="aide.html">Aide</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
+  </nav>
+
+  <div class="page-header reveal">
+    <div class="container">
+      <h1>Nos partenaires</h1>
+      <div class="tagline">
+        <span class="line"></span>
+        <span class="text">Des entreprises belges que nous recommandons avec confiance</span>
+        <span class="line"></span>
+      </div>
+    </div>
+  </div>
+
+  <section class="home-services">
+    <div class="container">
+      <div class="blog-grid">
+
+        <a class="blog-card partner-card" href="partenaire-diego-container.html">
+          <div class="partner-card-logo"><img src="partners/diego-container.jpg" alt="Diego Container" loading="lazy"></div>
+          <div class="bc-body">
+            <span class="bc-cat">Location de conteneurs</span>
+            <h3>Diego Container</h3>
+            <p>Location de conteneurs pour vos chantiers et rénovations dans la région de Charleroi et La Louvière.</p>
+            <div class="bc-meta">0491 345 345</div>
+          </div>
+        </a>
+
+        <a class="blog-card partner-card" href="partenaire-franbelux.html">
+          <div class="partner-card-logo"><img src="partners/franbelux.jpg" alt="Franbelux" loading="lazy"></div>
+          <div class="bc-body">
+            <span class="bc-cat">Châssis, portes &amp; pergolas</span>
+            <h3>Franbelux</h3>
+            <p>Châssis alu, PVC et bois, vérandas et pergolas sur mesure, dans le Brabant wallon, le Hainaut et Namur.</p>
+            <div class="bc-meta">+32 67 860 350</div>
+          </div>
+        </a>
+
+      </div>
+
+      <p style="text-align:center;color:var(--muted,rgba(228,225,220,.6));margin-top:40px;font-size:.9rem">
+        Vous êtes une entreprise et souhaitez devenir partenaire ?
+        <a href="shop.html#partenaires" style="color:#d6a060">Découvrez les avantages</a>.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
+    <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
+    <p><a href="aide.html">Aide &amp; FAQ</a> · <a href="blog.html">Blog</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
+  </footer>
+
+  <script src="scroll-slider.js"></script>
+  <script src="menu.js"></script>
+  <script src="theme.js"></script>
+  <script src="cookie-consent.js"></script>
+  <script src="pixie.js"></script>
+</body>
+</html>

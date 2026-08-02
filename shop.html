@@ -124,12 +124,21 @@ nav.main{position:sticky;top:0;z-index:60;background:#0d0b09;border-bottom:1px s
 
 .partners-section{padding:56px 0 10px;border-top:1px solid var(--line)}
 .partners-title{text-align:center;color:var(--gold2);font-family:Georgia,serif;font-size:1.7rem;margin-bottom:8px}
-.partners-sub{text-align:center;text-transform:uppercase;letter-spacing:.16em;font-size:.76rem;color:var(--muted);margin-bottom:34px}
+.partners-sub{text-align:center;text-transform:uppercase;letter-spacing:.16em;font-size:.76rem;color:var(--muted);margin-bottom:10px}
+.partners-slots{text-align:center;font-size:.78rem;font-weight:700;color:var(--gold2);margin-bottom:30px}
 .partners-marquee{overflow:hidden;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .partners-track{display:flex;gap:18px;width:max-content;animation:partners-scroll 26s linear infinite}
 .partners-marquee:hover .partners-track{animation-play-state:paused}
-.partner-slot{flex:0 0 auto;width:170px;height:76px;border:1px dashed var(--line);border-radius:10px;background:var(--panel);display:flex;align-items:center;justify-content:center;text-align:center;padding:0 12px}
-.partner-slot span{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;font-weight:300}
+.partner-slot{flex:0 0 auto;width:230px;height:340px;box-sizing:border-box;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px 14px;text-decoration:none;transition:.2s}
+.partner-slot.partner-open{border-style:dashed;justify-content:center}
+.partner-slot.partner-real:hover{border-color:var(--gold2);background:var(--panel2);transform:translateY(-2px)}
+.partner-name{color:var(--txt2);font-weight:700;font-size:.9rem;line-height:1.2;margin-bottom:10px;flex:0 0 auto}
+.partner-logo-wrap{flex:1 1 auto;width:100%;min-height:0;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:9px;overflow:hidden;margin-bottom:10px}
+.partner-logo{max-width:86%;max-height:86%;object-fit:contain;display:block}
+.partner-spec{color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.03em;line-height:1.4;min-height:2.75em;display:flex;align-items:center;justify-content:center;max-width:100%;margin-bottom:16px;flex:0 0 auto}
+.partner-phone{color:var(--gold2);font-size:.82rem;font-weight:600;flex:0 0 auto}
+.partner-open-txt{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.76rem;font-weight:300;line-height:1.6}
+.partner-open-sub{display:block;margin-top:10px;color:var(--gold2);font-size:.74rem;text-transform:none;letter-spacing:normal;font-weight:600}
 @keyframes partners-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .partners-cta{text-align:center;margin-top:38px}
 .partners-cta p{color:var(--txt);font-size:1rem;margin-bottom:18px;max-width:520px;margin-left:auto;margin-right:auto}
@@ -139,7 +148,7 @@ nav.main{position:sticky;top:0;z-index:60;background:#0d0b09;border-bottom:1px s
 .form-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
 .form-check input[type="checkbox"]{width:auto;margin-top:3px;accent-color:var(--gold2)}
 .form-check label{font-size:.8rem;color:var(--muted);text-transform:none;letter-spacing:normal;font-weight:400}
-@media(max-width:768px){.partner-slot{width:135px;height:66px}}
+@media(max-width:768px){.partner-slot{width:190px;height:290px;padding:13px 11px}.partner-name{font-size:.8rem}.partner-spec{font-size:.62rem;margin-bottom:13px}.partner-phone{font-size:.76rem}}
 .stat-logos{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
 .stat-logos .stat-logo{padding:4px 8px;height:18px}
 
@@ -599,15 +608,22 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
   <section class="partners-section" id="partenaires">
     <h2 class="partners-title">Partenaires</h2>
     <p class="partners-sub">Rejoignez nos premiers partenaires</p>
+    <p class="partners-slots">8 places restantes</p>
 
     <div class="partners-marquee">
       <div class="partners-track" id="partners-track">
-        <div class="partner-slot"><span>Votre société ici</span></div>
-        <div class="partner-slot"><span>Votre société ici</span></div>
-        <div class="partner-slot"><span>Votre société ici</span></div>
-        <div class="partner-slot"><span>Votre société ici</span></div>
-        <div class="partner-slot"><span>Votre société ici</span></div>
-        <div class="partner-slot"><span>Votre société ici</span></div>
+        <a class="partner-slot partner-real" href="https://diegocontainer.be" target="_blank" rel="noopener noreferrer">
+          <span class="partner-name">Diego Container</span>
+          <span class="partner-logo-wrap"><img class="partner-logo" src="partners/diego-container.jpg" alt="Diego Container"></span>
+          <span class="partner-spec">Location de conteneurs</span>
+          <span class="partner-phone">0491 345 345</span>
+        </a>
+        <a class="partner-slot partner-real" href="https://franbelux.com" target="_blank" rel="noopener noreferrer">
+          <span class="partner-name">Franbelux</span>
+          <span class="partner-logo-wrap"><img class="partner-logo" src="partners/franbelux.jpg" alt="Franbelux"></span>
+          <span class="partner-spec">Châssis, portes, vérandas et pergolas - Alu, PVC, bois</span>
+          <span class="partner-phone">+32 67 860 350</span>
+        </a>
       </div>
     </div>
 
@@ -1010,6 +1026,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     <button class="btn-ghost" onclick="closeMenu();go('account')">Espace client</button>
     <a class="btn-ghost" href="aide.html" style="display:block">Aide &amp; FAQ</a>
     <a class="btn-ghost" href="blog.html" style="display:block">Blog</a>
+    <a class="btn-ghost" href="partenaires.html" style="display:block">Partenaires</a>
     <a class="btn-ghost" href="index.html" style="display:block">Retour au site</a>
   </div>
 </nav>
