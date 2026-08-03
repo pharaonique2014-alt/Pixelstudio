@@ -24,7 +24,12 @@ function buildStudioBackground() {
 // Construit une texture "zone imprimable" : fond blanc/matière + design du
 // client (ou un badge PS de démo si aucun design fourni) placé exactement
 // dans la zone réelle (issue de la fiche technique), le reste laissé vierge.
-function buildPrintTexture({ canvasW = 2048, canvasH = 1024, zone, designImage, baseColor = '#f6f4ee' }) {
+// Le cadrage du design (design.posX/posY/zoom) reproduit exactement le même
+// calcul que l'aperçu 2D existant (object-fit:cover + object-position +
+// transform:scale, voir .face img / .pos-box img dans shop.html) : les deux
+// aperçus doivent toujours montrer le même cadrage, jamais un recadrage
+// différent selon la vue.
+function buildPrintTexture({ canvasW = 2048, canvasH = 1024, zone, design, baseColor = '#f6f4ee' }) {
   return new Promise((resolve) => {
     const c = document.createElement('canvas');
     c.width = canvasW; c.height = canvasH;
@@ -42,18 +47,33 @@ function buildPrintTexture({ canvasW = 2048, canvasH = 1024, zone, designImage, 
       resolve(tex);
     }
 
-    if (designImage) {
+    if (design && design.src) {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
-        // contain-fit du design dans la zone réelle, centré
-        const scale = Math.min(zw / img.width, zh / img.height);
-        const dw = img.width * scale, dh = img.height * scale;
-        ctx.drawImage(img, zx + (zw - dw) / 2, zy + (zh - dh) / 2, dw, dh);
+        const posX = design.posX == null ? 50 : design.posX;
+        const posY = design.posY == null ? 50 : design.posY;
+        const zoom = design.zoom || 1;
+        // object-fit:cover — l'image remplit toute la zone, l'excédent est rogné
+        const base = Math.max(zw / img.width, zh / img.height);
+        const bw = img.width * base, bh = img.height * base;
+        // object-position posX/posY % — alignement du rognage avant le zoom
+        const ox0 = (zw - bw) * (posX / 100);
+        const oy0 = (zh - bh) * (posY / 100);
+        // transform:scale(zoom) — zoom appliqué autour du centre de la zone
+        const dw = bw * zoom, dh = bh * zoom;
+        const dx = zw / 2 + (ox0 - zw / 2) * zoom;
+        const dy = zh / 2 + (oy0 - zh / 2) * zoom;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(zx, zy, zw, zh);
+        ctx.clip();
+        ctx.drawImage(img, zx + dx, zy + dy, dw, dh);
+        ctx.restore();
         finish();
       };
       img.onerror = () => { drawPlaceholder(); finish(); };
-      img.src = designImage;
+      img.src = design.src;
       return;
     }
     drawPlaceholder();
@@ -320,10 +340,12 @@ export function createFA3DViewer(container, spec) {
   function animate() { raf = requestAnimationFrame(animate); renderer.render(scene, camera); }
   animate();
 
-  async function setDesignImage(dataUrlOrNull) {
+  // design: null (badge de démo) ou { src, posX, posY, zoom } — mêmes champs
+  // que les objets fR/fV du configurateur (voir shop-app-source.js).
+  async function setDesignImage(design) {
     const tex = await buildPrintTexture({
       zone: group.userData.printZoneSpec,
-      designImage: dataUrlOrNull,
+      design: design || null,
       baseColor: spec.baseColor || group.userData.baseColorHex || '#f6f4ee',
     });
     const mesh = group.userData.printMesh;
