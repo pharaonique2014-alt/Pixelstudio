@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Test moteur fa3d</title>
+<style>
+  body { background:#111; color:#eee; font-family:sans-serif; margin:0; padding:20px; }
+  .row { display:flex; gap:20px; flex-wrap:wrap; }
+  .stage { width:280px; height:320px; background:#1a1a1e; border-radius:10px; overflow:hidden; }
+</style>
+</head>
+<body>
+  <h1>Test fa3d.js</h1>
+  <div class="row">
+    <div class="stage" id="s1"></div>
+    <div class="stage" id="s2"></div>
+    <div class="stage" id="s3"></div>
+    <div class="stage" id="s4"></div>
+  </div>
+<script type="module">
+  import { createFA3DViewer } from './fa3d.js';
+
+  createFA3DViewer(document.getElementById('s1'), {
+    kind: 'cylinder',
+    dims: { diameterMM: 82, heightMM: 97, printZone: { widthMM: 122, heightMM: 63 }, hasHandle: true },
+  });
+
+  createFA3DViewer(document.getElementById('s2'), {
+    kind: 'flatcard',
+    dims: { widthMM: 100, heightMM: 148, thicknessMM: 1.5, printZone: { widthMM: 85, heightMM: 130 } },
+  });
+
+  createFA3DViewer(document.getElementById('s3'), {
+    kind: 'block',
+    dims: { widthMM: 148, heightMM: 210, thicknessMM: 15, printZone: { widthMM: 108, heightMM: 70 } },
+  });
+
+  createFA3DViewer(document.getElementById('s4'), {
+    kind: 'flatcard',
+    dims: { widthMM: 148, heightMM: 105, thicknessMM: 1.5, printZone: { widthMM: 120, heightMM: 90 }, fold: true, color: 0xffffff },
+  });
+</script>
+</body>
+</html>
