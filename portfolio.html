@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
   <meta charset="UTF-8">
   <title>Portfolio – Pixel Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,22 +24,23 @@
       <span></span><span></span><span></span>
     </div>
     <ul class="menu" id="menu">
-      <li><a href="index.html">Accueil</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="portfolio.html" class="active">Portfolio</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="partenaires.html">Partenaires</a></li>
-      <li><a href="aide.html">Aide</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="services.html" data-i18n="nav.services">Services</a></li>
+      <li><a href="portfolio.html" class="active" data-i18n="portfolio.nav">Portfolio</a></li>
+      <li><a href="shop.html" data-i18n="nav.shop">Shop</a></li>
+      <li><a href="partenaires.html" data-i18n="nav.partners">Partenaires</a></li>
+      <li><a href="aide.html" data-i18n="nav.help">Aide</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
     </ul>
+    <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
   </nav>
 
   <div class="page-header reveal">
     <div class="container">
-      <h1>Portfolio</h1>
+      <h1 data-i18n="portfolio.nav">Portfolio</h1>
       <div class="tagline">
         <span class="line"></span>
-        <span class="text">Quelques réalisations récentes</span>
+        <span class="text" data-i18n="portfolio.tagline">Quelques réalisations récentes</span>
         <span class="line"></span>
       </div>
     </div>
@@ -47,10 +49,10 @@
   <!-- FILTRES -->
   <div class="filter-bar reveal">
     <div class="container">
-      <button class="filter-btn active" data-filter="all">Tout</button>
-      <button class="filter-btn" data-filter="photo">Photographie</button>
-      <button class="filter-btn" data-filter="print">Print</button>
-      <button class="filter-btn" data-filter="web">Web</button>
+      <button class="filter-btn active" data-filter="all" data-i18n="portfolio.filter.all">Tout</button>
+      <button class="filter-btn" data-filter="photo" data-i18n="portfolio.filter.photo">Photographie</button>
+      <button class="filter-btn" data-filter="print" data-i18n="portfolio.filter.print">Print</button>
+      <button class="filter-btn" data-filter="web" data-i18n="portfolio.filter.web">Web</button>
     </div>
   </div>
 
@@ -62,48 +64,48 @@
         <div class="portfolio-item reveal" data-cat="photo">
           <img src="real1.jpg" alt="Réalisation 1" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('ph-missing')">
           <div class="portfolio-overlay">
-            <span class="portfolio-cat">Photographie</span>
-            <span class="portfolio-title">Portrait Corporate</span>
+            <span class="portfolio-cat" data-i18n="portfolio.filter.photo">Photographie</span>
+            <span class="portfolio-title" data-i18n="portfolio.item1">Portrait Corporate</span>
           </div>
         </div>
 
         <div class="portfolio-item reveal" data-cat="print">
           <img src="real2.jpg" alt="Réalisation 2" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('ph-missing')">
           <div class="portfolio-overlay">
-            <span class="portfolio-cat">Print</span>
-            <span class="portfolio-title">Flyer Événement</span>
+            <span class="portfolio-cat" data-i18n="portfolio.filter.print">Print</span>
+            <span class="portfolio-title" data-i18n="portfolio.item2">Flyer Événement</span>
           </div>
         </div>
 
         <div class="portfolio-item reveal" data-cat="web">
           <img src="real3.jpg" alt="Réalisation 3" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('ph-missing')">
           <div class="portfolio-overlay">
-            <span class="portfolio-cat">Web</span>
-            <span class="portfolio-title">Site Vitrine</span>
+            <span class="portfolio-cat" data-i18n="portfolio.filter.web">Web</span>
+            <span class="portfolio-title" data-i18n="portfolio.item3">Site Vitrine</span>
           </div>
         </div>
 
         <div class="portfolio-item reveal" data-cat="photo">
           <img src="real4.jpg" alt="Réalisation 4" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('ph-missing')">
           <div class="portfolio-overlay">
-            <span class="portfolio-cat">Photographie</span>
-            <span class="portfolio-title">Photo Produit</span>
+            <span class="portfolio-cat" data-i18n="portfolio.filter.photo">Photographie</span>
+            <span class="portfolio-title" data-i18n="portfolio.item4">Photo Produit</span>
           </div>
         </div>
 
         <div class="portfolio-item reveal" data-cat="print">
           <img src="real5.jpg" alt="Réalisation 5" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('ph-missing')">
           <div class="portfolio-overlay">
-            <span class="portfolio-cat">Print</span>
-            <span class="portfolio-title">Carte de visite</span>
+            <span class="portfolio-cat" data-i18n="portfolio.filter.print">Print</span>
+            <span class="portfolio-title" data-i18n="portfolio.item5">Carte de visite</span>
           </div>
         </div>
 
         <div class="portfolio-item reveal" data-cat="web">
           <img src="real6.jpg" alt="Réalisation 6" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('ph-missing')">
           <div class="portfolio-overlay">
-            <span class="portfolio-cat">Web</span>
-            <span class="portfolio-title">Landing Page</span>
+            <span class="portfolio-cat" data-i18n="portfolio.filter.web">Web</span>
+            <span class="portfolio-title" data-i18n="portfolio.item6">Landing Page</span>
           </div>
         </div>
 
@@ -114,18 +116,19 @@
   <!-- CTA -->
   <section class="home-cta reveal">
     <div class="container">
-      <h2>Votre projet sera le prochain.</h2>
-      <a href="contact.html" class="btn-gold">Parlons-en</a>
+      <h2 data-i18n="portfolio.cta.h">Votre projet sera le prochain.</h2>
+      <a href="contact.html" class="btn-gold" data-i18n="portfolio.cta.link">Parlons-en</a>
     </div>
   </section>
 
   <footer>
     <p>© Pixel Studio 2026</p>
-    <p><a href="aide.html">Aide &amp; FAQ</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a></p>
+    <p><a href="aide.html" data-i18n="footer.help">Aide &amp; FAQ</a> · <a href="politique-de-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a></p>
   </footer>
 
   <script src="scroll-slider.js"></script>
   <script src="menu.js"></script>
+  <script src="theme.js"></script>
   <script>
     const filterBtns = document.querySelectorAll('.filter-btn');
     const items = document.querySelectorAll('.portfolio-item');
@@ -146,5 +149,7 @@
     });
   </script>
    <script src="pixie.js"></script>
+  <script src="i18n-data.js"></script>
+  <script src="lang.js"></script>
 </body>
 </html>
