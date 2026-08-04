@@ -958,6 +958,40 @@ footer a:hover { color: #d6a060; }
 }
 
 /* =========================
+   LANGUAGE SELECT
+========================= */
+.lang-select {
+  display: inline-block;
+  width: auto;
+  max-width: 74px;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 38px;
+  padding: 0 22px 0 10px;
+  border-radius: 19px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: rgba(255, 255, 255, .06) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="%23e4e1dc" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right 8px center;
+  background-size: 10px;
+  color: #e4e1dc;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: border-color .25s, background-color .25s;
+  flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.lang-select:hover { border-color: #d6a060; }
+.lang-select option { background: #171310; color: #e4e1dc; }
+
+@media (max-width: 768px) {
+  .lang-select { margin-left: 6px; }
+}
+
+/* =========================
    LIGHT THEME
 ========================= */
 [data-theme="light"] body {
@@ -1016,6 +1050,17 @@ footer a:hover { color: #d6a060; }
 [data-theme="light"] .theme-toggle {
   border-color: rgba(0, 0, 0, .15);
   background: rgba(0, 0, 0, .04);
+  color: #241f1a;
+}
+
+[data-theme="light"] .lang-select {
+  border-color: rgba(0, 0, 0, .15);
+  background-color: rgba(0, 0, 0, .04);
+  color: #241f1a;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="%23241f1a" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>');
+}
+[data-theme="light"] .lang-select option {
+  background: #fff;
   color: #241f1a;
 }
 

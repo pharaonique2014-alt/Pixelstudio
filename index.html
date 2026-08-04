@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<script>(function(){try{if(localStorage.getItem('pxl-theme')==='light')document.documentElement.setAttribute('data-theme','light');var l=localStorage.getItem('pxl-lang');if(l&&l!=='fr')document.documentElement.setAttribute('lang',l);}catch(e){}})();</script>
 <!-- Google Tag Manager (loaded only after cookie consent, see cookie-consent.js) -->
 <script>
 window.__loadGTM = function(){
@@ -294,13 +294,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span></span><span></span><span></span>
     </div>
     <ul class="menu" id="menu">
-      <li><a href="index.html" class="active">Accueil</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="blog.html">Blog</a></li>
-      <li><a href="partenaires.html">Partenaires</a></li>
-      <li><a href="aide.html">Aide</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html" class="active" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="services.html" data-i18n="nav.services">Services</a></li>
+      <li><a href="shop.html" data-i18n="nav.shop">Shop</a></li>
+      <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+      <li><a href="partenaires.html" data-i18n="nav.partners">Partenaires</a></li>
+      <li><a href="aide.html" data-i18n="nav.help">Aide</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
   </nav>
@@ -326,37 +326,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="tagline">
       <span class="line"></span>
-      <span class="text">Agence Marketing Digital & Créative — Belgique</span>
+      <span class="text" data-i18n="hero.tagline">Agence Marketing Digital & Créative — Belgique</span>
       <span class="line"></span>
     </div>
 
 
-    <a href="shop.html" class="btn-hero">Découvrir la boutique</a>
+    <a href="shop.html" class="btn-hero" data-i18n="hero.cta">Découvrir la boutique</a>
   </header>
 
   <!-- STATS -->
   <section class="home-intro reveal">
     <div class="container">
-      <div class="section-label">Pourquoi Pixel Studio</div>
-      <h2>Vous payez des leads. Pas des promesses.</h2>
-      <p>Pixel Studio est une agence marketing digital basée en Belgique, spécialisée dans l'acquisition de prospects qualifiés pour les métiers du bâtiment et les TPE/PME. Pas de forfait opaque, pas de frais cachés — vous savez exactement ce que vous recevez, chaque mois.</p>
+      <div class="section-label" data-i18n="intro.label">Pourquoi Pixel Studio</div>
+      <h2 data-i18n="intro.title">Vous payez des leads. Pas des promesses.</h2>
+      <p data-i18n="intro.text">Pixel Studio est une agence marketing digital basée en Belgique, spécialisée dans l'acquisition de prospects qualifiés pour les métiers du bâtiment et les TPE/PME. Pas de forfait opaque, pas de frais cachés — vous savez exactement ce que vous recevez, chaque mois.</p>
 
       <div class="stats-bar">
         <div class="stat-item">
           <span class="stat-number">0 €</span>
-          <span class="stat-label">Frais de démarrage</span>
+          <span class="stat-label" data-i18n="intro.stat1">Frais de démarrage</span>
         </div>
         <div class="stat-item">
           <span class="stat-number">48h</span>
-          <span class="stat-label">Remplacement lead non conforme</span>
+          <span class="stat-label" data-i18n="intro.stat2">Remplacement lead non conforme</span>
         </div>
         <div class="stat-item">
           <span class="stat-number">100%</span>
-          <span class="stat-label">Landing page offerte</span>
+          <span class="stat-label" data-i18n="intro.stat3">Landing page offerte</span>
         </div>
         <div class="stat-item">
           <span class="stat-number">6 mois</span>
-          <span class="stat-label">Engagement · résiliable après</span>
+          <span class="stat-label" data-i18n="intro.stat4">Engagement · résiliable après</span>
         </div>
       </div>
     </div>
@@ -581,6 +581,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <script src="scroll-slider.js"></script>
   <script src="menu.js"></script>
   <script src="theme.js"></script>
+  <script src="i18n-data.js"></script>
+  <script src="lang.js"></script>
   <script src="cookie-consent.js"></script>
   <script src="pixie.js"></script>
 
