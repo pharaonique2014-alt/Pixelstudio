@@ -1,9 +1,8 @@
 // Dictionnaires de traduction pour le sélecteur de langue (lang.js).
 // Clé plate "page.section.element" -> texte traduit. Le français reste
 // toujours le texte HTML par défaut (aucune entrée "fr" nécessaire ici) ;
-// ce fichier ne couvre pour l'instant que la navigation partagée et le haut
-// de la page d'accueil — le reste du site (shop, pages produit, blog...)
-// suit dans des passes ultérieures.
+// ce fichier couvre index.html en entier — le reste du site (shop, pages
+// produit, blog...) suit dans des passes ultérieures.
 window.PXL_I18N = {
   en: {
     'nav.home': 'Home',
@@ -21,7 +20,79 @@ window.PXL_I18N = {
     'intro.stat1': 'Setup fee',
     'intro.stat2': 'Non-compliant lead replacement',
     'intro.stat3': 'Landing page included',
-    'intro.stat4': 'Commitment · cancellable after'
+    'intro.stat4': 'Commitment · cancellable after',
+
+    'diff.label': 'Our difference',
+    'diff.title': 'What sets us apart',
+    'diff.c1.h': 'Exclusive & qualified leads',
+    'diff.c1.p': 'Every prospect is filtered by geographic area and explicit quote request. Your leads are never shared with a competitor.',
+    'diff.c2.h': 'Landing page included',
+    'diff.c2.p': 'Included in every plan, your conversion landing page is built, hosted and optimized by us. Value: €1,000. Your cost: €0.',
+    'diff.c3.h': 'Transparent contract',
+    'diff.c3.p': 'Everything is spelled out in writing: qualification criteria, replacement guarantee, territorial exclusivity, cancellation terms.',
+    'diff.c4.h': 'Monthly reporting',
+    'diff.c4.p': 'Every month you get a full dashboard: cost per lead, volume delivered, campaign performance. No black box.',
+    'diff.c5.h': 'A dedicated contact',
+    'diff.c5.p': 'No call center, no account manager juggling 50 clients. You get a direct, responsive contact who knows your file.',
+    'diff.c6.h': 'Creative services included',
+    'diff.c6.p': 'Photo, drone, print, visual identity — all under one roof so your brand image stays consistent everywhere.',
+
+    'about.label': 'About',
+    'about.desc': 'Immersed in web design and photography since childhood, it\'s far more than a passion — it\'s a way of seeing the world. Every site, every campaign, every shot tells a story. <em>Yours.</em>',
+    'about.cta': 'Let\'s work together',
+
+    'pricing.label': 'Our plans',
+    'pricing.title': 'Clear pricing, no surprises',
+    'pricing.subtitle': 'Monthly billing · 6-month commitment · Management & steering fee: €400 excl. VAT/month included in every plan',
+    'pricing.leadsMo': 'leads/month',
+    'pricing.htva': 'excl. VAT/month',
+    'pricing.gestion': '+ €400 management & steering',
+    'pricing.lp': 'Conversion landing page included',
+    'pricing.repl': 'Lead replacement within 48h',
+    'pricing.start': 'Get started',
+    'pricing.badge': '⚡ Most popular',
+    'pricing.p1.name': 'Starter Plan',
+    'pricing.p1.f1': '25 exclusive qualified prospects',
+    'pricing.p1.f3': 'Dedicated Meta Ads campaign',
+    'pricing.p1.f4': 'Territorial exclusivity',
+    'pricing.p1.f6': 'Monthly reporting',
+    'pricing.p2.name': 'Performance Plan',
+    'pricing.p2.f1': '50 exclusive qualified prospects',
+    'pricing.p2.f3': 'Advanced multi-audience campaigns',
+    'pricing.p2.f4': 'Extended territorial exclusivity',
+    'pricing.p2.f6': 'Detailed monthly reporting',
+    'pricing.p3.name': 'Complete Plan',
+    'pricing.p3.f1': '100 exclusive qualified prospects',
+    'pricing.p3.f3': 'Full omnichannel strategy',
+    'pricing.p3.f4': 'Maximum territorial exclusivity',
+    'pricing.p3.f6': 'Weekly + monthly reporting',
+    'pricing.note': 'All prices are excl. VAT (21%). Firm 6-month commitment. Cancellable with 30 days\' notice after the initial period.<br>Switch Incentive clause: coming from another agency? Contact us for an exclusive transition offer.',
+
+    'svc2.label': 'Our other services',
+    'svc2.title': 'Far more than just leads',
+    'svc2.more': 'Learn more →',
+    'svc2.shop': 'Visit the shop →',
+    'svc2.c1.h': 'Photography',
+    'svc2.c1.p': 'Portraits, before/after job sites, events, products. Professional images that showcase your work.',
+    'svc2.c2.h': 'Flyers & Print',
+    'svc2.c2.p': 'Flyers, posters, business cards, visual identity. Your printed communication, crafted with care.',
+    'svc2.c3.h': 'Website',
+    'svc2.c3.p': 'Custom, hand-coded showcase websites. Fast, SEO-optimized, built to convert your visitors.',
+    'svc2.c4.h': 'Drone 4K',
+    'svc2.c4.p': 'Certified aerial footage of your job sites, roofs, façades. Premium content for your channels and materials.',
+
+    'cta2.title': 'Ready to fill your order book?',
+    'cta2.text': 'Let\'s talk about your area, your trade, your goals. I personally reply to every request within 24h.',
+    'cta2.btn': 'Request a free consultation',
+
+    'partners.title': 'Partners',
+    'partners.sub': 'Join our first partners',
+    'partners.slots': '8 spots remaining',
+
+    'footer.tagline': '© Pixel Studio 2026 — Digital & Creative Marketing Agency — Belgium',
+    'footer.help': 'Help & FAQ',
+    'footer.privacy': 'Privacy Policy',
+    'footer.cookies': 'Manage cookies'
   },
   nl: {
     'nav.home': 'Home',
@@ -39,6 +110,78 @@ window.PXL_I18N = {
     'intro.stat1': 'Opstartkosten',
     'intro.stat2': 'Vervanging niet-conforme lead',
     'intro.stat3': 'Landingspagina inbegrepen',
-    'intro.stat4': 'Looptijd · opzegbaar nadien'
+    'intro.stat4': 'Looptijd · opzegbaar nadien',
+
+    'diff.label': 'Ons verschil',
+    'diff.title': 'Wat ons onderscheidt',
+    'diff.c1.h': 'Exclusieve & gekwalificeerde leads',
+    'diff.c1.p': 'Elke prospect wordt gefilterd op geografische zone en expliciete offerteaanvraag. Uw leads worden nooit gedeeld met een concurrent.',
+    'diff.c2.h': 'Landingspagina inbegrepen',
+    'diff.c2.p': 'Inbegrepen in elke formule: uw conversie-landingspagina wordt door ons gemaakt, gehost en geoptimaliseerd. Waarde: € 1.000. Voor u: € 0.',
+    'diff.c3.h': 'Transparant contract',
+    'diff.c3.p': 'Alles staat zwart op wit: kwalificatiecriteria, vervangingsgarantie, territoriale exclusiviteit, opzegvoorwaarden.',
+    'diff.c4.h': 'Maandelijkse rapportage',
+    'diff.c4.p': 'Elke maand ontvangt u een volledig dashboard: kost per lead, geleverd volume, campagneprestaties. Geen black box.',
+    'diff.c5.h': 'Vaste contactpersoon',
+    'diff.c5.p': 'Geen callcenter, geen accountmanager die 50 klanten beheert. U heeft een direct, responsief aanspreekpunt dat uw dossier kent.',
+    'diff.c6.h': 'Creatieve diensten inbegrepen',
+    'diff.c6.p': 'Foto, drone, print, huisstijl — alles onder één dak zodat uw imago overal consistent blijft.',
+
+    'about.label': 'Over ons',
+    'about.desc': 'Al van kinds af aan ondergedompeld in webdesign en fotografie — meer dan een passie, het is een manier van naar de wereld kijken. Elke site, elke campagne, elke foto vertelt een verhaal. <em>Het uwe.</em>',
+    'about.cta': 'Laten we samenwerken',
+
+    'pricing.label': 'Onze formules',
+    'pricing.title': 'Duidelijke tarieven, geen verrassingen',
+    'pricing.subtitle': 'Maandelijkse facturatie · Looptijd 6 maanden · Beheer- en sturingskosten: € 400 excl. btw/maand inbegrepen in elke formule',
+    'pricing.leadsMo': 'leads/maand',
+    'pricing.htva': 'excl. btw/maand',
+    'pricing.gestion': '+ € 400 beheer & sturing',
+    'pricing.lp': 'Conversie-landingspagina inbegrepen',
+    'pricing.repl': 'Vervanging lead binnen 48u',
+    'pricing.start': 'Starten',
+    'pricing.badge': '⚡ Meest gekozen',
+    'pricing.p1.name': 'Startformule',
+    'pricing.p1.f1': '25 exclusieve gekwalificeerde prospects',
+    'pricing.p1.f3': 'Toegewijde Meta Ads-campagne',
+    'pricing.p1.f4': 'Territoriale exclusiviteit',
+    'pricing.p1.f6': 'Maandelijkse rapportage',
+    'pricing.p2.name': 'Performanceformule',
+    'pricing.p2.f1': '50 exclusieve gekwalificeerde prospects',
+    'pricing.p2.f3': 'Geavanceerde multi-doelgroepcampagnes',
+    'pricing.p2.f4': 'Uitgebreide territoriale exclusiviteit',
+    'pricing.p2.f6': 'Gedetailleerde maandelijkse rapportage',
+    'pricing.p3.name': 'Volledige formule',
+    'pricing.p3.f1': '100 exclusieve gekwalificeerde prospects',
+    'pricing.p3.f3': 'Volledige omnichannel strategie',
+    'pricing.p3.f4': 'Maximale territoriale exclusiviteit',
+    'pricing.p3.f6': 'Wekelijkse + maandelijkse rapportage',
+    'pricing.note': 'Alle prijzen zijn excl. btw (21%). Vaste looptijd van 6 maanden. Opzegbaar met 30 dagen opzegtermijn na de initiële periode.<br>Switch Incentive-clausule: komt u van een ander bureau? Neem contact op voor een exclusief overstapaanbod.',
+
+    'svc2.label': 'Onze andere diensten',
+    'svc2.title': 'Veel meer dan alleen leads',
+    'svc2.more': 'Meer weten →',
+    'svc2.shop': 'Bekijk de shop →',
+    'svc2.c1.h': 'Fotografie',
+    'svc2.c1.p': 'Portretten, voor/na werven, evenementen, producten. Professionele beelden die uw werk laten schitteren.',
+    'svc2.c2.h': 'Flyers & Print',
+    'svc2.c2.p': 'Flyers, affiches, visitekaartjes, huisstijl. Uw gedrukte communicatie, met zorg samengesteld.',
+    'svc2.c3.h': 'Website',
+    'svc2.c3.p': 'Op maat gemaakte, handgecodeerde websites. Snel, SEO-geoptimaliseerd, gebouwd om uw bezoekers te converteren.',
+    'svc2.c4.h': 'Drone 4K',
+    'svc2.c4.p': 'Gecertificeerde luchtopnames van uw werven, daken, gevels. Premium content voor uw kanalen en materialen.',
+
+    'cta2.title': 'Klaar om uw orderboek te vullen?',
+    'cta2.text': 'Laten we praten over uw zone, uw vak, uw doelen. Ik reageer persoonlijk op elke aanvraag binnen 24u.',
+    'cta2.btn': 'Vraag een gratis kennismaking aan',
+
+    'partners.title': 'Partners',
+    'partners.sub': 'Word een van onze eerste partners',
+    'partners.slots': '8 plaatsen beschikbaar',
+
+    'footer.tagline': '© Pixel Studio 2026 — Digitaal & Creatief Marketingbureau — België',
+    'footer.help': 'Hulp & FAQ',
+    'footer.privacy': 'Privacybeleid',
+    'footer.cookies': 'Cookies beheren'
   }
 };
