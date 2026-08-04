@@ -70,7 +70,12 @@
     document.dispatchEvent(new CustomEvent('pxl-lang-change', { detail: { lang: lang } }));
   }
 
-  window.pxlLang = { set: setLang, current: current, supported: SUPPORTED };
+  function t(key, fallback) {
+    var v = dictFor(current())[key];
+    return v != null ? v : (fallback != null ? fallback : key);
+  }
+
+  window.pxlLang = { set: setLang, current: current, supported: SUPPORTED, t: t };
 
   document.addEventListener('DOMContentLoaded', function () {
     injectSelectors();

@@ -92,7 +92,9 @@ window.PXL_I18N = {
     'footer.tagline': '© Pixel Studio 2026 — Digital & Creative Marketing Agency — Belgium',
     'footer.help': 'Help & FAQ',
     'footer.privacy': 'Privacy Policy',
-    'footer.cookies': 'Manage cookies'
+    'footer.cookies': 'Manage cookies',
+
+    'shop.login': 'Log in'
   },
   nl: {
     'nav.home': 'Home',
@@ -182,6 +184,8 @@ window.PXL_I18N = {
     'footer.tagline': '© Pixel Studio 2026 — Digitaal & Creatief Marketingbureau — België',
     'footer.help': 'Hulp & FAQ',
     'footer.privacy': 'Privacybeleid',
-    'footer.cookies': 'Cookies beheren'
+    'footer.cookies': 'Cookies beheren',
+
+    'shop.login': 'Inloggen'
   }
 };
