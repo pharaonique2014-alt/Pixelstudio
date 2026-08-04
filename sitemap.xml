@@ -86,16 +86,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pxlstudio.be/produit-cdv-rd.html</loc>
-    <lastmod>2026-07-31</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://pxlstudio.be/produit-cdv-sq.html</loc>
-    <lastmod>2026-07-31</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://pxlstudio.be/produit-cdv.html</loc>
     <lastmod>2026-07-31</lastmod>
     <priority>0.7</priority>
@@ -122,11 +112,6 @@
   </url>
   <url>
     <loc>https://pxlstudio.be/produit-entete.html</loc>
-    <lastmod>2026-07-31</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://pxlstudio.be/produit-enveloppe.html</loc>
     <lastmod>2026-07-31</lastmod>
     <priority>0.7</priority>
   </url>
