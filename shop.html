@@ -109,17 +109,18 @@ nav.main{position:sticky;top:0;z-index:60;background:#0d0b09;border-bottom:1px s
 .lang-select option{background:var(--bg);color:var(--txt)}
 
 .hero{position:relative;text-align:center;padding:70px 20px 46px;border-bottom:1px solid var(--line);overflow:hidden}
-.hero .logo-x{height:64px;margin-bottom:22px}
+.hero .logo-x{width:180px;margin-bottom:22px}
 .hero h1{font-size:clamp(24px,4.2vw,40px);letter-spacing:.32em;text-transform:uppercase;font-weight:400;margin-bottom:8px}
-.hero h1.wm{margin-bottom:8px}
-.hero h1.wm .wm-pixel{color:var(--gold2)}
-.hero h1.wm .wm-studio span{display:inline-block}
-.hero h1.wm .s1{color:#dc7f2e}
-.hero h1.wm .s2{color:#d9a23b}
-.hero h1.wm .s3{color:#9c9077}
-.hero h1.wm .s4{color:#6b7f8c}
-.hero h1.wm .s5{color:#46687d}
-.hero h1.wm .s6{color:#2c5f82}
+.hero h1.logo-slot{display:flex;justify-content:center;align-items:center;gap:5px;letter-spacing:.15em;text-transform:none}
+.hero h1.logo-slot span{display:inline-flex;align-items:center;justify-content:center;width:1ch;height:1.3em;line-height:1.05;overflow:visible}
+.hero h1.logo-slot span.space{width:.7em}
+.hero h1.logo-slot .gold{color:var(--gold2)}
+.hero h1.logo-slot .s1{color:#dc7f2e}
+.hero h1.logo-slot .s2{color:#d9a23b}
+.hero h1.logo-slot .s3{color:#9c9077}
+.hero h1.logo-slot .s4{color:#6b7f8c}
+.hero h1.logo-slot .s5{color:#46687d}
+.hero h1.logo-slot .s6{color:#2c5f82}
 .hero .tagline{display:flex;align-items:center;justify-content:center;gap:15px;margin:13px auto 22px;max-width:620px}
 .hero .tagline .line{flex:1;height:1px;background:rgba(214,160,96,.35)}
 .hero .tagline .text{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
@@ -475,7 +476,9 @@ footer img{height:24px;opacity:.85;margin-bottom:11px}
   .cartbtn{padding:7px 11px;font-size:11.5px}
   .accbtn{padding:8px 12px;font-size:10.5px;max-width:96px}
   .hero{padding:44px 14px 34px}
+  .hero .logo-x{width:150px}
   .hero h1{font-size:clamp(18px,6.4vw,26px);letter-spacing:.16em}
+  .hero h1.logo-slot{gap:3px;letter-spacing:.11em}
   .hero .tagline{gap:8px;margin:10px auto 16px}
   .hero .tagline .line{display:none}
   .hero .tagline .text{font-size:9.5px;letter-spacing:.08em;white-space:normal;line-height:1.5;text-align:center}
@@ -600,7 +603,20 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <div class="page open" id="page-shop">
   <div class="hero">
     <img src="x-pixel.png" class="logo-x" alt="Pixel Studio" onerror="this.style.display='none'">
-    <h1 class="wm"><span class="wm-pixel">Pixel</span> <span class="wm-studio"><span class="s1">S</span><span class="s2">t</span><span class="s3">u</span><span class="s4">d</span><span class="s5">i</span><span class="s6">o</span></span></h1>
+    <h1 class="logo-slot" id="logoSlot">
+      <span class="gold" data-final="P">P</span>
+      <span class="gold" data-final="I">I</span>
+      <span class="gold" data-final="X">X</span>
+      <span class="gold" data-final="E">E</span>
+      <span class="gold" data-final="L">L</span>
+      <span class="space"> </span>
+      <span class="s1" data-final="S">S</span>
+      <span class="s2" data-final="T">T</span>
+      <span class="s3" data-final="U">U</span>
+      <span class="s4" data-final="D">D</span>
+      <span class="s5" data-final="I">I</span>
+      <span class="s6" data-final="O">O</span>
+    </h1>
     <div class="tagline"><span class="line"></span><span class="text" data-i18n="shop.tagline">Impression en ligne — Pros &amp; Particuliers</span><span class="line"></span></div>
     <p class="lead" data-i18n-html="shop.lead">Cartes de visite, flyers, roll-ups, stickers, <b>faire-parts</b>… Uploadez votre fichier, visualisez-le en <b>3D</b>, commandez en 2 minutes. Livraison <b>Belgique, Pays-Bas &amp; Luxembourg</b>.</p>
     <a class="btn-gold" href="#catalogue" onclick="jumpTo('catalogue');return false" data-i18n="shop.discoverCatalog">Découvrir le catalogue</a>
@@ -1085,6 +1101,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <script src="i18n-data.js"></script>
 <script src="lang.js"></script>
 <script src="cookie-consent.js"></script>
+<script src="logo-morph.js"></script>
 <script>
 (function(){
   var source = document.querySelector('.stat-logos');
