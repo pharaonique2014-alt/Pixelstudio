@@ -20,14 +20,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="keywords" content="imprimerie en ligne Belgique, cartes de visite Charleroi, flyers Wallonie, roll-up, stickers, faire-part, impression Fleurus">
 <link rel="canonical" href="https://pxlstudio.be/shop.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Pixel Print — Impression en ligne | Pixel Studio">
+<meta property="og:title" content="Pixel Studio — Impression en ligne">
 <meta property="og:description" content="Cartes de visite, flyers, roll-ups, faire-parts. Aperçu 3D, livraison Benelux, paiement Bancontact.">
 <meta property="og:url" content="https://pxlstudio.be/shop.html">
 <meta property="og:image" content="https://pxlstudio.be/x-pixel.png">
 <meta property="og:locale" content="fr_BE">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"LocalBusiness","name":"Pixel Studio — Pixel Print",
+{"@context":"https://schema.org","@type":"LocalBusiness","name":"Pixel Studio",
 "description":"Impression en ligne et création graphique pour entreprises et particuliers.",
 "url":"https://pxlstudio.be/shop.html","email":"projets@pxlstudio.be",
 "vatID":"BE 1032.720.495","priceRange":"€€",
@@ -111,7 +111,15 @@ nav.main{position:sticky;top:0;z-index:60;background:#0d0b09;border-bottom:1px s
 .hero{position:relative;text-align:center;padding:70px 20px 46px;border-bottom:1px solid var(--line);overflow:hidden}
 .hero .logo-x{height:64px;margin-bottom:22px}
 .hero h1{font-size:clamp(24px,4.2vw,40px);letter-spacing:.32em;text-transform:uppercase;font-weight:400;margin-bottom:8px}
-.hero h1 .gold{color:var(--gold2)}
+.hero h1.wm{margin-bottom:8px}
+.hero h1.wm .wm-pixel{color:var(--gold2)}
+.hero h1.wm .wm-studio span{display:inline-block}
+.hero h1.wm .s1{color:#dc7f2e}
+.hero h1.wm .s2{color:#d9a23b}
+.hero h1.wm .s3{color:#9c9077}
+.hero h1.wm .s4{color:#6b7f8c}
+.hero h1.wm .s5{color:#46687d}
+.hero h1.wm .s6{color:#2c5f82}
 .hero .tagline{display:flex;align-items:center;justify-content:center;gap:15px;margin:13px auto 22px;max-width:620px}
 .hero .tagline .line{flex:1;height:1px;background:rgba(214,160,96,.35)}
 .hero .tagline .text{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
@@ -550,10 +558,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <nav class="main">
   <div class="nav">
     <button id="menuBtn" onclick="toggleMenu()" title="Menu" aria-label="Menu"><i></i><i></i><i></i></button>
-    <a href="index.html" class="logo">
-      <img src="x-pixel.png" alt="Pixel Studio" onerror="this.style.display='none'">
-      <span class="wm"><b>Pixel</b>&nbsp;Print<small>by Pixel Studio</small></span>
-    </a>
     <div class="links">
       <button class="navbtn navicon" id="navShop" onclick="go('shop')" title="Retour à la boutique" data-i18n-title="dyn.backToShop">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"/><path d="M18.5 5.5 12 12l6.5 6.5" opacity=".45"/></svg>
@@ -567,8 +571,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <noscript>
 <div style="max-width:1000px;margin:0 auto;padding:30px 20px;color:#e4e1dc">
-<h1>Pixel Print — Impression en ligne en Belgique</h1>
-<p>Pixel Print est le service d'impression en ligne de <strong>Pixel Studio</strong> (Fleurus / Charleroi).
+<h1>Pixel Studio — Impression en ligne en Belgique</h1>
+<p><strong>Pixel Studio</strong> (Fleurus / Charleroi) propose un service d'impression en ligne.
 Impression professionnelle pour PME, indépendants et particuliers, avec livraison en Belgique, aux Pays-Bas et au Luxembourg.</p>
 <h2>Nos produits d'impression</h2>
 <ul>
@@ -596,7 +600,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <div class="page open" id="page-shop">
   <div class="hero">
     <img src="x-pixel.png" class="logo-x" alt="Pixel Studio" onerror="this.style.display='none'">
-    <h1><span class="gold">Pixel</span> Print</h1>
+    <h1 class="wm"><span class="wm-pixel">Pixel</span> <span class="wm-studio"><span class="s1">S</span><span class="s2">t</span><span class="s3">u</span><span class="s4">d</span><span class="s5">i</span><span class="s6">o</span></span></h1>
     <div class="tagline"><span class="line"></span><span class="text" data-i18n="shop.tagline">Impression en ligne — Pros &amp; Particuliers</span><span class="line"></span></div>
     <p class="lead" data-i18n-html="shop.lead">Cartes de visite, flyers, roll-ups, stickers, <b>faire-parts</b>… Uploadez votre fichier, visualisez-le en <b>3D</b>, commandez en 2 minutes. Livraison <b>Belgique, Pays-Bas &amp; Luxembourg</b>.</p>
     <a class="btn-gold" href="#catalogue" onclick="jumpTo('catalogue');return false" data-i18n="shop.discoverCatalog">Découvrir le catalogue</a>
@@ -963,15 +967,15 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 
 <div class="page" id="page-cgv">
   <div class="cgv-wrap">
-    <div class="section-label">Pixel Print</div>
+    <div class="section-label">Pixel Studio</div>
     <h2 data-i18n="cgv.title">Conditions générales de vente</h2>
     <p style="margin-top:6px" data-i18n="cgv.updated">Dernière mise à jour : juillet 2026</p>
 
     <h3 data-i18n="cgv.h1">1. Identité du vendeur</h3>
-    <p data-i18n-html="cgv.p1">Le service « Pixel Print » est exploité par <b style="color:var(--txt2)">Pixel Studio</b>, entreprise inscrite à la Banque-Carrefour des Entreprises sous le numéro <b style="color:var(--txt2)">BE 1032.720.495</b> (ci-après « le Vendeur »). Contact : <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a>.</p>
+    <p data-i18n-html="cgv.p1"><b style="color:var(--txt2)">Pixel Studio</b>, entreprise inscrite à la Banque-Carrefour des Entreprises sous le numéro <b style="color:var(--txt2)">BE 1032.720.495</b> (ci-après « le Vendeur »), exploite la boutique en ligne accessible sur pxlstudio.be. Contact : <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a>.</p>
 
     <h3 data-i18n="cgv.h2">2. Champ d'application</h3>
-    <p data-i18n="cgv.p2">Les présentes conditions générales de vente (CGV) s'appliquent à toute commande passée sur la boutique en ligne Pixel Print par un client professionnel ou particulier. Toute commande implique l'acceptation sans réserve des présentes CGV, confirmée par une case à cocher lors de la commande.</p>
+    <p data-i18n="cgv.p2">Les présentes conditions générales de vente (CGV) s'appliquent à toute commande passée sur la boutique en ligne Pixel Studio par un client professionnel ou particulier. Toute commande implique l'acceptation sans réserve des présentes CGV, confirmée par une case à cocher lors de la commande.</p>
 
     <h3 data-i18n="cgv.h3">3. Produits et prix</h3>
     <p data-i18n="cgv.p3">Les produits proposés sont des imprimés personnalisés réalisés à partir des fichiers fournis par le client ou créés par le Vendeur. Les prix sont affichés hors TVA (HTVA) ; la TVA belge de 21 % et les éventuels frais de livraison sont ajoutés et affichés avant validation de la commande. Le Vendeur se réserve le droit de modifier ses prix à tout moment ; les produits sont facturés au tarif en vigueur au moment de la validation de la commande.</p>
@@ -994,7 +998,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     <p data-i18n-html="cgv.p7">Les délais affichés (en jours ouvrables, hors week-ends et jours fériés belges) sont des <b style="color:var(--txt2)">estimations données à titre indicatif</b> et courent à partir de la validation du paiement et de la réception de fichiers exploitables — ou, pour le service de création, à partir de l'approbation du BAT. Certaines finitions allongent le délai de production ; cette information est affichée lors de la configuration. Un dépassement raisonnable des délais ne peut donner lieu à annulation de la commande, dommages et intérêts ou pénalités.</p>
 
     <h3 data-i18n="cgv.h8">8. Absence de droit de rétractation</h3>
-    <p data-i18n-html="cgv.p8">Conformément à l'article VI.53, 3° du Code de droit économique, le droit de rétractation de 14 jours <b style="color:var(--txt2)">ne s'applique pas</b> aux biens confectionnés selon les spécifications du consommateur ou nettement personnalisés, ce qui est le cas de tous les produits proposés sur Pixel Print. Toute commande validée et payée est donc définitive.</p>
+    <p data-i18n-html="cgv.p8">Conformément à l'article VI.53, 3° du Code de droit économique, le droit de rétractation de 14 jours <b style="color:var(--txt2)">ne s'applique pas</b> aux biens confectionnés selon les spécifications du consommateur ou nettement personnalisés, ce qui est le cas de tous les produits proposés sur Pixel Studio. Toute commande validée et payée est donc définitive.</p>
 
     <h3 data-i18n="cgv.h9">9. Conformité et réclamations</h3>
     <p data-i18n-html="cgv.p9">Le client est tenu de vérifier les produits à la livraison. Toute réclamation relative à un défaut apparent, une erreur de production imputable au Vendeur ou un colis endommagé doit être adressée à projets@pxlstudio.be dans les <b style="color:var(--txt2)">7 jours calendrier</b> suivant la réception, photos à l'appui. En cas de défaut avéré imputable au Vendeur, celui-ci procédera, à son choix, à la réimpression du produit ou au remboursement, à l'exclusion de toute autre indemnité. La garantie légale de conformité de 2 ans s'applique au bénéfice des consommateurs.</p>
@@ -1016,7 +1020,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <footer>
   <div class="stat-logos" id="footerPayLogos" style="justify-content:center;margin-bottom:14px"></div>
   <img src="x-pixel.png" alt="" onerror="this.style.display='none'"><br>
-  © Pixel Studio 2026 — Pixel Print · <a href="index.html">pxlstudio.be</a> · BCE : BE 1032.720.495<br>
+  © Pixel Studio 2026 · <a href="index.html">pxlstudio.be</a> · BCE : BE 1032.720.495<br>
   <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a> · <a href="aide.html">Aide &amp; FAQ</a> · <a href="blog.html">Blog</a> · <a href="#" onclick="go('cgv');return false">Conditions générales de vente</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a>
 </footer>
 <div id="drawerBack" onclick="closeAll()"></div>

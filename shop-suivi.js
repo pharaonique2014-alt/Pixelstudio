@@ -352,8 +352,7 @@ window.clientMessage = function (order, cust) {
   const L = [];
   L.push('Bonjour ' + cust.first + ',');
   L.push('');
-  L.push('Merci pour votre commande chez Pixel Print, le service d\'impression');
-  L.push('en ligne de Pixel Studio. Voici le récapitulatif :');
+  L.push('Merci pour votre commande chez Pixel Studio. Voici le récapitulatif :');
   L.push('');
   L.push('────────────────────────────────────────');
   L.push('COMMANDE ' + order.ref);

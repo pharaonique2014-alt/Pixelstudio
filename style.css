@@ -159,6 +159,13 @@ ul { list-style: none; }
   color: #d6a060;
 }
 
+.logo-slot .s1 { color: #dc7f2e; }
+.logo-slot .s2 { color: #d9a23b; }
+.logo-slot .s3 { color: #9c9077; }
+.logo-slot .s4 { color: #6b7f8c; }
+.logo-slot .s5 { color: #46687d; }
+.logo-slot .s6 { color: #2c5f82; }
+
 /* =========================
    TAGLINE
 ========================= */
