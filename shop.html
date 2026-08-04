@@ -555,7 +555,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="wm"><b>Pixel</b>&nbsp;Print<small>by Pixel Studio</small></span>
     </a>
     <div class="links">
-      <button class="navbtn navicon" id="navShop" onclick="go('shop')" title="Retour à la boutique">
+      <button class="navbtn navicon" id="navShop" onclick="go('shop')" title="Retour à la boutique" data-i18n-title="dyn.backToShop">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"/><path d="M18.5 5.5 12 12l6.5 6.5" opacity=".45"/></svg>
       </button>
       <button class="cartbtn" onclick="openCart()">&#128722; <span class="badge" id="cartBadge">0</span></button>
@@ -919,9 +919,9 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     <input class="inp" id="authPass2" type="password" placeholder="Confirmez le mot de passe" autocomplete="new-password" style="display:none" onkeydown="if(event.key==='Enter')doAuth()">
     <div id="turnstileBox" style="display:none;margin:4px 0 8px"></div>
     <button class="btn-main" style="width:100%" id="authAction" onclick="doAuth()" data-i18n="shop.login">Se connecter</button>
-    <div class="switch" id="authForgot"><a href="#" onclick="forgotPassword();return false">Mot de passe oublié ?</a></div>
+    <div class="switch" id="authForgot"><a href="#" onclick="forgotPassword();return false" data-i18n="dyn.forgotPassword">Mot de passe oublié ?</a></div>
     <div class="switch" id="authSwitch">Pas encore de compte ? <a href="#" onclick="toggleAuth();return false">Créer un compte</a></div>
-    <div class="switch"><a href="#" onclick="go('shop');return false">&#8592; Retour à la boutique</a></div>
+    <div class="switch"><a href="#" onclick="go('shop');return false">&#8592; <span data-i18n="dyn.backToShop">Retour à la boutique</span></a></div>
   </div>
 
   <div class="auth-wrap" id="resetBox" style="display:none">
@@ -964,51 +964,51 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 <div class="page" id="page-cgv">
   <div class="cgv-wrap">
     <div class="section-label">Pixel Print</div>
-    <h2>Conditions générales de vente</h2>
-    <p style="margin-top:6px">Dernière mise à jour : juillet 2026</p>
+    <h2 data-i18n="cgv.title">Conditions générales de vente</h2>
+    <p style="margin-top:6px" data-i18n="cgv.updated">Dernière mise à jour : juillet 2026</p>
 
-    <h3>1. Identité du vendeur</h3>
-    <p>Le service « Pixel Print » est exploité par <b style="color:var(--txt2)">Pixel Studio</b>, entreprise inscrite à la Banque-Carrefour des Entreprises sous le numéro <b style="color:var(--txt2)">BE 1032.720.495</b> (ci-après « le Vendeur »). Contact : <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a>.</p>
+    <h3 data-i18n="cgv.h1">1. Identité du vendeur</h3>
+    <p data-i18n-html="cgv.p1">Le service « Pixel Print » est exploité par <b style="color:var(--txt2)">Pixel Studio</b>, entreprise inscrite à la Banque-Carrefour des Entreprises sous le numéro <b style="color:var(--txt2)">BE 1032.720.495</b> (ci-après « le Vendeur »). Contact : <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a>.</p>
 
-    <h3>2. Champ d'application</h3>
-    <p>Les présentes conditions générales de vente (CGV) s'appliquent à toute commande passée sur la boutique en ligne Pixel Print par un client professionnel ou particulier. Toute commande implique l'acceptation sans réserve des présentes CGV, confirmée par une case à cocher lors de la commande.</p>
+    <h3 data-i18n="cgv.h2">2. Champ d'application</h3>
+    <p data-i18n="cgv.p2">Les présentes conditions générales de vente (CGV) s'appliquent à toute commande passée sur la boutique en ligne Pixel Print par un client professionnel ou particulier. Toute commande implique l'acceptation sans réserve des présentes CGV, confirmée par une case à cocher lors de la commande.</p>
 
-    <h3>3. Produits et prix</h3>
-    <p>Les produits proposés sont des imprimés personnalisés réalisés à partir des fichiers fournis par le client ou créés par le Vendeur. Les prix sont affichés hors TVA (HTVA) ; la TVA belge de 21 % et les éventuels frais de livraison sont ajoutés et affichés avant validation de la commande. Le Vendeur se réserve le droit de modifier ses prix à tout moment ; les produits sont facturés au tarif en vigueur au moment de la validation de la commande.</p>
+    <h3 data-i18n="cgv.h3">3. Produits et prix</h3>
+    <p data-i18n="cgv.p3">Les produits proposés sont des imprimés personnalisés réalisés à partir des fichiers fournis par le client ou créés par le Vendeur. Les prix sont affichés hors TVA (HTVA) ; la TVA belge de 21 % et les éventuels frais de livraison sont ajoutés et affichés avant validation de la commande. Le Vendeur se réserve le droit de modifier ses prix à tout moment ; les produits sont facturés au tarif en vigueur au moment de la validation de la commande.</p>
 
-    <h3>4. Commande</h3>
-    <p>La commande est ferme et définitive dès la validation du paiement (ou, en cas de paiement par virement, dès réception des fonds). Le Vendeur confirme la commande par e-mail. Le Vendeur se réserve le droit de refuser toute commande pour motif légitime, notamment en cas de contenu illicite, diffamatoire, contraire aux bonnes mœurs ou portant atteinte aux droits de tiers.</p>
+    <h3 data-i18n="cgv.h4">4. Commande</h3>
+    <p data-i18n="cgv.p4">La commande est ferme et définitive dès la validation du paiement (ou, en cas de paiement par virement, dès réception des fonds). Le Vendeur confirme la commande par e-mail. Le Vendeur se réserve le droit de refuser toute commande pour motif légitime, notamment en cas de contenu illicite, diffamatoire, contraire aux bonnes mœurs ou portant atteinte aux droits de tiers.</p>
 
-    <h3>5. Fichiers d'impression — responsabilité du client</h3>
-    <p>Les fichiers fournis par le client sont imprimés <b style="color:var(--txt2)">tels quels, sans vérification de contenu ni retouche</b>. Le client est seul responsable :</p>
+    <h3 data-i18n="cgv.h5">5. Fichiers d'impression — responsabilité du client</h3>
+    <p data-i18n-html="cgv.p5">Les fichiers fournis par le client sont imprimés <b style="color:var(--txt2)">tels quels, sans vérification de contenu ni retouche</b>. Le client est seul responsable :</p>
     <ul>
-      <li>de la qualité technique de ses fichiers (résolution, mode colorimétrique, fonds perdus, fautes d'orthographe, mise en page) ;</li>
-      <li>de la détention des droits d'utilisation et de reproduction des visuels, textes, logos et photographies fournis.</li>
+      <li data-i18n="cgv.p5.li1">de la qualité technique de ses fichiers (résolution, mode colorimétrique, fonds perdus, fautes d'orthographe, mise en page) ;</li>
+      <li data-i18n="cgv.p5.li2">de la détention des droits d'utilisation et de reproduction des visuels, textes, logos et photographies fournis.</li>
     </ul>
-    <p>Le client garantit le Vendeur contre tout recours de tiers relatif au contenu imprimé. De légères variations de couleurs entre l'aperçu à l'écran et le produit imprimé sont inhérentes aux procédés d'impression et ne constituent pas un défaut de conformité.</p>
+    <p data-i18n="cgv.p5b">Le client garantit le Vendeur contre tout recours de tiers relatif au contenu imprimé. De légères variations de couleurs entre l'aperçu à l'écran et le produit imprimé sont inhérentes aux procédés d'impression et ne constituent pas un défaut de conformité.</p>
 
-    <h3>6. Service de création graphique</h3>
-    <p>Lorsque le client souscrit au service de création de design, le Vendeur transmet une proposition graphique (BAT) par e-mail dans un délai indicatif de 48 heures ouvrables suivant la réception du brief complet. Une série de modifications est comprise dans le prix ; toute demande supplémentaire fait l'objet d'un devis complémentaire. L'impression n'est lancée qu'après approbation écrite du BAT par le client, qui vaut acceptation définitive du visuel. Les fichiers sources restent la propriété du Vendeur ; le client obtient un droit d'usage du visuel final pour son activité.</p>
+    <h3 data-i18n="cgv.h6">6. Service de création graphique</h3>
+    <p data-i18n="cgv.p6">Lorsque le client souscrit au service de création de design, le Vendeur transmet une proposition graphique (BAT) par e-mail dans un délai indicatif de 48 heures ouvrables suivant la réception du brief complet. Une série de modifications est comprise dans le prix ; toute demande supplémentaire fait l'objet d'un devis complémentaire. L'impression n'est lancée qu'après approbation écrite du BAT par le client, qui vaut acceptation définitive du visuel. Les fichiers sources restent la propriété du Vendeur ; le client obtient un droit d'usage du visuel final pour son activité.</p>
 
-    <h3>7. Délais de production et de livraison</h3>
-    <p>Les délais affichés (en jours ouvrables, hors week-ends et jours fériés belges) sont des <b style="color:var(--txt2)">estimations données à titre indicatif</b> et courent à partir de la validation du paiement et de la réception de fichiers exploitables — ou, pour le service de création, à partir de l'approbation du BAT. Certaines finitions allongent le délai de production ; cette information est affichée lors de la configuration. Un dépassement raisonnable des délais ne peut donner lieu à annulation de la commande, dommages et intérêts ou pénalités.</p>
+    <h3 data-i18n="cgv.h7">7. Délais de production et de livraison</h3>
+    <p data-i18n-html="cgv.p7">Les délais affichés (en jours ouvrables, hors week-ends et jours fériés belges) sont des <b style="color:var(--txt2)">estimations données à titre indicatif</b> et courent à partir de la validation du paiement et de la réception de fichiers exploitables — ou, pour le service de création, à partir de l'approbation du BAT. Certaines finitions allongent le délai de production ; cette information est affichée lors de la configuration. Un dépassement raisonnable des délais ne peut donner lieu à annulation de la commande, dommages et intérêts ou pénalités.</p>
 
-    <h3>8. Absence de droit de rétractation</h3>
-    <p>Conformément à l'article VI.53, 3° du Code de droit économique, le droit de rétractation de 14 jours <b style="color:var(--txt2)">ne s'applique pas</b> aux biens confectionnés selon les spécifications du consommateur ou nettement personnalisés, ce qui est le cas de tous les produits proposés sur Pixel Print. Toute commande validée et payée est donc définitive.</p>
+    <h3 data-i18n="cgv.h8">8. Absence de droit de rétractation</h3>
+    <p data-i18n-html="cgv.p8">Conformément à l'article VI.53, 3° du Code de droit économique, le droit de rétractation de 14 jours <b style="color:var(--txt2)">ne s'applique pas</b> aux biens confectionnés selon les spécifications du consommateur ou nettement personnalisés, ce qui est le cas de tous les produits proposés sur Pixel Print. Toute commande validée et payée est donc définitive.</p>
 
-    <h3>9. Conformité et réclamations</h3>
-    <p>Le client est tenu de vérifier les produits à la livraison. Toute réclamation relative à un défaut apparent, une erreur de production imputable au Vendeur ou un colis endommagé doit être adressée à projets@pxlstudio.be dans les <b style="color:var(--txt2)">7 jours calendrier</b> suivant la réception, photos à l'appui. En cas de défaut avéré imputable au Vendeur, celui-ci procédera, à son choix, à la réimpression du produit ou au remboursement, à l'exclusion de toute autre indemnité. La garantie légale de conformité de 2 ans s'applique au bénéfice des consommateurs.</p>
+    <h3 data-i18n="cgv.h9">9. Conformité et réclamations</h3>
+    <p data-i18n-html="cgv.p9">Le client est tenu de vérifier les produits à la livraison. Toute réclamation relative à un défaut apparent, une erreur de production imputable au Vendeur ou un colis endommagé doit être adressée à projets@pxlstudio.be dans les <b style="color:var(--txt2)">7 jours calendrier</b> suivant la réception, photos à l'appui. En cas de défaut avéré imputable au Vendeur, celui-ci procédera, à son choix, à la réimpression du produit ou au remboursement, à l'exclusion de toute autre indemnité. La garantie légale de conformité de 2 ans s'applique au bénéfice des consommateurs.</p>
 
-    <h3>10. Responsabilité</h3>
-    <p>La responsabilité du Vendeur est limitée au montant de la commande concernée. Le Vendeur ne peut être tenu responsable des dommages indirects (perte d'exploitation, préjudice commercial, événement manqué) ni des retards ou défauts résultant d'un cas de force majeure, d'une défaillance des transporteurs ou de fichiers non conformes fournis par le client.</p>
+    <h3 data-i18n="cgv.h10">10. Responsabilité</h3>
+    <p data-i18n="cgv.p10">La responsabilité du Vendeur est limitée au montant de la commande concernée. Le Vendeur ne peut être tenu responsable des dommages indirects (perte d'exploitation, préjudice commercial, événement manqué) ni des retards ou défauts résultant d'un cas de force majeure, d'une défaillance des transporteurs ou de fichiers non conformes fournis par le client.</p>
 
-    <h3>11. Données personnelles</h3>
-    <p>Les données collectées (identité, coordonnées, adresse, fichiers d'impression) sont utilisées uniquement pour le traitement des commandes, la facturation et la relation client, conformément au RGPD et à la <a href="politique-de-confidentialite.html">politique de confidentialité</a> de Pixel Studio. Le client dispose d'un droit d'accès, de rectification et de suppression via projets@pxlstudio.be.</p>
+    <h3 data-i18n="cgv.h11">11. Données personnelles</h3>
+    <p data-i18n-html="cgv.p11">Les données collectées (identité, coordonnées, adresse, fichiers d'impression) sont utilisées uniquement pour le traitement des commandes, la facturation et la relation client, conformément au RGPD et à la <a href="politique-de-confidentialite.html">politique de confidentialité</a> de Pixel Studio. Le client dispose d'un droit d'accès, de rectification et de suppression via projets@pxlstudio.be.</p>
 
-    <h3>12. Droit applicable et litiges</h3>
-    <p>Les présentes CGV sont régies par le droit belge. En cas de litige, une solution amiable sera recherchée en priorité. Le consommateur peut recourir au Service de Médiation pour le Consommateur (mediationconsommateur.be) ou à la plateforme européenne de règlement en ligne des litiges (ec.europa.eu/odr). À défaut, les tribunaux de l'arrondissement judiciaire du siège du Vendeur sont seuls compétents, sauf disposition légale impérative contraire.</p>
+    <h3 data-i18n="cgv.h12">12. Droit applicable et litiges</h3>
+    <p data-i18n="cgv.p12">Les présentes CGV sont régies par le droit belge. En cas de litige, une solution amiable sera recherchée en priorité. Le consommateur peut recourir au Service de Médiation pour le Consommateur (mediationconsommateur.be) ou à la plateforme européenne de règlement en ligne des litiges (ec.europa.eu/odr). À défaut, les tribunaux de l'arrondissement judiciaire du siège du Vendeur sont seuls compétents, sauf disposition légale impérative contraire.</p>
 
-    <div style="margin-top:26px"><button class="btn-main" onclick="go('shop')">&#8592; Retour à la boutique</button></div>
+    <div style="margin-top:26px"><button class="btn-main" onclick="go('shop')">&#8592; <span data-i18n="dyn.backToShop">Retour à la boutique</span></button></div>
   </div>
 </div>
 </main>
@@ -1021,54 +1021,54 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 </footer>
 <div id="drawerBack" onclick="closeAll()"></div>
 <nav id="navMenu" aria-label="Catalogue">
-  <div class="mhead"><span>Catalogue</span>
-    <button class="mclose" onclick="closeMenu()" title="Fermer">&#10005;</button></div>
+  <div class="mhead"><span data-i18n="dyn.catalogLabel">Catalogue</span>
+    <button class="mclose" onclick="closeMenu()" title="Fermer" data-i18n-title="dyn.close">&#10005;</button></div>
   <div class="mbody" id="menuBody"></div>
   <div class="mfoot">
-    <button class="btn-main" onclick="closeMenu();askQuote()">Demander un devis</button>
-    <button class="btn-ghost" onclick="closeMenu();go('account')">Espace client</button>
-    <a class="btn-ghost" href="aide.html" style="display:block">Aide &amp; FAQ</a>
-    <a class="btn-ghost" href="blog.html" style="display:block">Blog</a>
-    <a class="btn-ghost" href="partenaires.html" style="display:block">Partenaires</a>
-    <a class="btn-ghost" href="index.html" style="display:block">Retour au site</a>
+    <button class="btn-main" onclick="closeMenu();askQuote()" data-i18n="shop.quote.btn">Demander un devis</button>
+    <button class="btn-ghost" onclick="closeMenu();go('account')" data-i18n="dyn.customerArea">Espace client</button>
+    <a class="btn-ghost" href="aide.html" style="display:block" data-i18n="dyn.helpFaq">Aide &amp; FAQ</a>
+    <a class="btn-ghost" href="blog.html" style="display:block" data-i18n="nav.blog">Blog</a>
+    <a class="btn-ghost" href="partenaires.html" style="display:block" data-i18n="nav.partners">Partenaires</a>
+    <a class="btn-ghost" href="index.html" style="display:block" data-i18n="dyn.backToSite">Retour au site</a>
   </div>
 </nav>
 <aside id="drawer" aria-label="Panier">
   <div class="dhead">
-    <div><h3>Votre panier</h3><div class="cnt" id="dCount">0 article</div></div>
-    <button class="dclose" onclick="closeCart()" title="Fermer">&#10005;</button>
+    <div><h3 data-i18n="dyn.yourCart">Votre panier</h3><div class="cnt" id="dCount">0 article</div></div>
+    <button class="dclose" onclick="closeCart()" title="Fermer" data-i18n-title="dyn.close">&#10005;</button>
   </div>
   <div class="dbody" id="dBody"></div>
   <div class="dfoot" id="dFoot"></div>
 </aside>
 <aside id="accMenu" aria-label="Espace client">
-  <div class="mhead"><span>Espace client</span>
-    <button class="mclose" onclick="closeAccMenu()" title="Fermer">&#10005;</button></div>
+  <div class="mhead"><span data-i18n="dyn.customerArea">Espace client</span>
+    <button class="mclose" onclick="closeAccMenu()" title="Fermer" data-i18n-title="dyn.close">&#10005;</button></div>
   <div class="mbody accmbody">
     <button class="acc-link" onclick="closeAccMenu();go('shop')">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
-      <span>Retour à la boutique</span>
+      <span data-i18n="dyn.backToShop">Retour à la boutique</span>
     </button>
     <button class="acc-link" onclick="closeAccMenu();if(window.setTab){setTab('orders');}else{showOrders();}">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
-      <span>Commandes</span>
+      <span data-i18n="dyn.orders">Commandes</span>
     </button>
     <button class="acc-link" onclick="closeAccMenu();if(window.setTab){setTab('profile');}else{showProfile();}">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-4 4.2-6 7-6s5.6 2 7 6"/></svg>
-      <span>Mon profil</span>
+      <span data-i18n="dyn.myProfile">Mon profil</span>
     </button>
     <div class="acc-sep"></div>
     <button class="acc-link" onclick="closeAccMenu();openCart()">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h2l2 11h9l2-8H7"/><circle cx="10" cy="20" r="1.3"/><circle cx="16" cy="20" r="1.3"/></svg>
-      <span>Panier</span>
+      <span data-i18n="dyn.cart">Panier</span>
     </button>
     <button class="acc-link danger" onclick="closeAccMenu();logout()">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h-4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M19 12H9m10 0-3.5-3.5M19 12l-3.5 3.5"/></svg>
-      <span>Déconnexion</span>
+      <span data-i18n="dyn.logout">Déconnexion</span>
     </button>
   </div>
 </aside>
-<button id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Remonter en haut" aria-label="Remonter en haut">
+<button id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Remonter en haut" aria-label="Remonter en haut" data-i18n-title="dyn.scrollTop" data-i18n-aria-label="dyn.scrollTop">
   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
 </button>
 <div class="toast" id="toast"></div>
