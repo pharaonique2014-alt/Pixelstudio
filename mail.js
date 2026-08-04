@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    status.textContent = "Envoi en cours...";
+    const T = window.pxlLang ? window.pxlLang.t : function (k, f) { return f; };
+    status.textContent = T("dyn.sendingInProgress", "Envoi en cours...");
     status.style.color = "#e4e1dc";
 
     const data = new FormData(form);
@@ -30,11 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         status.textContent = "";
       } else {
-        status.textContent = "Erreur lors de l'envoi. Réessayez.";
+        status.textContent = T("dyn.sendError", "Erreur lors de l'envoi. Réessayez.");
         status.style.color = "#f2a65a";
       }
     } catch {
-      status.textContent = "Erreur réseau. Réessayez.";
+      status.textContent = T("dyn.networkError", "Erreur réseau. Réessayez.");
       status.style.color = "#f2a65a";
     }
   });

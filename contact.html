@@ -21,23 +21,23 @@
       <span></span><span></span><span></span>
     </div>
     <ul class="menu" id="menu">
-      <li><a href="index.html">Accueil</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="blog.html">Blog</a></li>
-      <li><a href="partenaires.html">Partenaires</a></li>
-      <li><a href="aide.html">Aide</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="services.html" data-i18n="nav.services">Services</a></li>
+      <li><a href="shop.html" data-i18n="nav.shop">Shop</a></li>
+      <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+      <li><a href="partenaires.html" data-i18n="nav.partners">Partenaires</a></li>
+      <li><a href="aide.html" data-i18n="nav.help">Aide</a></li>
+      <li><a href="contact.html" class="active" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
   </nav>
 
   <div class="page-header reveal">
     <div class="container">
-      <h1>Contact</h1>
+      <h1 data-i18n="nav.contact">Contact</h1>
       <div class="tagline">
         <span class="line"></span>
-        <span class="text">Je réponds personnellement à chaque message</span>
+        <span class="text" data-i18n="contact.tagline">Je réponds personnellement à chaque message</span>
         <span class="line"></span>
       </div>
     </div>
@@ -49,8 +49,8 @@
 
         <!-- INFOS -->
         <div class="contact-info-block reveal left">
-          <h3>Parlons de votre projet</h3>
-          <p>Que vous ayez une idée précise ou que vous cherchiez encore, je suis là pour vous guider et vous proposer la meilleure solution.</p>
+          <h3 data-i18n="contact.intro.h">Parlons de votre projet</h3>
+          <p data-i18n="contact.intro.p">Que vous ayez une idée précise ou que vous cherchiez encore, je suis là pour vous guider et vous proposer la meilleure solution.</p>
 
           <div class="contact-details">
             <div class="contact-detail-item">
@@ -63,12 +63,12 @@
             </div>
             <div class="contact-detail-item">
               <span class="detail-icon">📍</span>
-              <span>Belgique</span>
+              <span data-i18n="country.be">Belgique</span>
             </div>
           </div>
 
           <div class="response-note">
-            ⚡ Réponse sous 24h garantie
+            ⚡ <span data-i18n="contact.responseNote">Réponse sous 24h garantie</span>
           </div>
         </div>
 
@@ -76,32 +76,32 @@
         <div class="contact-form-block reveal right">
           <form id="contact-form">
             <div class="form-group">
-              <label for="name">Nom</label>
-              <input type="text" id="name" name="name" placeholder="Votre nom" required>
+              <label for="name" data-i18n="contact.form.name">Nom</label>
+              <input type="text" id="name" name="name" placeholder="Votre nom" data-i18n-placeholder="contact.form.namePh" required>
               <input type="text" name="_gotcha" id="_gotcha" autocomplete="off" tabindex="-1"
                 style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
             </div>
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email" data-i18n="contact.form.email">Email</label>
               <input type="email" id="email" name="email" placeholder="votre@email.com" required>
             </div>
             <div class="form-group">
-              <label for="service">Service souhaité</label>
+              <label for="service" data-i18n="contact.form.service">Service souhaité</label>
               <select id="service" name="service">
-                <option value="">-- Choisissez --</option>
-                <option value="leads">Acquisition de Leads</option>
-                <option value="photo">Photographie</option>
-                <option value="drone">Drone 4K</option>
-                <option value="print">Flyers & Print</option>
-                <option value="web">Site Web</option>
-                <option value="autre">Autre / Je ne sais pas encore</option>
+                <option value="" data-i18n="contact.form.serviceChoose">-- Choisissez --</option>
+                <option value="leads" data-i18n="contact.form.service.leads">Acquisition de Leads</option>
+                <option value="photo" data-i18n="contact.form.service.photo">Photographie</option>
+                <option value="drone" data-i18n="contact.form.service.drone">Drone 4K</option>
+                <option value="print" data-i18n="contact.form.service.print">Flyers & Print</option>
+                <option value="web" data-i18n="contact.form.service.web">Site Web</option>
+                <option value="autre" data-i18n="contact.form.service.other">Autre / Je ne sais pas encore</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" placeholder="Décrivez votre projet, vos besoins, vos délais..." required></textarea>
+              <label for="message" data-i18n="contact.form.message">Message</label>
+              <textarea id="message" name="message" placeholder="Décrivez votre projet, vos besoins, vos délais..." data-i18n-placeholder="contact.form.messagePh" required></textarea>
             </div>
-            <button type="submit" class="btn-gold btn-full">Envoyer le message</button>
+            <button type="submit" class="btn-gold btn-full" data-i18n="contact.form.submit">Envoyer le message</button>
             <p id="form-status"></p>
           </form>
         </div>
@@ -113,14 +113,14 @@
   <!-- MODAL -->
   <div id="modal-confirmation" class="modal">
     <div class="modal-content">
-      <p>Merci pour votre message.<br>Je vous répondrai dans les plus brefs délais.</p>
-      <button id="close-modal">Fermer</button>
+      <p data-i18n-html="contact.modal.text">Merci pour votre message.<br>Je vous répondrai dans les plus brefs délais.</p>
+      <button id="close-modal" data-i18n="contact.modal.close">Fermer</button>
     </div>
   </div>
 
   <footer>
     <p>© Pixel Studio 2026</p>
-    <p><a href="aide.html">Aide &amp; FAQ</a> · <a href="blog.html">Blog</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
+    <p><a href="aide.html" data-i18n="footer.help">Aide &amp; FAQ</a> · <a href="blog.html" data-i18n="nav.blog">Blog</a> · <a href="politique-de-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a> · <a href="#" class="cookie-manage" data-i18n="footer.cookies">Gérer les cookies</a></p>
   </footer>
 
   <script src="scroll-slider.js"></script>
@@ -129,5 +129,7 @@
   <script src="theme.js"></script>
   <script src="cookie-consent.js"></script>
    <script src="pixie.js"></script>
+  <script src="i18n-data.js"></script>
+  <script src="lang.js"></script>
 </body>
 </html>
