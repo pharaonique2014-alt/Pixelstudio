@@ -46,142 +46,142 @@
 <nav class="main-nav">
   <div class="burger" id="burger"><span></span><span></span><span></span></div>
   <ul class="menu" id="menu">
-    <li><a href="index.html">Accueil</a></li>
-    <li><a href="services.html">Services</a></li>
-    <li><a href="shop.html">Shop</a></li>
-    <li><a href="blog.html">Blog</a></li>
-      <li><a href="partenaires.html">Partenaires</a></li>
-    <li><a href="aide.html">Aide</a></li>
-    <li><a href="contact.html">Contact</a></li>
+    <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+    <li><a href="services.html" data-i18n="nav.services">Services</a></li>
+    <li><a href="shop.html" data-i18n="nav.shop">Shop</a></li>
+    <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+      <li><a href="partenaires.html" data-i18n="nav.partners">Partenaires</a></li>
+    <li><a href="aide.html" data-i18n="nav.help">Aide</a></li>
+    <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
   </ul>
   <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
 </nav>
 
 <main class="faq-wrap">
-  <h1>Aide &amp; questions fréquentes</h1>
-  <p class="maj">Tout ce qu'il faut savoir avant, pendant et après votre commande.</p>
+  <h1 data-i18n="faq.title">Aide &amp; questions fréquentes</h1>
+  <p class="maj" data-i18n="faq.subtitle">Tout ce qu'il faut savoir avant, pendant et après votre commande.</p>
 
-  <input class="faq-search" id="faqSearch" placeholder="Rechercher une question (délai, fichier, paiement…)" oninput="faqFilter(this.value)">
+  <input class="faq-search" id="faqSearch" placeholder="Rechercher une question (délai, fichier, paiement…)" data-i18n-placeholder="faq.searchPh" oninput="faqFilter(this.value)">
 
   <nav class="faq-jump">
-    <a href="#cat-commande">Commande &amp; paiement</a>
-    <a href="#cat-livraison">Livraison &amp; délais</a>
-    <a href="#cat-fichiers">Fichiers &amp; impression</a>
-    <a href="#cat-compte">Mon compte</a>
-    <a href="#cat-reclamation">Réclamations</a>
-    <a href="#cat-design">Création graphique</a>
-    <a href="#cat-securite">Sécurité &amp; données</a>
+    <a href="#cat-commande" data-i18n="faq.cat.commande">Commande &amp; paiement</a>
+    <a href="#cat-livraison" data-i18n="faq.cat.livraison">Livraison &amp; délais</a>
+    <a href="#cat-fichiers" data-i18n="faq.cat.fichiers">Fichiers &amp; impression</a>
+    <a href="#cat-compte" data-i18n="faq.cat.compte">Mon compte</a>
+    <a href="#cat-reclamation" data-i18n="faq.cat.reclamation">Réclamations</a>
+    <a href="#cat-design" data-i18n="faq.cat.design">Création graphique</a>
+    <a href="#cat-securite" data-i18n="faq.cat.securite">Sécurité &amp; données</a>
   </nav>
 
-  <div class="faq-empty" id="faqEmpty">Aucune question ne correspond à votre recherche — <a href="contact.html" style="color:#d6a060">contactez-nous</a> directement.</div>
+  <div class="faq-empty" id="faqEmpty" data-i18n-html="faq.emptyHtml">Aucune question ne correspond à votre recherche — <a href="contact.html" style="color:#d6a060">contactez-nous</a> directement.</div>
 
   <section class="faq-cat" id="cat-commande">
-    <h2>Commande &amp; paiement</h2>
+    <h2 data-i18n="faq.cat.commande">Commande &amp; paiement</h2>
 
-    <details class="faq-item"><summary>Comment passer commande ?</summary>
-      <div class="a">En quatre étapes : vous choisissez un produit et le configurez, vous uploadez votre fichier (l'aperçu 3D montre le rendu recto/verso et vous pouvez repositionner votre visuel), vous cochez la case de validation du fichier puis ajoutez au panier, et enfin vous renseignez vos coordonnées pour payer. Une confirmation arrive aussitôt par e-mail.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.commande.q1">Comment passer commande ?</summary>
+      <div class="a" data-i18n-html="faq.commande.a1">En quatre étapes : vous choisissez un produit et le configurez, vous uploadez votre fichier (l'aperçu 3D montre le rendu recto/verso et vous pouvez repositionner votre visuel), vous cochez la case de validation du fichier puis ajoutez au panier, et enfin vous renseignez vos coordonnées pour payer. Une confirmation arrive aussitôt par e-mail.</div></details>
 
-    <details class="faq-item"><summary>Quels moyens de paiement acceptez-vous ?</summary>
-      <div class="a"><b>Bancontact</b>, <b>iDEAL</b>, <b>KBC/CBC</b>, <b>Belfius</b>, <b>Klarna</b> (paiement comptant, différé ou en plusieurs fois — réservé aux particuliers) et le <b>virement bancaire</b>. Les paiements en ligne passent par Mollie, prestataire agréé belge — vos données bancaires ne transitent jamais par notre site.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.commande.q2">Quels moyens de paiement acceptez-vous ?</summary>
+      <div class="a" data-i18n-html="faq.commande.a2"><b>Bancontact</b>, <b>iDEAL</b>, <b>KBC/CBC</b>, <b>Belfius</b>, <b>Klarna</b> (paiement comptant, différé ou en plusieurs fois — réservé aux particuliers) et le <b>virement bancaire</b>. Les paiements en ligne passent par Mollie, prestataire agréé belge — vos données bancaires ne transitent jamais par notre site.</div></details>
 
-    <details class="faq-item"><summary>Dois-je créer un compte pour commander ?</summary>
-      <div class="a">Oui, un compte est nécessaire pour valider un paiement — c'est ce qui rattache votre commande, vos fichiers et vos factures à vous seul. La création prend 30 secondes : e-mail et mot de passe, rien de plus.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.commande.q3">Dois-je créer un compte pour commander ?</summary>
+      <div class="a" data-i18n-html="faq.commande.a3">Oui, un compte est nécessaire pour valider un paiement — c'est ce qui rattache votre commande, vos fichiers et vos factures à vous seul. La création prend 30 secondes : e-mail et mot de passe, rien de plus.</div></details>
 
-    <details class="faq-item"><summary>Les prix affichés incluent-ils la TVA ?</summary>
-      <div class="a">Les prix sont affichés hors TVA (HTVA) ; la TVA belge de 21 % est ajoutée avant validation. Un professionnel hors Belgique avec un numéro de TVA valide bénéficie de l'autoliquidation (0 %), vérifié en direct auprès du registre européen VIES.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.commande.q4">Les prix affichés incluent-ils la TVA ?</summary>
+      <div class="a" data-i18n-html="faq.commande.a4">Les prix sont affichés hors TVA (HTVA) ; la TVA belge de 21 % est ajoutée avant validation. Un professionnel hors Belgique avec un numéro de TVA valide bénéficie de l'autoliquidation (0 %), vérifié en direct auprès du registre européen VIES.</div></details>
 
-    <details class="faq-item"><summary>Puis-je obtenir une facture ?</summary>
-      <div class="a">Oui, elle est disponible dans votre espace client après chaque commande. Les professionnels belges peuvent télécharger un fichier Peppol conforme.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.commande.q5">Puis-je obtenir une facture ?</summary>
+      <div class="a" data-i18n-html="faq.commande.a5">Oui, elle est disponible dans votre espace client après chaque commande. Les professionnels belges peuvent télécharger un fichier Peppol conforme.</div></details>
 
-    <details class="faq-item"><summary>Je me suis trompé juste après avoir payé, que faire ?</summary>
-      <div class="a">Écrivez-nous ou appelez tout de suite au <b>0470 55 73 56</b> — tant que la commande n'est pas encore partie en impression, on peut souvent encore la corriger. Une fois en production, la commande est définitive : nos produits personnalisés ne bénéficient pas du droit de rétractation de 14 jours (art. VI.53, 3° du Code de droit économique).</div></details>
+    <details class="faq-item"><summary data-i18n="faq.commande.q6">Je me suis trompé juste après avoir payé, que faire ?</summary>
+      <div class="a" data-i18n-html="faq.commande.a6">Écrivez-nous ou appelez tout de suite au <b>0470 55 73 56</b> — tant que la commande n'est pas encore partie en impression, on peut souvent encore la corriger. Une fois en production, la commande est définitive : nos produits personnalisés ne bénéficient pas du droit de rétractation de 14 jours (art. VI.53, 3° du Code de droit économique).</div></details>
 
-    <details class="faq-item"><summary>J'ai un gros volume à commander, une remise est possible ?</summary>
-      <div class="a">Pas de remise ad-hoc au cas par cas, mais pour un vrai gros volume ou un format qui sort de l'ordinaire, nous établissons un devis personnalisé sous 24 h ouvrables.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.commande.q7">J'ai un gros volume à commander, une remise est possible ?</summary>
+      <div class="a" data-i18n-html="faq.commande.a7">Pas de remise ad-hoc au cas par cas, mais pour un vrai gros volume ou un format qui sort de l'ordinaire, nous établissons un devis personnalisé sous 24 h ouvrables.</div></details>
   </section>
 
   <section class="faq-cat" id="cat-livraison">
-    <h2>Livraison &amp; délais</h2>
+    <h2 data-i18n="faq.cat.livraison">Livraison &amp; délais</h2>
 
-    <details class="faq-item"><summary>Quels sont les délais de production ?</summary>
-      <div class="a">En jours ouvrables : cartes de visite, flyers et affiches, roll-up — 5 jours ; stickers et banderoles — 6 jours ; papeterie — 6 à 7 jours ; création de design — proposition sous 48 h puis impression. Les finitions ajoutent un peu (pelliculage +1, soft-touch +2, vernis +2, dorure +3). L'option Express retire 2 jours. La date exacte s'affiche dans le configurateur, week-ends et jours fériés belges déduits.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.livraison.q1">Quels sont les délais de production ?</summary>
+      <div class="a" data-i18n-html="faq.livraison.a1">En jours ouvrables : cartes de visite, flyers et affiches, roll-up — 5 jours ; stickers et banderoles — 6 jours ; papeterie — 6 à 7 jours ; création de design — proposition sous 48 h puis impression. Les finitions ajoutent un peu (pelliculage +1, soft-touch +2, vernis +2, dorure +3). L'option Express retire 2 jours. La date exacte s'affiche dans le configurateur, week-ends et jours fériés belges déduits.</div></details>
 
-    <details class="faq-item"><summary>Où livrez-vous ?</summary>
-      <div class="a">Belgique (5,95 €, offerte dès 49 €), Pays-Bas et Luxembourg (7,95 €, offerte dès 75 €, +1 jour). Vous pouvez aussi faire livrer à une autre adresse que votre adresse de facturation.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.livraison.q2">Où livrez-vous ?</summary>
+      <div class="a" data-i18n-html="faq.livraison.a2">Belgique (5,95 €, offerte dès 49 €), Pays-Bas et Luxembourg (7,95 €, offerte dès 75 €, +1 jour). Vous pouvez aussi faire livrer à une autre adresse que votre adresse de facturation.</div></details>
 
-    <details class="faq-item"><summary>Livrez-vous en France ou ailleurs ?</summary>
-      <div class="a">Pas pour l'instant. Écrivez-nous : nous étudions chaque demande hors Benelux et pouvons établir un devis avec les frais de port adaptés.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.livraison.q3">Livrez-vous en France ou ailleurs ?</summary>
+      <div class="a" data-i18n-html="faq.livraison.a3">Pas pour l'instant. Écrivez-nous : nous étudions chaque demande hors Benelux et pouvons établir un devis avec les frais de port adaptés.</div></details>
 
-    <details class="faq-item"><summary>L'option Express, comment ça marche ?</summary>
-      <div class="a">Elle retire 2 jours ouvrables sur la plupart des produits et se coche dans le configurateur, avec un léger supplément affiché immédiatement. Pour une vraie urgence, appelez-nous : selon la charge de l'atelier, on arrive parfois à faire encore mieux.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.livraison.q4">L'option Express, comment ça marche ?</summary>
+      <div class="a" data-i18n-html="faq.livraison.a4">Elle retire 2 jours ouvrables sur la plupart des produits et se coche dans le configurateur, avec un léger supplément affiché immédiatement. Pour une vraie urgence, appelez-nous : selon la charge de l'atelier, on arrive parfois à faire encore mieux.</div></details>
   </section>
 
   <section class="faq-cat" id="cat-fichiers">
-    <h2>Fichiers &amp; impression</h2>
+    <h2 data-i18n="faq.cat.fichiers">Fichiers &amp; impression</h2>
 
-    <details class="faq-item"><summary>Quel format de fichier dois-je envoyer ?</summary>
-      <div class="a">PDF de préférence (JPG et PNG acceptés), 300 dpi minimum, mode CMJN, 3 mm de fonds perdus sur chaque bord, textes à 5 mm des coupes, 8 Mo maximum. À l'upload, la résolution et les proportions sont vérifiées automatiquement.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.fichiers.q1">Quel format de fichier dois-je envoyer ?</summary>
+      <div class="a" data-i18n-html="faq.fichiers.a1">PDF de préférence (JPG et PNG acceptés), 300 dpi minimum, mode CMJN, 3 mm de fonds perdus sur chaque bord, textes à 5 mm des coupes, 8 Mo maximum. À l'upload, la résolution et les proportions sont vérifiées automatiquement.</div></details>
 
-    <details class="faq-item"><summary>Je n'ai pas de logiciel de graphisme, je peux quand même commander ?</summary>
-      <div class="a">Oui : Canva, Word ou PowerPoint conviennent très bien, du moment que vous exportez en PDF à la fin. Si vous utilisez une police un peu spéciale, pensez à l'incorporer au PDF (ou à passer le texte en courbes) pour qu'elle ne soit pas remplacée à l'impression.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.fichiers.q2">Je n'ai pas de logiciel de graphisme, je peux quand même commander ?</summary>
+      <div class="a" data-i18n-html="faq.fichiers.a2">Oui : Canva, Word ou PowerPoint conviennent très bien, du moment que vous exportez en PDF à la fin. Si vous utilisez une police un peu spéciale, pensez à l'incorporer au PDF (ou à passer le texte en courbes) pour qu'elle ne soit pas remplacée à l'impression.</div></details>
 
-    <details class="faq-item"><summary>Puis-je repositionner mon visuel sur le produit ?</summary>
-      <div class="a">Oui, directement sur l'aperçu 3D : vous pouvez déplacer et zoomer votre image pour ajuster le cadrage avant de valider. Une case à cocher vous demande ensuite de confirmer votre fichier — une fois validé, il est imprimé tel quel.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.fichiers.q3">Puis-je repositionner mon visuel sur le produit ?</summary>
+      <div class="a" data-i18n-html="faq.fichiers.a3">Oui, directement sur l'aperçu 3D : vous pouvez déplacer et zoomer votre image pour ajuster le cadrage avant de valider. Une case à cocher vous demande ensuite de confirmer votre fichier — une fois validé, il est imprimé tel quel.</div></details>
 
-    <details class="faq-item"><summary>Pourquoi mes couleurs sont différentes de mon écran ?</summary>
-      <div class="a">Votre écran affiche en RGB (lumière), très saturé, alors que l'impression utilise l'encre en CMJN — certains tons très vifs (bleus électriques, verts fluo) ne sont physiquement pas reproductibles à l'identique sur papier. Exportez votre fichier en mode CMJN avant l'envoi pour limiter l'écart.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.fichiers.q4">Pourquoi mes couleurs sont différentes de mon écran ?</summary>
+      <div class="a" data-i18n-html="faq.fichiers.a4">Votre écran affiche en RGB (lumière), très saturé, alors que l'impression utilise l'encre en CMJN — certains tons très vifs (bleus électriques, verts fluo) ne sont physiquement pas reproductibles à l'identique sur papier. Exportez votre fichier en mode CMJN avant l'envoi pour limiter l'écart.</div></details>
 
-    <details class="faq-item"><summary>Mon fichier dépasse 8 Mo, que faire ?</summary>
-      <div class="a">Réduisez la résolution à 300 dpi ou compressez le PDF (export « qualité web/impression standard »), ou écrivez-nous et on trouve une solution.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.fichiers.q5">Mon fichier dépasse 8 Mo, que faire ?</summary>
+      <div class="a" data-i18n-html="faq.fichiers.a5">Réduisez la résolution à 300 dpi ou compressez le PDF (export « qualité web/impression standard »), ou écrivez-nous et on trouve une solution.</div></details>
   </section>
 
   <section class="faq-cat" id="cat-compte">
-    <h2>Mon compte</h2>
+    <h2 data-i18n="faq.cat.compte">Mon compte</h2>
 
-    <details class="faq-item"><summary>Comment créer un compte ?</summary>
-      <div class="a">E-mail et mot de passe, rien de plus. Un e-mail de confirmation est à valider avant la première connexion. Le mot de passe demande 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.compte.q1">Comment créer un compte ?</summary>
+      <div class="a" data-i18n-html="faq.compte.a1">E-mail et mot de passe, rien de plus. Un e-mail de confirmation est à valider avant la première connexion. Le mot de passe demande 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.</div></details>
 
-    <details class="faq-item"><summary>J'ai oublié mon mot de passe</summary>
-      <div class="a">Un lien de réinitialisation vous est envoyé par e-mail depuis l'écran de connexion de votre espace client.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.compte.q2">J'ai oublié mon mot de passe</summary>
+      <div class="a" data-i18n-html="faq.compte.a2">Un lien de réinitialisation vous est envoyé par e-mail depuis l'écran de connexion de votre espace client.</div></details>
 
-    <details class="faq-item"><summary>Comment suivre ma commande ?</summary>
-      <div class="a">Donnez sa référence (type PX-123456, présente dans votre e-mail de confirmation) à Pixie, notre assistante, ou consultez directement votre espace client qui affiche la progression étape par étape.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.compte.q3">Comment suivre ma commande ?</summary>
+      <div class="a" data-i18n-html="faq.compte.a3">Donnez sa référence (type PX-123456, présente dans votre e-mail de confirmation) à Pixie, notre assistante, ou consultez directement votre espace client qui affiche la progression étape par étape.</div></details>
   </section>
 
   <section class="faq-cat" id="cat-reclamation">
-    <h2>Réclamations</h2>
+    <h2 data-i18n="faq.cat.reclamation">Réclamations</h2>
 
-    <details class="faq-item"><summary>Mon produit arrive avec un défaut, que faire ?</summary>
-      <div class="a">Écrivez-nous à projets@pxlstudio.be dans les 7 jours calendrier suivant la réception, photos à l'appui. En cas de défaut avéré imputable à Pixel Studio, nous réimprimons ou remboursons, sans discussion.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.reclamation.q1">Mon produit arrive avec un défaut, que faire ?</summary>
+      <div class="a" data-i18n-html="faq.reclamation.a1">Écrivez-nous à projets@pxlstudio.be dans les 7 jours calendrier suivant la réception, photos à l'appui. En cas de défaut avéré imputable à Pixel Studio, nous réimprimons ou remboursons, sans discussion.</div></details>
 
-    <details class="faq-item"><summary>Puis-je annuler ou me rétracter ?</summary>
-      <div class="a">Nos produits étant personnalisés, le droit de rétractation de 14 jours ne s'applique pas (art. VI.53, 3° du Code de droit économique). Une commande validée et payée est définitive, sauf erreur repérée à temps avant le départ en impression (contactez-nous vite).</div></details>
+    <details class="faq-item"><summary data-i18n="faq.reclamation.q2">Puis-je annuler ou me rétracter ?</summary>
+      <div class="a" data-i18n-html="faq.reclamation.a2">Nos produits étant personnalisés, le droit de rétractation de 14 jours ne s'applique pas (art. VI.53, 3° du Code de droit économique). Une commande validée et payée est définitive, sauf erreur repérée à temps avant le départ en impression (contactez-nous vite).</div></details>
   </section>
 
   <section class="faq-cat" id="cat-design">
-    <h2>Création graphique</h2>
+    <h2 data-i18n="faq.cat.design">Création graphique</h2>
 
-    <details class="faq-item"><summary>Je n'ai pas de visuel, pouvez-vous le créer ?</summary>
-      <div class="a">Oui, c'est très courant : recto seul 65 € HTVA, recto/verso 90 € HTVA. Vous décrivez votre activité et ce que vous aimez, nous envoyons une proposition sous 48 h ouvrables. Une série de retouches est comprise, et l'impression ne démarre qu'après votre validation.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.design.q1">Je n'ai pas de visuel, pouvez-vous le créer ?</summary>
+      <div class="a" data-i18n-html="faq.design.a1">Oui, c'est très courant : recto seul 65 € HTVA, recto/verso 90 € HTVA. Vous décrivez votre activité et ce que vous aimez, nous envoyons une proposition sous 48 h ouvrables. Une série de retouches est comprise, et l'impression ne démarre qu'après votre validation.</div></details>
   </section>
 
   <section class="faq-cat" id="cat-securite">
-    <h2>Sécurité &amp; données</h2>
+    <h2 data-i18n="faq.cat.securite">Sécurité &amp; données</h2>
 
-    <details class="faq-item"><summary>Mes données sont-elles en sécurité ?</summary>
-      <div class="a">Vos données sont traitées selon le RGPD et hébergées en Europe (Irlande). Vos fichiers d'impression sont dans un espace privé, accessible à vous seul. Les paiements passent par Mollie : aucune donnée bancaire ne transite par notre site. Détails complets dans notre <a href="politique-de-confidentialite.html">politique de confidentialité</a>.</div></details>
+    <details class="faq-item"><summary data-i18n="faq.securite.q1">Mes données sont-elles en sécurité ?</summary>
+      <div class="a" data-i18n-html="faq.securite.a1">Vos données sont traitées selon le RGPD et hébergées en Europe (Irlande). Vos fichiers d'impression sont dans un espace privé, accessible à vous seul. Les paiements passent par Mollie : aucune donnée bancaire ne transite par notre site. Détails complets dans notre <a href="politique-de-confidentialite.html">politique de confidentialité</a>.</div></details>
   </section>
 
   <div class="faq-cta">
-    <p>Vous n'avez pas trouvé votre réponse ?</p>
-    <a href="contact.html">Nous contacter</a>
+    <p data-i18n="faq.cta.p">Vous n'avez pas trouvé votre réponse ?</p>
+    <a href="contact.html" data-i18n="faq.cta.link">Nous contacter</a>
   </div>
 </main>
 
 <footer>
   <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
   <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
-  <p><a href="blog.html">Blog</a> · <a href="politique-de-confidentialite.html">Politique de confidentialité</a> · <a href="#" class="cookie-manage">Gérer les cookies</a></p>
+  <p><a href="blog.html" data-i18n="nav.blog">Blog</a> · <a href="politique-de-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a> · <a href="#" class="cookie-manage" data-i18n="footer.cookies">Gérer les cookies</a></p>
 </footer>
 
 <script>
@@ -209,5 +209,7 @@ function faqFilter(q){
 <script src="theme.js"></script>
 <script src="cookie-consent.js"></script>
 <script src="pixie.js"></script>
+<script src="i18n-data.js"></script>
+<script src="lang.js"></script>
 </body>
 </html>
