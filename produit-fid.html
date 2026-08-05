@@ -12,17 +12,28 @@
 <link rel="apple-touch-icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=4">
+<style>
+.prod-why,.prod-custom,.prod-how{max-width:760px;margin:0 auto 40px;padding:0 24px}
+.prod-why h2,.prod-custom h2,.prod-how h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--txt2,#edeae5);margin-bottom:12px}
+.prod-why p,.prod-custom p,.prod-how p{color:var(--muted,rgba(228,225,220,.75));font-size:15px;line-height:1.75}
+.prod-related{max-width:1000px;margin:0 auto 60px;padding:0 24px}
+.prod-related h2{font-family:'Playfair Display',serif;font-size:20px;color:var(--txt2,#edeae5);margin-bottom:18px;text-align:center}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px}
+.rel-card{display:block;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;text-decoration:none;transition:.2s}
+.rel-card:hover{border-color:rgba(214,160,96,.4)}
+.rel-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.rel-card h4{font-size:13.5px;color:var(--txt2,#edeae5);margin:10px 12px 2px;font-weight:600}
+.rel-card p{font-size:11.5px;color:var(--muted,rgba(228,225,220,.55));margin:0 12px 8px}
+.rel-card .rel-price{display:block;font-size:12px;color:#d6a060;font-weight:700;margin:0 12px 12px}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org/",
   "@type": "Product",
   "name": "Cartes de fidélité",
   "description": "Cartes à tampons, impression recto-verso. Carton avec stickers amovibles disponible.",
-  "image": "https://pxlstudio.be/art/fid.jpg",
-  "brand": {
-    "@type": "Brand",
-    "name": "Pixel Studio"
-  },
+  "image": "https://pxlstudio.be/mockups/fid.jpg",
+  "brand": { "@type": "Brand", "name": "Pixel Studio" },
   "offers": {
     "@type": "Offer",
     "url": "https://pxlstudio.be/produit-fid.html",
@@ -54,34 +65,66 @@
 </nav>
 
 <main class="prod-wrap">
-  <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span data-i18n="cat.carterie">Cartes de visite</span> &rsaquo; <span data-i18n="prod.fid.name">Cartes de fidélité</span></nav>
+  <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span>Cartes de visite</span> &rsaquo; <span>Cartes de fidélité</span></nav>
 
   <div class="prod-top">
     <div class="prod-media">
-      <img src="art/fid.jpg" alt="Cartes de fidélité — Pixel Studio" loading="lazy">
+      <img src="mockups/fid.jpg" alt="Cartes de fidélité — Pixel Studio" loading="lazy" onerror="this.src='art/fid.jpg'">
     </div>
     <div class="prod-info">
       
-      <h1 data-i18n="prod.fid.name">Cartes de fidélité</h1>
+      <h1>Cartes de fidélité</h1>
       <p class="prod-fmt">85 × 55 mm</p>
-      <p class="prod-desc" data-i18n="prod.fid.desc">Cartes à tampons, impression recto-verso. Carton avec stickers amovibles disponible.</p>
+      <p class="prod-desc">Cartes à tampons, impression recto-verso. Carton avec stickers amovibles disponible.</p>
       <p class="prod-price"><span data-i18n="prodpage.startingFrom">à partir de</span> <b>15,03 €</b> <span data-i18n="dyn.htva">HTVA</span></p>
       <p class="prod-delay"><span data-i18n="prodpage.indicDelay">Délai de production indicatif :</span> 4 <span data-i18n="dyn.bizDays">jours ouvrables</span> <span data-i18n="prodpage.exclFinishes">(hors finitions additionnelles) — option Express disponible.</span></p>
       <a class="btn-hero" href="shop.html?p=fid"><span data-i18n="prodpage.configureOrder">Configurer &amp; commander →</span></a>
     </div>
   </div>
 
+  <div class="prod-why">
+    <h2>Pourquoi ce choix</h2>
+    <p>Un support pensé pour être tamponné, pas juste regardé : le carton résiste aux manipulations répétées, et l'option sticker amovible permet de renouveler la carte sans perdre l'historique du client. Recto-verso, pour mettre vos conditions de fidélité au dos.</p>
+  </div>
+
   <div class="prod-opts">
     <h2 data-i18n="prodpage.customization">Personnalisation disponible</h2>
     <div class="prod-optgrid">
-      <div class="prod-optgroup"><h3 data-i18n="opt.Support">Support</h3><p><span data-i18n="opt.350 g offset blanc">350 g offset blanc</span> · <span data-i18n="opt.300 g carton sticker amovible">300 g carton sticker amovible</span></p></div>
-      <div class="prod-optgroup"><h3 data-i18n="opt.Délai">Délai</h3><p><span data-i18n="opt.Standard">Standard</span> · <span data-i18n="opt.Express">Express</span></p></div>
+      <div class="prod-optgroup"><h3>Support</h3><p>350 g offset blanc · 300 g carton sticker amovible</p></div>
+      <div class="prod-optgroup"><h3>Délai</h3><p>Standard · Express</p></div>
     </div>
+  </div>
+
+  <div class="prod-custom">
+    <h2>Comment le personnaliser</h2>
+    <p>Choisissez <b>Support</b> (350 g offset blanc, 300 g carton sticker amovible) et <b>Délai</b> (Standard, Express) — chaque combinaison recalcule le prix en temps réel dans le configurateur.</p>
   </div>
 
   <div class="prod-qty">
     <h2 data-i18n="prodpage.qtysAvailable">Quantités proposées</h2>
     <p>100 · 250 · 500 · 1000</p>
+  </div>
+
+  <div class="prod-how">
+    <h2>Comment ça se passe</h2>
+    <p>Uploadez votre fichier prêt à l'impression (ou laissez-nous créer votre design), choisissez vos options et votre quantité : le prix s'affiche instantanément. Après validation et paiement, votre commande part en production — comptez 4 jours ouvrables en délai standard, avec une option Express si besoin. Vous suivez chaque étape depuis votre espace client jusqu'à la livraison en Belgique, aux Pays-Bas ou au Luxembourg.</p>
+  </div>
+
+  <div class="prod-related">
+    <h2>Autres produits Cartes de visite</h2>
+    <div class="rel-grid">
+      <a class="rel-card" href="produit-cdv.html">
+        <img src="mockups/cdv.jpg" alt="Cartes de visite classiques" loading="lazy" onerror="this.style.display='none'">
+        <h4>Cartes de visite classiques</h4>
+        <p>85 × 55 mm</p>
+        <span class="rel-price">à partir de 17,88 €</span>
+      </a><a class="rel-card" href="produit-cdv-pvc.html">
+        <img src="mockups/cdv-pvc.jpg" alt="Cartes PVC" loading="lazy" onerror="this.style.display='none'">
+        <h4>Cartes PVC</h4>
+        <p>85,6 × 54 mm</p>
+        <span class="rel-price">à partir de 71,59 €</span>
+      </a>
+    </div>
   </div>
 
   <div class="prod-cta-bottom">

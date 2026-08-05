@@ -12,17 +12,28 @@
 <link rel="apple-touch-icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=4">
+<style>
+.prod-why,.prod-custom,.prod-how{max-width:760px;margin:0 auto 40px;padding:0 24px}
+.prod-why h2,.prod-custom h2,.prod-how h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--txt2,#edeae5);margin-bottom:12px}
+.prod-why p,.prod-custom p,.prod-how p{color:var(--muted,rgba(228,225,220,.75));font-size:15px;line-height:1.75}
+.prod-related{max-width:1000px;margin:0 auto 60px;padding:0 24px}
+.prod-related h2{font-family:'Playfair Display',serif;font-size:20px;color:var(--txt2,#edeae5);margin-bottom:18px;text-align:center}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px}
+.rel-card{display:block;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;text-decoration:none;transition:.2s}
+.rel-card:hover{border-color:rgba(214,160,96,.4)}
+.rel-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.rel-card h4{font-size:13.5px;color:var(--txt2,#edeae5);margin:10px 12px 2px;font-weight:600}
+.rel-card p{font-size:11.5px;color:var(--muted,rgba(228,225,220,.55));margin:0 12px 8px}
+.rel-card .rel-price{display:block;font-size:12px;color:#d6a060;font-weight:700;margin:0 12px 12px}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org/",
   "@type": "Product",
   "name": "Affiches 70 × 100 cm",
   "description": "Affichage grand format, papier à dos bleu qui empêche la transparence.",
-  "image": "https://pxlstudio.be/art/aff70.jpg",
-  "brand": {
-    "@type": "Brand",
-    "name": "Pixel Studio"
-  },
+  "image": "https://pxlstudio.be/mockups/aff70.jpg",
+  "brand": { "@type": "Brand", "name": "Pixel Studio" },
   "offers": {
     "@type": "Offer",
     "url": "https://pxlstudio.be/produit-aff70.html",
@@ -54,33 +65,70 @@
 </nav>
 
 <main class="prod-wrap">
-  <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span data-i18n="cat.pub">Flyers &amp; affiches</span> &rsaquo; <span data-i18n="prod.aff70.name">Affiches 70 × 100 cm</span></nav>
+  <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span>Flyers &amp; affiches</span> &rsaquo; <span>Affiches 70 × 100 cm</span></nav>
 
   <div class="prod-top">
     <div class="prod-media">
-      <img src="art/aff70.jpg" alt="Affiches 70 × 100 cm — Pixel Studio" loading="lazy">
+      <img src="mockups/aff70.jpg" alt="Affiches 70 × 100 cm — Pixel Studio" loading="lazy" onerror="this.src='art/aff70.jpg'">
     </div>
     <div class="prod-info">
       
-      <h1 data-i18n="prod.aff70.name">Affiches 70 × 100 cm</h1>
+      <h1>Affiches 70 × 100 cm</h1>
       <p class="prod-fmt">700 × 1000 mm</p>
-      <p class="prod-desc" data-i18n="prod.aff70.desc">Affichage grand format, papier à dos bleu qui empêche la transparence.</p>
+      <p class="prod-desc">Affichage grand format, papier à dos bleu qui empêche la transparence.</p>
       <p class="prod-price"><span data-i18n="prodpage.startingFrom">à partir de</span> <b>31,11 €</b> <span data-i18n="dyn.htva">HTVA</span></p>
       <p class="prod-delay"><span data-i18n="prodpage.indicDelay">Délai de production indicatif :</span> 3 <span data-i18n="dyn.bizDays">jours ouvrables</span> <span data-i18n="prodpage.exclFinishes">(hors finitions additionnelles) — option Express disponible.</span></p>
       <a class="btn-hero" href="shop.html?p=aff70"><span data-i18n="prodpage.configureOrder">Configurer &amp; commander →</span></a>
     </div>
   </div>
 
+  <div class="prod-why">
+    <h2>Pourquoi ce choix</h2>
+    <p>Le très grand format, réservé à l'affichage qui doit se voir de loin : devanture, salon, événement extérieur abrité. Papier à dos bleu pour un rendu opaque même face à une forte lumière derrière l'affiche.</p>
+  </div>
+
   <div class="prod-opts">
     <h2 data-i18n="prodpage.customization">Personnalisation disponible</h2>
     <div class="prod-optgrid">
-
+      
     </div>
+  </div>
+
+  <div class="prod-custom">
+    <h2>Comment le personnaliser</h2>
+    <p>Ce produit se commande directement, sans option de personnalisation supplémentaire au-delà de la quantité.</p>
   </div>
 
   <div class="prod-qty">
     <h2 data-i18n="prodpage.qtysAvailable">Quantités proposées</h2>
     <p>5 · 10 · 25 · 50</p>
+  </div>
+
+  <div class="prod-how">
+    <h2>Comment ça se passe</h2>
+    <p>Uploadez votre fichier prêt à l'impression (ou laissez-nous créer votre design), choisissez vos options et votre quantité : le prix s'affiche instantanément. Après validation et paiement, votre commande part en production — comptez 3 jours ouvrables en délai standard, avec une option Express si besoin. Vous suivez chaque étape depuis votre espace client jusqu'à la livraison en Belgique, aux Pays-Bas ou au Luxembourg.</p>
+  </div>
+
+  <div class="prod-related">
+    <h2>Autres produits Flyers &amp; affiches</h2>
+    <div class="rel-grid">
+      <a class="rel-card" href="produit-fla6.html">
+        <img src="mockups/fla6.jpg" alt="Flyers A6" loading="lazy" onerror="this.style.display='none'">
+        <h4>Flyers A6</h4>
+        <p>105 × 148 mm</p>
+        <span class="rel-price">à partir de 21,23 €</span>
+      </a><a class="rel-card" href="produit-fla5.html">
+        <img src="mockups/fla5.jpg" alt="Flyers A5" loading="lazy" onerror="this.style.display='none'">
+        <h4>Flyers A5</h4>
+        <p>148 × 210 mm</p>
+        <span class="rel-price">à partir de 30,58 €</span>
+      </a><a class="rel-card" href="produit-fla4.html">
+        <img src="mockups/fla4.jpg" alt="Flyers A4" loading="lazy" onerror="this.style.display='none'">
+        <h4>Flyers A4</h4>
+        <p>210 × 297 mm</p>
+        <span class="rel-price">à partir de 48,31 €</span>
+      </a>
+    </div>
   </div>
 
   <div class="prod-cta-bottom">

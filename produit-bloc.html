@@ -12,17 +12,28 @@
 <link rel="apple-touch-icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=4">
+<style>
+.prod-why,.prod-custom,.prod-how{max-width:760px;margin:0 auto 40px;padding:0 24px}
+.prod-why h2,.prod-custom h2,.prod-how h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--txt2,#edeae5);margin-bottom:12px}
+.prod-why p,.prod-custom p,.prod-how p{color:var(--muted,rgba(228,225,220,.75));font-size:15px;line-height:1.75}
+.prod-related{max-width:1000px;margin:0 auto 60px;padding:0 24px}
+.prod-related h2{font-family:'Playfair Display',serif;font-size:20px;color:var(--txt2,#edeae5);margin-bottom:18px;text-align:center}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px}
+.rel-card{display:block;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;text-decoration:none;transition:.2s}
+.rel-card:hover{border-color:rgba(214,160,96,.4)}
+.rel-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.rel-card h4{font-size:13.5px;color:var(--txt2,#edeae5);margin:10px 12px 2px;font-weight:600}
+.rel-card p{font-size:11.5px;color:var(--muted,rgba(228,225,220,.55));margin:0 12px 8px}
+.rel-card .rel-price{display:block;font-size:12px;color:#d6a060;font-weight:700;margin:0 12px 12px}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org/",
   "@type": "Product",
   "name": "Bloc-notes A6",
   "description": "Blocs collés en tête, 50 feuillets. Un support de fidélisation qui reste sur le bureau.",
-  "image": "https://pxlstudio.be/art/bloc.jpg",
-  "brand": {
-    "@type": "Brand",
-    "name": "Pixel Studio"
-  },
+  "image": "https://pxlstudio.be/mockups/bloc.jpg",
+  "brand": { "@type": "Brand", "name": "Pixel Studio" },
   "offers": {
     "@type": "Offer",
     "url": "https://pxlstudio.be/produit-bloc.html",
@@ -54,33 +65,60 @@
 </nav>
 
 <main class="prod-wrap">
-  <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span data-i18n="cat.pap">Papeterie</span> &rsaquo; <span data-i18n="prod.bloc.name">Bloc-notes A6</span></nav>
+  <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span>Papeterie</span> &rsaquo; <span>Bloc-notes A6</span></nav>
 
   <div class="prod-top">
     <div class="prod-media">
-      <img src="art/bloc.jpg" alt="Bloc-notes A6 — Pixel Studio" loading="lazy">
+      <img src="mockups/bloc.jpg" alt="Bloc-notes A6 — Pixel Studio" loading="lazy" onerror="this.src='art/bloc.jpg'">
     </div>
     <div class="prod-info">
       
-      <h1 data-i18n="prod.bloc.name">Bloc-notes A6</h1>
+      <h1>Bloc-notes A6</h1>
       <p class="prod-fmt">105 × 148 mm — 50 feuilles</p>
-      <p class="prod-desc" data-i18n="prod.bloc.desc">Blocs collés en tête, 50 feuillets. Un support de fidélisation qui reste sur le bureau.</p>
+      <p class="prod-desc">Blocs collés en tête, 50 feuillets. Un support de fidélisation qui reste sur le bureau.</p>
       <p class="prod-price"><span data-i18n="prodpage.startingFrom">à partir de</span> <b>52,62 €</b> <span data-i18n="dyn.htva">HTVA</span></p>
       <p class="prod-delay"><span data-i18n="prodpage.indicDelay">Délai de production indicatif :</span> 5 <span data-i18n="dyn.bizDays">jours ouvrables</span> <span data-i18n="prodpage.exclFinishes">(hors finitions additionnelles) — option Express disponible.</span></p>
       <a class="btn-hero" href="shop.html?p=bloc"><span data-i18n="prodpage.configureOrder">Configurer &amp; commander →</span></a>
     </div>
   </div>
 
+  <div class="prod-why">
+    <h2>Pourquoi ce choix</h2>
+    <p>Un vrai bloc-notes de bureau, collé en tête pour un arrachage propre. Le support qui reste posé sur le bureau du client des semaines après l'avoir reçu — une des formes de fidélisation les plus discrètes qui soit.</p>
+  </div>
+
   <div class="prod-opts">
     <h2 data-i18n="prodpage.customization">Personnalisation disponible</h2>
     <div class="prod-optgrid">
-      <div class="prod-optgroup"><h3 data-i18n="opt.Support">Support</h3><p><span data-i18n="opt.80 g offset blanc">80 g offset blanc</span> · <span data-i18n="opt.80 g kringloop recyclé">80 g kringloop recyclé</span></p></div>
+      <div class="prod-optgroup"><h3>Support</h3><p>80 g offset blanc · 80 g kringloop recyclé</p></div>
     </div>
+  </div>
+
+  <div class="prod-custom">
+    <h2>Comment le personnaliser</h2>
+    <p>Choisissez <b>Support</b> (80 g offset blanc, 80 g kringloop recyclé) — chaque combinaison recalcule le prix en temps réel dans le configurateur.</p>
   </div>
 
   <div class="prod-qty">
     <h2 data-i18n="prodpage.qtysAvailable">Quantités proposées</h2>
     <p>50 · 100 · 200</p>
+  </div>
+
+  <div class="prod-how">
+    <h2>Comment ça se passe</h2>
+    <p>Uploadez votre fichier prêt à l'impression (ou laissez-nous créer votre design), choisissez vos options et votre quantité : le prix s'affiche instantanément. Après validation et paiement, votre commande part en production — comptez 5 jours ouvrables en délai standard, avec une option Express si besoin. Vous suivez chaque étape depuis votre espace client jusqu'à la livraison en Belgique, aux Pays-Bas ou au Luxembourg.</p>
+  </div>
+
+  <div class="prod-related">
+    <h2>Autres produits Papeterie</h2>
+    <div class="rel-grid">
+      <a class="rel-card" href="produit-entete.html">
+        <img src="mockups/entete.jpg" alt="Papier à en-tête" loading="lazy" onerror="this.style.display='none'">
+        <h4>Papier à en-tête</h4>
+        <p>A4 — 210 × 297 mm</p>
+        <span class="rel-price">à partir de 27,61 €</span>
+      </a>
+    </div>
   </div>
 
   <div class="prod-cta-bottom">
