@@ -1145,7 +1145,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad" async defer></script>
-<script src="shop-app.min.js?v=5"></script>
+<script src="shop-app.min.js?v=6"></script>
 <script src="shop-suivi.js"></script>
 <script src="theme.js"></script>
 <script src="i18n-data.js?v=1"></script>
@@ -1319,7 +1319,14 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     }
 
     var client = getClient();
-    var cartItems = (typeof window.readCart === 'function') ? window.readCart() : null;
+    // readCart()/writeCart() key the stored cart by the account's e-mail (guest cart
+    // lives under a separate "cart:guest" key) — calling readCart() with no argument
+    // always reads the guest key, which is empty for any logged-in customer, so this
+    // used to report an empty cart (and block payment) on every single "Virement"
+    // order. The order's billing e-mail (already parsed above, synchronously
+    // available) is what the account is checked out under, so it's used here.
+    var cartEmail = orderData.cust && orderData.cust.email;
+    var cartItems = (typeof window.readCart === 'function') ? window.readCart(cartEmail) : null;
     if (!client || !cartItems || !cartItems.length) {
       showPayError('Impossible de valider votre panier, rechargez la page et réessayez.');
       return orderFailedResponse();
@@ -1348,7 +1355,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
       }).then(function (result) {
         var data = result.data;
         if (result.ok && data && data.checkoutUrl) {
-          if (typeof window.writeCart === 'function') { try { window.writeCart([]); } catch (e2) {} }
+          if (typeof window.writeCart === 'function') { try { window.writeCart(cartEmail, []); } catch (e2) {} }
           window.location.href = data.checkoutUrl;
           return new Promise(function () {});
         }
