@@ -217,8 +217,11 @@ section{margin-top:56px;scroll-margin-top:80px}
 
 .config{display:none;grid-template-columns:1.05fr .95fr;gap:26px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px;margin-top:26px;scroll-margin-top:130px}
 .config.open{display:grid}
-.cfg-left h3{font-size:21px;margin-bottom:3px}
-.cfg-left .sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+.cfg-photo{border-radius:14px;overflow:hidden;margin-bottom:18px;height:180px;background:linear-gradient(150deg,#1c1815,#100e0c);border:1px solid var(--line)}
+.cfg-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.cfg-photo svg{width:100%;height:100%;display:block}
+.cfg-left h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.cfg-left .sub{color:var(--muted);font-size:14.5px;line-height:1.65;margin-bottom:18px}
 .field{margin-bottom:15px}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.16em;text-transform:uppercase}
 .opts{display:flex;gap:7px;flex-wrap:wrap}
@@ -697,11 +700,6 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     </div>
   </section>
 
-  <section id="browse-cats">
-    <div class="sec-title"><div class="section-label" data-i18n="shop.byCat">Par catégorie</div><h2 data-i18n="shop.browse">Parcourez notre offre</h2></div>
-    <div class="browse-grid" id="browseGrid"></div>
-  </section>
-
   <section id="catalogue">
     <div class="sec-title"><div class="section-label" data-i18n="shop.catalog">Notre catalogue</div><h2 data-i18n="shop.whatPrint">Que voulez-vous imprimer ?</h2></div>
     <div class="searchbar">
@@ -720,6 +718,7 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
     <div class="config" id="configPanel">
       <button class="cfg-close" onclick="closeConfig()" title="Fermer">&#10005;</button>
       <div class="cfg-left">
+        <div class="cfg-photo" id="cfgPhoto"></div>
         <h3 id="cfgName"></h3>
         <div class="sub" id="cfgDesc"></div>
         <div id="optBoxes"></div>
