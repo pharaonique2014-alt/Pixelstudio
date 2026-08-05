@@ -217,9 +217,13 @@ section{margin-top:56px;scroll-margin-top:80px}
 
 .config{display:none;grid-template-columns:1.05fr .95fr;gap:26px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px;margin-top:26px;scroll-margin-top:130px}
 .config.open{display:grid}
-.cfg-photo{border-radius:14px;overflow:hidden;margin-bottom:18px;height:180px;background:linear-gradient(150deg,#1c1815,#100e0c);border:1px solid var(--line)}
+.cfg-photo{position:relative;border-radius:14px;overflow:hidden;margin-bottom:18px;height:180px;background:linear-gradient(150deg,#1c1815,#100e0c);border:1px solid var(--line)}
 .cfg-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .cfg-photo svg{width:100%;height:100%;display:block}
+.rp-wrap{position:absolute;top:0;left:0;transform-origin:top left;overflow:hidden}
+.rp-base{position:absolute;top:0;left:0;display:block;width:100%;height:100%}
+.rp-design{position:absolute;top:0;left:0;transform-origin:0 0;pointer-events:none}
+.rp-circle{clip-path:circle(closest-side at 50% 50%)}
 .cfg-left h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:8px}
 .cfg-left .sub{color:var(--muted);font-size:14.5px;line-height:1.65;margin-bottom:18px}
 .field{margin-bottom:15px}
@@ -310,6 +314,15 @@ section{margin-top:56px;scroll-margin-top:80px}
 .dlrow{display:flex;gap:8px;margin-top:9px}
 .dlrow button{flex:1;background:transparent;border:1px solid var(--line);color:var(--txt);border-radius:22px;padding:11px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;transition:.2s}
 .dlrow button:disabled{opacity:.3;cursor:not-allowed}
+.upsell-block{grid-column:1/-1;margin-top:8px;padding-top:26px;border-top:1px solid var(--line)}
+.upsell-block .sec-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}
+.upsell-block h4{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--txt2);margin-bottom:14px}
+.upsell-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.upsell-card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px;text-align:center;display:flex;flex-direction:column}
+.upsell-photo{position:relative;border-radius:9px;overflow:hidden;background:linear-gradient(150deg,#1c1815,#100e0c);margin-bottom:9px}
+.upsell-name{font-size:12.5px;font-weight:600;color:var(--txt2);margin-bottom:9px;line-height:1.3}
+.upsell-btn{margin-top:auto;width:100%;border:1px solid var(--gold);background:transparent;color:var(--gold2);border-radius:20px;padding:9px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:'Montserrat',sans-serif}
+.upsell-btn:hover{background:var(--gold);color:#111}
 
 .page{display:none}
 .page.open{display:block}
@@ -808,6 +821,11 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
           <button id="dlR" disabled onclick="dlFace('R')">&#11015; <span data-i18n="cfg.front">Recto</span></button>
           <button id="dlV" disabled onclick="dlFace('V')">&#11015; <span data-i18n="cfg.back">Verso</span></button>
         </div>
+      </div>
+      <div class="upsell-block" id="upsellBlock" style="display:none">
+        <div class="sec-label" data-i18n="cfg.upsell.label">Avec le même visuel</div>
+        <h4 data-i18n="cfg.upsell.h">D'autres produits avec votre design</h4>
+        <div class="upsell-grid" id="upsellGrid"></div>
       </div>
     </div>
   </section>
