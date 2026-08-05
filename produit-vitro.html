@@ -12,6 +12,7 @@
 <link rel="apple-touch-icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="configurator.css">
 <style>
 .prod-why,.prod-custom,.prod-how{max-width:760px;margin:0 auto 40px;padding:0 24px}
 .prod-why h2,.prod-custom h2,.prod-how h2{font-family:'Playfair Display',serif;font-size:22px;color:#edeae5;margin-bottom:12px}
@@ -64,6 +65,7 @@
     <li><a href="aide.html" data-i18n="nav.help">Aide</a></li>
     <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
   </ul>
+  <button class="cartbtn" onclick="openCart()" aria-label="Panier" data-i18n-aria-label="dyn.cart">&#128722; <span class="badge" id="cartBadge">0</span></button>
   <button type="button" class="theme-toggle" aria-label="Changer de thème" title="Changer de thème">☀️</button>
 </nav>
 
@@ -81,7 +83,7 @@
       <p class="prod-desc">Adhésif blanc pour vitrine, pose intérieure ou extérieure. Vendu par lot.</p>
       <p class="prod-price"><span data-i18n="prodpage.startingFrom">à partir de</span> <b>86,26 €</b> <span data-i18n="dyn.htva">HTVA</span></p>
       <p class="prod-delay"><span data-i18n="prodpage.indicDelay">Délai de production indicatif :</span> 6 <span data-i18n="dyn.bizDays">jours ouvrables</span> <span data-i18n="prodpage.exclFinishes">(hors finitions additionnelles) — option Express disponible.</span></p>
-      <a class="btn-hero" href="shop.html?p=vitro"><span data-i18n="prodpage.configureOrder">Configurer &amp; commander →</span></a>
+      <a class="btn-hero" href="#configSection" onclick="openConfig('vitro');return false"><span data-i18n="prodpage.configureOrder">Configurer &amp; commander →</span></a>
     </div>
   </div>
 
@@ -130,10 +132,122 @@
   </div>
 
   <div class="prod-cta-bottom">
-    <a class="btn-hero" href="shop.html?p=vitro"><span data-i18n="prodpage.configureThis">Configurer ce produit →</span></a>
+    <a class="btn-hero" href="#configSection" onclick="openConfig('vitro');return false"><span data-i18n="prodpage.configureThis">Configurer ce produit →</span></a>
     <a href="shop.html"><span data-i18n="prodpage.allCatalog">← Voir tout le catalogue</span></a>
   </div>
+  <section id="configSection">
+    <div class="config" id="configPanel">
+      <button class="cfg-close" onclick="closeConfig()" title="Fermer">&#10005;</button>
+      <div class="cfg-left">
+        <div class="cfg-photo" id="cfgPhoto"></div>
+        <h3 id="cfgName"></h3>
+        <div class="sub" id="cfgDesc"></div>
+        <div id="optBoxes"></div>
+
+        <div id="uploadZone">
+          <div class="field">
+            <label data-i18n="cfg.fileR">Fichier recto</label>
+            <div class="upzone" id="upzoneR" onclick="document.getElementById('fileR').click()">
+              <div id="upTxtR" data-i18n-html="cfg.dropR">Glissez votre fichier recto ici ou cliquez<br><small>PDF, JPG ou PNG — imprimé tel quel</small></div>
+            </div>
+            <input type="file" id="fileR" accept=".pdf,.jpg,.jpeg,.png" hidden>
+            <div id="fileMsgR"></div>
+            <div id="posEditorR"></div>
+          </div>
+          <div class="field" id="fVerso" style="display:none">
+            <label data-i18n="cfg.fileV">Fichier verso</label>
+            <div class="upzone" id="upzoneV" onclick="document.getElementById('fileV').click()">
+              <div id="upTxtV" data-i18n-html="cfg.dropV">Glissez votre fichier verso ici ou cliquez<br><small>PDF, JPG ou PNG — imprimé tel quel</small></div>
+            </div>
+            <input type="file" id="fileV" accept=".pdf,.jpg,.jpeg,.png" hidden>
+            <div id="fileMsgV"></div>
+            <div id="posEditorV"></div>
+          </div>
+          <div class="upnote" data-i18n-html="cfg.upnote">Format recommandé : PDF 300 dpi, CMJN, fonds perdus 3 mm — max 8 Mo par fichier.
+            Votre fichier n'est jamais modifié. Pas de fichier ?
+            <a href="#" onclick="openConfig('design-r');return false">Nous créons votre design</a>.</div>
+          <div class="field" id="fileConfirmZone" style="display:none">
+            <div class="checklist-note">
+              <b data-i18n="cfg.checkTitle">Vérifiez avant de continuer :</b>
+              <ul>
+                <li data-i18n="cfg.check1">Le texte est correct et bien orthographié</li>
+                <li data-i18n="cfg.check2">La résolution et les couleurs sont bonnes</li>
+                <li data-i18n="cfg.check3">Le cadrage et les fonds perdus sont respectés</li>
+              </ul>
+            </div>
+            <label class="checkline">
+              <input type="checkbox" id="fileConfirm" onchange="refresh()">
+              <span data-i18n="cfg.confirmFile">Je confirme avoir vérifié mon fichier — il sera imprimé exactement tel quel, sans relecture de notre part.</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="briefZone" style="display:none">
+          <div class="field">
+            <label data-i18n="cfg.brief">Votre brief créatif</label>
+            <textarea class="inp" id="brief" rows="4" data-i18n-placeholder="cfg.briefPh" placeholder="Décrivez votre activité, le message à faire passer, vos couleurs, le style souhaité… Joignez logo et éléments existants ci-dessous."></textarea>
+          </div>
+          <div class="field">
+            <label data-i18n="cfg.logo">Logo / éléments (facultatif)</label>
+            <div class="upzone" id="upzoneB" onclick="document.getElementById('fileB').click()">
+              <div id="upTxtB" data-i18n-html="cfg.dropB">Glissez votre logo ici ou cliquez<br><small>PDF, JPG, PNG — facultatif</small></div>
+            </div>
+            <input type="file" id="fileB" accept=".pdf,.jpg,.jpeg,.png" hidden>
+          </div>
+          <div class="upnote" data-i18n-html="cfg.briefNote">Nous vous envoyons une <b>proposition (BAT) sous 48 h ouvrables</b> pour approbation.
+            <b>Une série de retouches est incluse.</b> L'impression démarre après votre validation.</div>
+        </div>
+
+        <div class="field" style="margin-top:15px">
+          <label data-i18n="cfg.deliveryCountry">Pays de livraison</label>
+          <select class="selectw" id="cfgCountry" onchange="setCountry(this.value)">
+            <option value="BE" data-i18n="country.be">Belgique</option>
+            <option value="NL" data-i18n="country.nl">Pays-Bas</option>
+            <option value="LU" data-i18n="country.lu">Luxembourg</option>
+          </select>
+        </div>
+
+        <div class="price-box">
+          <div class="row"><span data-i18n="cfg.pb.config">Configuration</span><span id="pbConf">—</span></div>
+          <div class="row" id="rowUnit"><span data-i18n="cfg.pb.unit">Prix unitaire</span><span id="pbUnit">—</span></div>
+          <div class="row"><span data-i18n="cfg.pb.ship">Livraison</span><span id="pbShip">—</span></div>
+          <div class="row total"><span data-i18n="cfg.pb.total">Total HTVA</span><b id="pbTotal">—</b></div>
+          <div class="row"><span data-i18n="cfg.pb.vat">TVA 21%</span><span id="pbTva">—</span></div>
+          <div class="row" style="border-top:1px dashed var(--line);margin-top:8px;padding-top:9px;font-size:11.5px;font-style:italic;opacity:.75"><span data-i18n="cfg.pb.provis">Tarifs provisoires</span><span data-i18n="cfg.pb.gridSoon">grille définitive à venir</span></div>
+        </div>
+        <div class="freeship-bar" id="freeShipBar" style="display:none">
+          <div class="freeship-text" id="freeShipText"></div>
+          <div class="freeship-track"><div class="freeship-fill" id="freeShipFill"></div></div>
+        </div>
+        <div class="deliv"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;flex-shrink:0"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg> <span data-i18n="cfg.estDeliv">Livraison estimée</span> <b id="delivDate">…</b><span id="delivDetail" style="font-size:12px"></span></div>
+        <button class="addcart" id="addBtn" disabled onclick="addToCart()" data-i18n="cfg.uploadFirst">Uploadez votre fichier recto</button>
+        <div class="stat-logos" id="pricePayLogos" style="justify-content:center;margin-top:10px"></div>
+      </div>
+      <div>
+        <div class="stage" id="stage">
+          <button class="spin" id="spinBtn" onclick="toggleSpin()" data-i18n="cfg.autoRotate">Rotation auto</button>
+          <div class="obj3d" id="obj3d"></div>
+          <div class="hint" data-i18n="cfg.dragHint">Faites glisser pour tourner</div>
+        </div>
+        <div class="dlrow">
+          <button id="dlR" disabled onclick="dlFace('R')">&#11015; <span data-i18n="cfg.front">Recto</span></button>
+          <button id="dlV" disabled onclick="dlFace('V')">&#11015; <span data-i18n="cfg.back">Verso</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
+<div id="drawerBack" onclick="closeCart()"></div>
+<aside id="drawer" aria-label="Panier">
+  <div class="dhead">
+    <div><h3 data-i18n="dyn.yourCart">Votre panier</h3><div class="cnt" id="dCount">0 article</div></div>
+    <button class="dclose" onclick="closeCart()" title="Fermer" data-i18n-title="dyn.close">&#10005;</button>
+  </div>
+  <div class="dbody" id="dBody"></div>
+  <div class="dfoot" id="dFoot"></div>
+</aside>
+<div class="toast" id="toast"></div>
 
 <footer>
   <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
@@ -141,6 +255,8 @@
   <p><a href="blog.html" data-i18n="nav.blog">Blog</a> · <a href="politique-de-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a> · <a href="#" class="cookie-manage" data-i18n="footer.cookies">Gérer les cookies</a></p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="shop-app.min.js?v=2"></script>
 <script src="menu.js"></script>
 <script src="theme.js"></script>
 <script src="cookie-consent.js"></script>

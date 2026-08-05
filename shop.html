@@ -1565,6 +1565,9 @@ Impression professionnelle pour PME, indépendants et particuliers, avec livrais
   if (deepLinkPid) {
     setTimeout(function () { if (window.openConfig) openConfig(deepLinkPid); }, 50);
   }
+  if (new URLSearchParams(window.location.search).get('checkout') === '1') {
+    setTimeout(function () { if (window.startPay) startPay(); }, 50);
+  }
 })();
 </script>
 <script>
