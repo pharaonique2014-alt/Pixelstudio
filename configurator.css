@@ -54,7 +54,9 @@
 .checklist-note ul{margin:0;padding-left:18px}
 .checklist-note li{margin-bottom:2px}
 [data-theme="light"] .checklist-note{background:rgba(0,0,0,.03)}
-.checkline input{margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--gold)}
+.checkline input{appearance:none;-webkit-appearance:none;margin-top:1px;width:19px;height:19px;flex-shrink:0;border:2px solid var(--gold2);border-radius:5px;background:rgba(0,0,0,.15);cursor:pointer;position:relative;transition:.15s}
+.checkline input:checked{background:var(--gold);border-color:var(--gold)}
+.checkline input:checked::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid #1a1410;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .checkline.warn{border-color:rgba(212,84,58,.5);background:rgba(212,84,58,.08)}
 .pos-editor{margin-top:9px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel2)}
 .pos-editor .pe-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
