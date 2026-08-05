@@ -73,8 +73,14 @@
   <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span>Flyers &amp; affiches</span> &rsaquo; <span>Flyers A4</span></nav>
 
   <div class="prod-top">
+    <div class="prod-media-wrap">
     <div class="prod-media">
-      <img src="mockups/fla4.jpg" alt="Flyers A4 — Pixel Studio" loading="lazy" onerror="this.src='art/fla4.jpg'">
+      <img id="prodMainImg" src="mockups/fla4.jpg" alt="Flyers A4 — Pixel Studio" loading="lazy" onerror="this.src='art/fla4.jpg'">
+    </div>
+    <div class="prod-thumbs">
+      <button type="button" class="prod-thumb sel" onclick="swapProdImg('mockups/fla4.jpg',this)"><img src="mockups/fla4.jpg" alt=""></button>
+      <button type="button" class="prod-thumb" onclick="swapProdImg('mockups/fla4-2.jpg',this)"><img src="mockups/fla4-2.jpg" alt=""></button>
+    </div>
     </div>
     <div class="prod-info">
       

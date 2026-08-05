@@ -73,8 +73,14 @@
   <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span>Roll-up &amp; signalétique</span> &rsaquo; <span>Roll-up 100 × 200 cm</span></nav>
 
   <div class="prod-top">
+    <div class="prod-media-wrap">
     <div class="prod-media">
-      <img src="mockups/rollup100.jpg" alt="Roll-up 100 × 200 cm — Pixel Studio" loading="lazy" onerror="this.src='art/rollup100.jpg'">
+      <img id="prodMainImg" src="mockups/rollup100.jpg" alt="Roll-up 100 × 200 cm — Pixel Studio" loading="lazy" onerror="this.src='art/rollup100.jpg'">
+    </div>
+    <div class="prod-thumbs">
+      <button type="button" class="prod-thumb sel" onclick="swapProdImg('mockups/rollup100.jpg',this)"><img src="mockups/rollup100.jpg" alt=""></button>
+      <button type="button" class="prod-thumb" onclick="swapProdImg('mockups/rollup100-2.jpg',this)"><img src="mockups/rollup100-2.jpg" alt=""></button>
+    </div>
     </div>
     <div class="prod-info">
       

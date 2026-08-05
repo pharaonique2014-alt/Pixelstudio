@@ -73,8 +73,14 @@
   <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span>Cartes de visite</span> &rsaquo; <span>Cartes de fidélité</span></nav>
 
   <div class="prod-top">
+    <div class="prod-media-wrap">
     <div class="prod-media">
-      <img src="mockups/fid.jpg" alt="Cartes de fidélité — Pixel Studio" loading="lazy" onerror="this.src='art/fid.jpg'">
+      <img id="prodMainImg" src="mockups/fid.jpg" alt="Cartes de fidélité — Pixel Studio" loading="lazy" onerror="this.src='art/fid.jpg'">
+    </div>
+    <div class="prod-thumbs">
+      <button type="button" class="prod-thumb sel" onclick="swapProdImg('mockups/fid.jpg',this)"><img src="mockups/fid.jpg" alt=""></button>
+      <button type="button" class="prod-thumb" onclick="swapProdImg('mockups/fid-2.jpg',this)"><img src="mockups/fid-2.jpg" alt=""></button>
+    </div>
     </div>
     <div class="prod-info">
       

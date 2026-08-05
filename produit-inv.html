@@ -73,8 +73,14 @@
   <nav class="prod-crumb"><a href="index.html" data-i18n="nav.home">Accueil</a> &rsaquo; <a href="shop.html" data-i18n="prodpage.shop">Boutique</a> &rsaquo; <span>Faire-parts &amp; événements</span> &rsaquo; <span>Invitations &amp; anniversaires</span></nav>
 
   <div class="prod-top">
+    <div class="prod-media-wrap">
     <div class="prod-media">
-      <img src="mockups/inv.jpg" alt="Invitations &amp; anniversaires — Pixel Studio" loading="lazy" onerror="this.src='art/inv.jpg'">
+      <img id="prodMainImg" src="mockups/inv.jpg" alt="Invitations &amp; anniversaires — Pixel Studio" loading="lazy" onerror="this.src='art/inv.jpg'">
+    </div>
+    <div class="prod-thumbs">
+      <button type="button" class="prod-thumb sel" onclick="swapProdImg('mockups/inv.jpg',this)"><img src="mockups/inv.jpg" alt=""></button>
+      <button type="button" class="prod-thumb" onclick="swapProdImg('mockups/inv-2.jpg',this)"><img src="mockups/inv-2.jpg" alt=""></button>
+    </div>
     </div>
     <div class="prod-info">
       
