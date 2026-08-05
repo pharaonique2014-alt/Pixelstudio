@@ -255,6 +255,20 @@
 </aside>
 <div class="toast" id="toast"></div>
 
+<div class="studio-overlay" id="studioOverlay">
+  <div class="studio-top">
+    <div class="studio-tabs" id="studioTabs"></div>
+    <button type="button" class="studio-close" onclick="closeStudio()" aria-label="Fermer">&#10005;</button>
+  </div>
+  <div class="studio-body" id="studioBody"></div>
+  <div class="studio-bottom">
+    <span class="studio-zoom-label">Zoom</span>
+    <input type="range" id="studioZoom" min="100" max="250">
+    <button type="button" id="studioReset">Recentrer</button>
+    <button type="button" class="btn-main" onclick="closeStudio()">Terminé</button>
+  </div>
+</div>
+
 <footer>
   <p>© Pixel Studio 2026 — Agence Marketing Digital &amp; Créative —  Belgique</p>
   <p>BCE : BE 1032.720.495 — <a href="mailto:projets@pxlstudio.be">projets@pxlstudio.be</a></p>
