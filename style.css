@@ -1296,7 +1296,7 @@ footer a:hover { color: #d6a060; }
 .prod-crumb a:hover { color: #d6a060; }
 .prod-top { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; margin-bottom: 60px; }
 .prod-media { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .03); aspect-ratio: 4 / 3; }
-.prod-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prod-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .prod-tag { display: inline-block; background: rgba(217, 119, 43, .12); border: 1px solid rgba(214, 160, 96, .4); color: #d6a060; border-radius: 999px; padding: 5px 14px; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 14px; }
 .prod-info h1 { font-family: "Playfair Display", Georgia, serif; font-size: 32px; color: #edeae5; font-weight: 600; margin-bottom: 6px; }
 .prod-fmt { color: rgba(228, 225, 220, .55); font-size: 13.5px; margin-bottom: 16px; }
