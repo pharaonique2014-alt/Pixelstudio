@@ -275,6 +275,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       .about-desc { max-width: 100%; }
       .photo-circle { width: 170px; height: 170px; margin: 0 auto; }
     }
+    /* Ce bloc a été écrit avec des couleurs fixes pensées pour le thème sombre
+       (blanc cassé à opacité réduite) au lieu des variables --txt/--muted déjà
+       adaptées au thème clair ailleurs sur le site — en thème clair, ce texte
+       quasi blanc devenait illisible sur fond clair (bandeau stats, tarifs,
+       tagline). On resurcharge ici chaque couleur concernée pour le thème clair. */
+    [data-theme="light"] .hero-tagline-main { color: rgba(36,31,26,.78); }
+    [data-theme="light"] .stats-bar { border-top-color: rgba(0,0,0,.1); border-bottom-color: rgba(0,0,0,.1); }
+    [data-theme="light"] .stat-label { color: rgba(36,31,26,.62); }
+    [data-theme="light"] .why-card { background: rgba(0,0,0,.025); border-color: rgba(0,0,0,.1); }
+    [data-theme="light"] .pricing-card { background: rgba(0,0,0,.025); border-color: rgba(0,0,0,.1); }
+    [data-theme="light"] .pricing-card.featured { background: rgba(217,119,43,.06); }
+    [data-theme="light"] .pricing-name { color: rgba(36,31,26,.65); }
+    [data-theme="light"] .pricing-leads { color: #241f1a; }
+    [data-theme="light"] .pricing-leads span,
+    [data-theme="light"] .pricing-price small,
+    [data-theme="light"] .pricing-gestion { color: rgba(36,31,26,.58); }
+    [data-theme="light"] .pricing-features li { color: rgba(36,31,26,.78); border-bottom-color: rgba(0,0,0,.08); }
+    [data-theme="light"] .pricing-note { color: rgba(36,31,26,.48); }
   </style>
 </head>
 <body>
