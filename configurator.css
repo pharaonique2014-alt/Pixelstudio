@@ -29,6 +29,9 @@
 .cfg-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .cfg-photo svg{width:100%;height:100%;display:block}
 .rp-wrap{position:absolute;top:0;left:0;transform-origin:top left;overflow:hidden}
+/* Fond des vignettes à cadre fixe : la photo mockup elle-même, floutée et assombrie,
+   pour que les marges laissées par le mode "contain" ne soient pas des bandes vides. */
+.rp-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:blur(42px) saturate(.6) brightness(.42);transform:scale(1.45);pointer-events:none}
 .rp-base{position:absolute;top:0;left:0;display:block;width:100%;height:100%}
 .rp-design{position:absolute;top:0;left:0;transform-origin:0 0;pointer-events:none}
 .rp-circle{clip-path:circle(closest-side at 50% 50%)}
