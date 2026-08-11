@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=6">
-<link rel="stylesheet" href="configurator.css?v=6">
+<link rel="stylesheet" href="configurator.css?v=7">
 <style>
 .prod-why,.prod-custom,.prod-how{max-width:760px;margin:0 auto 40px;padding:0 24px}
 .prod-why h2,.prod-custom h2,.prod-how h2{font-family:'Playfair Display',serif;font-size:22px;color:#edeae5;margin-bottom:12px}
@@ -192,6 +192,20 @@
           </div>
         </div>
 
+
+        <!-- Création de design proposée sur un produit imprimé. Volontairement HORS
+             de #uploadZone : cocher la case masque la zone d'upload, la case doit
+             donc lui survivre. Le tarif affiché vient du serveur (produits design-r
+             / design-rv), jamais d'un montant écrit ici. -->
+        <div class="field" id="designAddZone" style="display:none">
+          <label class="checkline">
+            <input type="checkbox" id="designAdd" onchange="onDesignAddToggle()">
+            <span data-i18n="cfg.designAdd">Je n'ai pas de visuel prêt — créez-le pour moi</span>
+          </label>
+          <p class="designadd-note" data-i18n="cfg.designAddNote">Pas de visuel prêt ? Notre graphiste crée votre design sur mesure à partir de vos idées, de votre logo ou de vos inspirations. Décrivez ce que vous voulez ci-dessous, on s'occupe du reste.</p>
+          <div class="designadd-price" id="designAddPrice"></div>
+        </div>
+
         <div id="briefZone" style="display:none">
           <div class="field">
             <label data-i18n="cfg.brief">Votre brief créatif</label>
@@ -285,7 +299,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="shop-app.min.js?v=21"></script>
+<script src="shop-app.min.js?v=22"></script>
 <script src="menu.js"></script>
 <script src="theme.js"></script>
 <script src="cookie-consent.js"></script>
