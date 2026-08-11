@@ -162,8 +162,10 @@ function computeItemDays(p: Product, sel: Record<string, number>, extraDays: num
 // `products`), et le supplément suit automatiquement.
 const DESIGN_PID: Record<1 | 2, string> = { 1: "design-r", 2: "design-rv" };
 // Délai annoncé au client pour un article dont nous créons le visuel. Valeur fixe
-// demandée par Logan, qui remplace le calcul habituel sup_days + HANDLING (+ pays).
-const DESIGN_DAYS = 3;
+// qui remplace le calcul habituel sup_days + HANDLING (+ pays). 5 jours ouvrables =
+// les 48 h de BAT promises sur les fiches design-r / design-rv, puis l'impression et
+// la livraison — c'est ce qui rend les deux promesses cohérentes entre elles.
+const DESIGN_DAYS = 5;
 const designPriceCache = new Map<string, { price: number; at: number }>();
 async function designSupplement(faces: 1 | 2): Promise<number | null> {
   const pid = DESIGN_PID[faces];
