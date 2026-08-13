@@ -65,6 +65,14 @@ type Product = {
   sup_days: number;
   price_grid: Record<string, number>;
   opts: OptGroup[];
+  // Renseignés uniquement pour les produits catalogués chez FLYERALARM (voir
+  // resolveFlyeralarmRef) — absents/null pour les produits "internal".
+  supplier?: string;
+  supplier_ref?: {
+    quantity_ids?: Record<string, number | string>;
+    base_variant_id?: number | string;
+    option_variant_ids?: Record<string, number | string>;
+  } | null;
 };
 
 const SHIPPING: Record<string, { price: number; free: number; extraDays: number }> = {
@@ -217,6 +225,100 @@ async function resolveItem(it: any, extraDays: number): Promise<ResolvedItem | {
     days = DESIGN_DAYS;
   }
   return { prod, base, designAdd, price, days };
+}
+
+// --- Pré-vérification du fichier d'impression chez FLYERALARM -------------------
+// Avant paiement, on peut faire vérifier le fichier du client par le VRAI moteur
+// de contrôle de FLYERALARM (format, nombre de pages, résolution…) plutôt que de
+// se fier uniquement à nos propres heuristiques. Ça exige un identifiant FLYERALARM
+// réel (quantity_id ou variant_id) pour la configuration choisie — qu'on n'a que
+// pour une partie des combinaisons possibles (voir resolveFlyeralarmRef).
+//
+// Toutes les correspondances FLYERALARM (products.supplier_ref) ont été relevées
+// avec la clé BE : on utilise systématiquement cette clé ici, quel que soit le
+// pays de livraison choisi par le client — les identifiants catalogue sont
+// partagés entre pays, seuls les prix/délais varient, et on ne s'en sert pas ici.
+const FLYERALARM_API_BASE = "https://rest.flyeralarm-esolutions.com";
+const FLYERALARM_KEY_BE = Deno.env.get("FLYERALARM_API_KEY_BE") ?? "";
+
+type FaRef = { quantity_id: string } | { variant_id: string; amount: number };
+
+// Ne renvoie un identifiant que dans les cas où on est CERTAIN qu'il correspond à
+// la configuration choisie : soit la config par défaut (0 option modifiée), pour
+// laquelle le quantity_id exact a été relevé pour chaque palier de quantité, soit
+// un seul écart par rapport au défaut, pour lequel on a le variant_id de CETTE
+// option précise. Au-delà (plusieurs options modifiées simultanément), on ne
+// connaît aucun variant_id combiné fiable — mieux vaut ne pas vérifier que de
+// vérifier la mauvaise configuration.
+function resolveFlyeralarmRef(prod: Product, sel: Record<string, number>, qty: number): FaRef | null {
+  const ref = prod.supplier_ref;
+  if (prod.supplier !== "flyeralarm" || !ref) return null;
+
+  const changed: string[] = [];
+  for (const o of prod.opts || []) {
+    const idx = Number(sel?.[o.k] ?? 0);
+    if (idx !== 0) {
+      const c = o.c[idx];
+      if (!c) return null; // sélection incohérente, on ne devine pas
+      changed.push(c.n);
+    }
+  }
+
+  if (changed.length === 0) {
+    const qid = ref.quantity_ids?.[String(qty)];
+    if (qid != null) return { quantity_id: String(qid) };
+    if (ref.base_variant_id != null) return { variant_id: String(ref.base_variant_id), amount: qty };
+    return null;
+  }
+  if (changed.length === 1) {
+    const vid = ref.option_variant_ids?.[changed[0]];
+    if (vid != null) return { variant_id: String(vid), amount: qty };
+    return null;
+  }
+  return null; // 2+ options modifiées à la fois : pas de variant combiné connu
+}
+
+function dataUrlToBytes(dataUrl: string): { bytes: Uint8Array; mime: string } | null {
+  const m = /^data:([^;]+);base64,(.+)$/s.exec(String(dataUrl ?? ""));
+  if (!m) return null;
+  try {
+    const bin = atob(m[2]);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return { bytes, mime: m[1] };
+  } catch {
+    return null;
+  }
+}
+
+// Dépôt temporaire dans le même bucket privé que les fichiers de commande, sous
+// un préfixe dédié — pour obtenir une URL signée que FLYERALARM peut aller
+// chercher. Le client n'est pas forcément connecté à ce stade (la vérification a
+// lieu avant le paiement/la connexion), donc l'upload passe en service_role,
+// jamais par le chemin client habituel (qui exige un user_id).
+async function uploadPrecheckFile(bytes: Uint8Array, mime: string, fileName: string): Promise<string | null> {
+  const safe = String(fileName || "fichier").replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 120);
+  const path = `precheck/${crypto.randomUUID()}/${safe}`;
+  const up = await fetch(`${SUPABASE_URL}/storage/v1/object/fichiers/${path}`, {
+    method: "POST",
+    headers: {
+      apikey: SERVICE_KEY,
+      Authorization: `Bearer ${SERVICE_KEY}`,
+      "Content-Type": mime || "application/octet-stream",
+    },
+    body: bytes,
+  });
+  if (!up.ok) return null;
+  const sign = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/fichiers/${path}`, {
+    method: "POST",
+    headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ expiresIn: 3600 }),
+  });
+  if (!sign.ok) return null;
+  const signed = await sign.json();
+  const signedUrl = signed?.signedURL;
+  if (!signedUrl) return null;
+  return `${SUPABASE_URL}/storage/v1${signedUrl}`;
 }
 
 // --- Localisation des e-mails client (pas les e-mails atelier, qui restent en
@@ -1032,6 +1134,62 @@ async function handler(req: Request) {
     const res = await resolveItem({ pid, qty, sel: sel || {}, designAdd: !!payload.designAdd }, sh.extraDays);
     if ("error" in res) return json({ error: res.error }, 400);
     return json({ price: res.price, days: res.days, base: res.base, designAdd: res.designAdd });
+  }
+
+  // Pré-vérification du fichier client par le moteur de contrôle FLYERALARM
+  // (format, nombre de pages, résolution…), avant paiement — jamais bloquant :
+  // toute impossibilité (produit non catalogué chez FLYERALARM, configuration
+  // sans identifiant connu, service indisponible) renvoie simplement "skipped",
+  // et le client garde la main via la confirmation manuelle habituelle.
+  // Non authentifié par design (l'upload a lieu avant connexion) : protégé par un
+  // taux limité et par une taille de fichier plafonnée.
+  if (payload.action === "printcheck") {
+    if (!rateOk("printcheck:" + ip, 20, 3600000)) return json({ error: "Trop de vérifications, réessayez plus tard." }, 429);
+    if (!FLYERALARM_KEY_BE) return json({ skipped: true, reason: "unavailable" });
+    const { pid, qty, sel, fileName } = payload;
+    const prod = pid ? await getProduct(String(pid)) : null;
+    if (!prod || !prod.active) return json({ skipped: true, reason: "unknown_product" });
+    const ref = resolveFlyeralarmRef(prod, sel || {}, Number(qty));
+    if (!ref) return json({ skipped: true, reason: "no_mapping" });
+
+    const decoded = dataUrlToBytes(String(payload.fileBase64 ?? ""));
+    if (!decoded) return json({ error: "Fichier invalide" }, 400);
+    if (decoded.bytes.length > 15 * 1024 * 1024) return json({ error: "Fichier trop volumineux" }, 400);
+
+    const url = await uploadPrecheckFile(decoded.bytes, decoded.mime, String(fileName || "fichier"));
+    if (!url) return json({ skipped: true, reason: "upload_failed" });
+
+    try {
+      const r = await fetch(`${FLYERALARM_API_BASE}/be/v2/orders/check_print_data`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${FLYERALARM_KEY_BE}`, "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ ...ref, print_data_url: url }),
+      });
+      if (!r.ok) return json({ skipped: true, reason: "upstream_error" });
+      const d = await r.json();
+      if (!d?.data_check_id) return json({ skipped: true, reason: "upstream_error" });
+      return json({ checkId: String(d.data_check_id) });
+    } catch {
+      return json({ skipped: true, reason: "upstream_unavailable" });
+    }
+  }
+
+  // Statut d'une vérification lancée via `printcheck`. Interrogé par le
+  // navigateur en polling le temps que FLYERALARM traite le fichier.
+  if (payload.action === "printcheck_status") {
+    if (!rateOk("printcheck_status:" + ip, 120, 3600000)) return json({ error: "Trop de requêtes" }, 429);
+    const checkId = String(payload.checkId ?? "").trim();
+    if (!checkId || !FLYERALARM_KEY_BE) return json({ status: "unknown" });
+    try {
+      const r = await fetch(`${FLYERALARM_API_BASE}/be/v2/orders/print_data_checks/${encodeURIComponent(checkId)}`, {
+        headers: { Authorization: `Bearer ${FLYERALARM_KEY_BE}`, Accept: "application/json" },
+      });
+      if (!r.ok) return json({ status: "unknown" });
+      const d = await r.json();
+      return json({ status: d?.order_status ?? "unknown", reasons: Array.isArray(d?.reasons) ? d.reasons.slice(0, 5) : [] });
+    } catch {
+      return json({ status: "unknown" });
+    }
   }
 
   // Live preview of a promo code, WITHOUT creating any order or Mollie payment.
