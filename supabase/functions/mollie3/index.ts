@@ -162,7 +162,12 @@ function computeItemPrice(p: Product, qty: number, sel: Record<string, number>):
 }
 
 function computeItemDays(p: Product, sel: Record<string, number>, extraDays: number): number {
-  let d = p.sup_days + HANDLING + extraDays;
+  // Les stands (fournisseur excelexpo) affichent leur propre promesse complète
+  // ("15 jours ouvrables à réception de votre fichier") sur chaque fiche produit —
+  // sup_days EST déjà ce délai total, sans le HANDLING générique des produits
+  // imprimés classiques (file d'attente pré-presse), qui ne s'applique pas ici.
+  const handling = p.supplier === "excelexpo" ? 0 : HANDLING;
+  let d = p.sup_days + handling + extraDays;
   if (p.design) d += 2;
   for (const o of p.opts || []) {
     const idx = Number(sel?.[o.k] ?? 0);
