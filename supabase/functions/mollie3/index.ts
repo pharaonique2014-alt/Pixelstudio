@@ -72,6 +72,9 @@ type Product = {
     quantity_ids?: Record<string, number | string>;
     base_variant_id?: number | string;
     option_variant_ids?: Record<string, number | string>;
+    // Frais de port fixes hors-gabarit (ex. fret pour un stand), affichés/facturés
+    // à part — voir resolveItem(). Absent pour tous les produits standards.
+    shipping_flat?: number;
   } | null;
 };
 
@@ -203,7 +206,7 @@ function facesOf(p: Product, sel: Record<string, number>): 1 | 2 {
 // compris. C'est le seul chemin utilisé par l'action `price`, l'action `promo`,
 // la création de paiement et les relances — pour qu'aucun d'eux ne puisse
 // diverger d'un autre.
-type ResolvedItem = { prod: Product; base: number; designAdd: number; price: number; days: number };
+type ResolvedItem = { prod: Product; base: number; designAdd: number; price: number; days: number; shipFlat: number };
 async function resolveItem(it: any, extraDays: number): Promise<ResolvedItem | { error: string }> {
   const prod = await getProduct(String(it?.pid ?? ""));
   if (!prod || !prod.active) return { error: "Produit inconnu : " + it?.pid };
@@ -224,7 +227,13 @@ async function resolveItem(it: any, extraDays: number): Promise<ResolvedItem | {
     price = Math.round((base + sup) * 100) / 100;
     days = DESIGN_DAYS;
   }
-  return { prod, base, designAdd, price, days };
+  // Frais de port fixes propres à certains produits hors-gabarit (ex. stands
+  // sourcés chez un fournisseur tiers, palette/fret plutôt que colis standard).
+  // Toujours affichés/facturés à part, jamais fondus dans le prix produit —
+  // voir supplier_ref.shipping_flat. N'a rien à voir avec la grille SHIPPING
+  // par pays (petits colis), qui continue de s'appliquer en plus si due.
+  const shipFlat = Number(prod.supplier_ref?.shipping_flat) || 0;
+  return { prod, base, designAdd, price, days, shipFlat };
 }
 
 // --- Pré-vérification du fichier d'impression chez FLYERALARM -------------------
@@ -1133,7 +1142,7 @@ async function handler(req: Request) {
     const sh = SHIPPING[country] ?? SHIPPING.BE;
     const res = await resolveItem({ pid, qty, sel: sel || {}, designAdd: !!payload.designAdd }, sh.extraDays);
     if ("error" in res) return json({ error: res.error }, 400);
-    return json({ price: res.price, days: res.days, base: res.base, designAdd: res.designAdd });
+    return json({ price: res.price, days: res.days, base: res.base, designAdd: res.designAdd, shipFlat: res.shipFlat });
   }
 
   // Pré-vérification du fichier client par le moteur de contrôle FLYERALARM
@@ -1317,6 +1326,7 @@ async function handler(req: Request) {
   // le même chemin (resolveItem) et reste forfaitaire.
   const sh = SHIPPING[country] ?? SHIPPING.BE;
   const lineItems: { name: string; price: number }[] = [];
+  const flatShipItems: { name: string; price: number }[] = [];
   let subtotal = 0;
   for (const it of items) {
     const res = await resolveItem(it, sh.extraDays);
@@ -1326,6 +1336,11 @@ async function handler(req: Request) {
       name: String(res.prod.name || res.prod.id) + (res.designAdd ? " + création de design" : ""),
       price: res.price,
     });
+    // Frais de port hors-gabarit : toujours une ligne à part, jamais mélangés
+    // au prix produit ni à la ligne "Livraison" générique par pays.
+    if (res.shipFlat > 0) {
+      flatShipItems.push({ name: "Frais de port — " + String(res.prod.name || res.prod.id), price: res.shipFlat });
+    }
   }
   const discount = promo ? Math.round(subtotal * (promo.percent / 100) * 100) / 100 : 0;
   const shipping = subtotal >= sh.free ? 0 : sh.price;
@@ -1380,6 +1395,20 @@ async function handler(req: Request) {
       vatAmount: { currency: "EUR", value: (-discVat).toFixed(2) },
     });
   }
+  let extraShipping = 0;
+  for (const fs of flatShipItems) {
+    const fsGross = Math.round(fs.price * (1 + vatRate) * 100) / 100;
+    const fsVat = Math.round((fsGross - fs.price) * 100) / 100;
+    lines.push({
+      description: fs.name,
+      quantity: 1,
+      unitPrice: { currency: "EUR", value: fsGross.toFixed(2) },
+      totalAmount: { currency: "EUR", value: fsGross.toFixed(2) },
+      vatRate: vatRateStr,
+      vatAmount: { currency: "EUR", value: fsVat.toFixed(2) },
+    });
+    extraShipping += fs.price; // net, pour rester cohérent avec subtotal/shipping ci-dessous
+  }
   let total = lines.reduce((s, l) => s + Number(l.totalAmount.value), 0);
   if (shipping > 0) {
     const shipGross = Math.round(shipping * (1 + vatRate) * 100) / 100;
@@ -1416,7 +1445,8 @@ async function handler(req: Request) {
           ...order, ref, total, lang: custLang,
           subtotal: Math.round(subtotal * 100) / 100,
           shipping: shipping,
-          vat: Math.round((total - (subtotal - discount) - shipping) * 100) / 100,
+          extraShipping: Math.round(extraShipping * 100) / 100,
+          vat: Math.round((total - (subtotal - discount) - shipping - extraShipping) * 100) / 100,
           vatRate, reverseVat: reverseCharge,
           promo: promo ? { code: promo.code, percent: promo.percent, discount } : null,
           status: PENDING_STATUS,
