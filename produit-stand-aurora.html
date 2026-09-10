@@ -153,39 +153,21 @@
 
         <div id="uploadZone">
           <div class="field">
-            <label data-i18n="cfg.fileR">Fichier recto</label>
-            <div class="upzone" id="upzoneR" onclick="document.getElementById('fileR').click()">
-              <div id="upTxtR" data-i18n-html="cfg.dropR">Glissez votre fichier recto ici ou cliquez<br><small>PDF, JPG ou PNG — imprimé tel quel</small></div>
+            <div class="checklist-note">
+              <b data-i18n="cfg.standMailTitle">Envoi de votre visuel</b>
+              <p style="margin:6px 0 0;font-size:13px;line-height:1.5" data-i18n="cfg.standMailNote">Après votre commande, vous recevrez un e-mail avec les instructions spécifiques pour nous transmettre votre visuel (formats, gabarits et zones d'impression propres à ce stand).</p>
             </div>
-            <input type="file" id="fileR" accept=".pdf,.jpg,.jpeg,.png" hidden>
-            <div id="fileMsgR"></div>
-            <div id="posEditorR"></div>
           </div>
           <div class="field" id="fVerso" style="display:none">
-            <label data-i18n="cfg.fileV">Fichier verso</label>
-            <div class="upzone" id="upzoneV" onclick="document.getElementById('fileV').click()">
-              <div id="upTxtV" data-i18n-html="cfg.dropV">Glissez votre fichier verso ici ou cliquez<br><small>PDF, JPG ou PNG — imprimé tel quel</small></div>
-            </div>
             <input type="file" id="fileV" accept=".pdf,.jpg,.jpeg,.png" hidden>
             <div id="fileMsgV"></div>
             <div id="posEditorV"></div>
           </div>
-          <div class="upnote" data-i18n-html="cfg.upnote">Format recommandé : PDF 300 dpi, CMJN, fonds perdus 3 mm — max 8 Mo par fichier.
-            Votre fichier n'est jamais modifié. Pas de fichier ?
-            <a href="#" onclick="openConfig('design-r');return false">Nous créons votre design</a>.</div>
+          <input type="file" id="fileR" accept=".pdf,.jpg,.jpeg,.png" hidden>
+          <div id="fileMsgR"></div>
+          <div id="posEditorR"></div>
           <div class="field" id="fileConfirmZone" style="display:none">
-            <div class="checklist-note">
-              <b data-i18n="cfg.checkTitle">Vérifiez avant de continuer :</b>
-              <ul>
-                <li data-i18n="cfg.check1">Le texte est correct et bien orthographié</li>
-                <li data-i18n="cfg.check2">La résolution et les couleurs sont bonnes</li>
-                <li data-i18n="cfg.check3">Le cadrage et les fonds perdus sont respectés</li>
-              </ul>
-            </div>
-            <label class="checkline">
-              <input type="checkbox" id="fileConfirm" onchange="refresh()">
-              <span data-i18n="cfg.confirmFile">Je confirme avoir vérifié mon fichier — il sera imprimé exactement tel quel, sans relecture de notre part.</span>
-            </label>
+            <input type="checkbox" id="fileConfirm">
           </div>
         </div>
 
@@ -296,7 +278,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="shop-app.min.js?v=25"></script>
+<script src="shop-app.min.js?v=26"></script>
 <script src="menu.js"></script>
 <script src="theme.js"></script>
 <script src="cookie-consent.js"></script>

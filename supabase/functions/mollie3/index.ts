@@ -189,6 +189,21 @@ async function designSupplement(faces: 1 | 2): Promise<number | null> {
   designPriceCache.set(pid, { price, at: Date.now() });
   return price;
 }
+// Supplément "créez-le pour moi" pour les stands (fournisseur excelexpo) : un
+// forfait unique, quel que soit le modèle de stand — sans rapport avec le
+// recto/recto-verso des produits imprimés classiques. Lu sur `design-stand`,
+// jamais un montant écrit ici, pour rester modifiable à un seul endroit.
+const STAND_DESIGN_PID = "design-stand";
+async function standDesignSupplement(): Promise<number | null> {
+  const hit = designPriceCache.get(STAND_DESIGN_PID);
+  if (hit && Date.now() - hit.at < 300000) return hit.price;
+  const p = await getProduct(STAND_DESIGN_PID);
+  if (!p || !p.active) return null;
+  const price = computeItemPrice(p, 1, {});
+  if (price === null) return null;
+  designPriceCache.set(STAND_DESIGN_PID, { price, at: Date.now() });
+  return price;
+}
 // Recto seul ou recto/verso : déduit du produit et de la sélection reçue, jamais
 // d'un champ déclaratif du client (sinon un recto/verso serait facturé au tarif
 // recto). Même règle que l'interface : l'option `sides` dont le libellé mentionne
@@ -219,7 +234,9 @@ async function resolveItem(it: any, extraDays: number): Promise<ResolvedItem | {
   // `prod.design` = le produit EST une prestation de création (design-r/rv) : le
   // supplément n'a alors aucun sens et est ignoré.
   if (it?.designAdd && !prod.design) {
-    const sup = await designSupplement(facesOf(prod, sel));
+    const sup = prod.supplier === "excelexpo"
+      ? await standDesignSupplement()
+      : await designSupplement(facesOf(prod, sel));
     if (sup === null) return { error: "Service de création de design indisponible" };
     // Forfaitaire : jamais multiplié par la quantité, comme design-r/design-rv
     // dont la grille tarifaire est verrouillée sur qty = 1.
