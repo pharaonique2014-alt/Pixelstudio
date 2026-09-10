@@ -42,13 +42,14 @@
 [data-theme="light"] .addon-card p{color:#3a352d}
 [data-theme="light"] .addon-card img{background:#eceae5}
 .prod-structure{max-width:760px;margin:0 auto 40px;padding:0 24px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
-.prod-structure img{width:340px;max-width:100%;border-radius:10px;background:#f4f2ee;flex-shrink:0;display:block}
+.prod-structure-photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:340px;max-width:100%;flex-shrink:0}
+.prod-structure-photos img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:10px;background:#f4f2ee;display:block}
 .prod-structure .prod-structure-txt{flex:1;min-width:220px}
 .prod-structure h3{font-family:'Playfair Display',serif;font-size:18px;color:#edeae5;margin:0 0 8px}
 .prod-structure p{color:#e4e1dc;font-size:14px;line-height:1.65;margin:0}
 [data-theme="light"] .prod-structure h3{color:#1c1712}
 [data-theme="light"] .prod-structure p{color:#3a352d}
-[data-theme="light"] .prod-structure img{background:#eceae5}
+[data-theme="light"] .prod-structure-photos img{background:#eceae5}
 </style>
 <script type="application/ld+json">
 {
@@ -115,10 +116,13 @@
   </div>
 
   <div class="prod-structure">
-    <img src="mockups/stand-aurora-structure.jpg" alt="Ossature du Stand Expo Aurora avant habillage graphique" loading="lazy">
+    <div class="prod-structure-photos">
+      <img src="mockups/stand-aurora-structure.jpg" alt="Ossature du Stand Expo Aurora avant habillage graphique" loading="lazy">
+      <img src="mockups/stand-structure-case.jpg" alt="Structure démontée, rangée dans son sac de transport" loading="lazy">
+    </div>
     <div class="prod-structure-txt">
       <h3>La structure, avant habillage</h3>
-      <p>Le rendu ci-dessus montre le stand une fois votre visuel imprimé installé. Ce schéma montre l'ossature nue : cadre aluminium tendu et comptoir, avant impression — pour bien visualiser le montage et les proportions réelles.</p>
+      <p>Le rendu ci-dessus montre le stand une fois votre visuel imprimé installé. Ce schéma montre l'ossature nue : cadre aluminium tendu et comptoir, avant impression — pour bien visualiser le montage et les proportions réelles. À droite : la structure une fois démontée, rangée dans son sac de transport compact.</p>
     </div>
   </div>
 
