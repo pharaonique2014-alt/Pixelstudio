@@ -29,6 +29,18 @@
 [data-theme="light"] .prod-why h2,[data-theme="light"] .prod-custom h2,[data-theme="light"] .prod-how h2,[data-theme="light"] .prod-related h2,[data-theme="light"] .rel-card h4{color:#1c1712}
 [data-theme="light"] .prod-why p,[data-theme="light"] .prod-custom p,[data-theme="light"] .prod-how p,[data-theme="light"] .rel-card p{color:#3a352d}
 [data-theme="light"] .rel-card{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+.addon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px}
+.addon-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.addon-card img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4f2ee;display:block}
+.addon-card .addon-photos{display:grid;grid-template-columns:1fr 1fr}
+.addon-card .addon-body{padding:12px 14px 14px}
+.addon-card h4{font-size:14px;color:#edeae5;margin:0 0 5px;font-weight:600}
+.addon-card p{font-size:12.5px;color:#e4e1dc;margin:0 0 8px;line-height:1.55}
+.addon-card .addon-price{display:block;font-size:13px;color:#d6a060;font-weight:700}
+[data-theme="light"] .addon-card{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .addon-card h4{color:#1c1712}
+[data-theme="light"] .addon-card p{color:#3a352d}
+[data-theme="light"] .addon-card img{background:#eceae5}
 </style>
 <script type="application/ld+json">
 {
@@ -97,7 +109,28 @@
   <div class="prod-opts">
     <h2 data-i18n="prodpage.customization">Personnalisation disponible</h2>
     <div class="prod-optgrid">
-      <div class="prod-optgroup"><h3>Configuration</h3><p>Deux pans 3 m + comptoir lumineux — prix fixe, sans option supplémentaire</p></div>
+      <div class="prod-optgroup"><h3>Configuration</h3><p>Deux pans 3 m + comptoir lumineux inclus — accessoires en option ci-dessous</p></div>
+    </div>
+    <div class="addon-grid">
+      <div class="addon-card">
+        <img src="mockups/addon-spot.jpg" alt="Spot LED 18W orientable" loading="lazy">
+        <div class="addon-body">
+          <h4>Spot LED 18W orientable</h4>
+          <p>Éclairage d'appoint orientable (6000-7000K), fixation directe sur la structure du stand.</p>
+          <span class="addon-price">+ 62,50 € HTVA</span>
+        </div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-photos">
+          <img src="mockups/addon-comptoir-front.jpg" alt="Comptoir + impression — face avant" loading="lazy">
+          <img src="mockups/addon-comptoir-back.jpg" alt="Comptoir + impression — structure arrière" loading="lazy">
+        </div>
+        <div class="addon-body">
+          <h4>Comptoir + impression</h4>
+          <p>Comptoir d'accueil 100 cm, face imprimée pleine largeur, structure noire, sacs de transport inclus.</p>
+          <span class="addon-price">+ 200,00 € HTVA</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -278,7 +311,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="shop-app.min.js?v=27"></script>
+<script src="shop-app.min.js?v=28"></script>
 <script src="menu.js"></script>
 <script src="theme.js"></script>
 <script src="cookie-consent.js"></script>

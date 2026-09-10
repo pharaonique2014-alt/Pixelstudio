@@ -55,7 +55,11 @@ const PROMO_CODES: Record<string, { percent: number; newCustomerOnly: boolean }>
   NEW10: { percent: 10, newCustomerOnly: true },
 };
 
-type OptChoice = { n: string; p: number; d: number };
+// `p` = majoration en pourcentage du prix de base (grille papier/format classique).
+// `flat` = supplément forfaitaire en euros, indépendant du prix de base — utilisé
+// pour les accessoires de stand (spot LED, comptoir supplémentaire...) dont le
+// coût est le même quel que soit le stand choisi.
+type OptChoice = { n: string; p: number; d: number; flat?: number };
 type OptGroup = { k: string; l: string; c: OptChoice[] };
 type Product = {
   id: string;
@@ -146,13 +150,15 @@ function computeItemPrice(p: Product, qty: number, sel: Record<string, number>):
   const base = p.price_grid[String(qty)];
   if (base === undefined) return null;
   let mult = 1;
+  let flatAdd = 0;
   for (const o of p.opts || []) {
     const idx = Number(sel?.[o.k] ?? 0);
     const c = o.c[idx];
     if (!c) return null;
     mult *= 1 + (c.p || 0);
+    flatAdd += c.flat || 0;
   }
-  return Math.round(base * mult * 100) / 100;
+  return Math.round((base * mult + flatAdd) * 100) / 100;
 }
 
 function computeItemDays(p: Product, sel: Record<string, number>, extraDays: number): number {
