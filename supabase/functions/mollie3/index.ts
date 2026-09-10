@@ -184,10 +184,14 @@ const DESIGN_PID: Record<1 | 2, string> = { 1: "design-r", 2: "design-rv" };
 // la livraison — c'est ce qui rend les deux promesses cohérentes entre elles.
 const DESIGN_DAYS = 5;
 // Délai spécifique aux stands (fournisseur excelexpo) avec création de design :
-// 10 jours ouvrables à partir de l'envoi ET de l'approbation des fichiers — plus
-// long que le DESIGN_DAYS générique des produits imprimés classiques, qui ne
-// s'applique pas à la fabrication d'un stand.
-const STAND_DESIGN_DAYS = 10;
+// 72 h (~3 jours ouvrables) pour la création du visuel par nos soins, PUIS 10
+// jours ouvrables de fabrication une fois le fichier reçu et validé par le
+// client — les deux étapes s'additionnent, contrairement au DESIGN_DAYS
+// générique des produits imprimés classiques (qui ne s'applique pas à la
+// fabrication d'un stand).
+const STAND_DESIGN_CREATE_DAYS = 3;
+const STAND_PRODUCTION_DAYS = 10;
+const STAND_DESIGN_DAYS = STAND_DESIGN_CREATE_DAYS + STAND_PRODUCTION_DAYS;
 const designPriceCache = new Map<string, { price: number; at: number }>();
 async function designSupplement(faces: 1 | 2): Promise<number | null> {
   const pid = DESIGN_PID[faces];
