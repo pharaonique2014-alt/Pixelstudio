@@ -183,6 +183,11 @@ const DESIGN_PID: Record<1 | 2, string> = { 1: "design-r", 2: "design-rv" };
 // les 48 h de BAT promises sur les fiches design-r / design-rv, puis l'impression et
 // la livraison — c'est ce qui rend les deux promesses cohérentes entre elles.
 const DESIGN_DAYS = 5;
+// Délai spécifique aux stands (fournisseur excelexpo) avec création de design :
+// 10 jours ouvrables à partir de l'envoi ET de l'approbation des fichiers — plus
+// long que le DESIGN_DAYS générique des produits imprimés classiques, qui ne
+// s'applique pas à la fabrication d'un stand.
+const STAND_DESIGN_DAYS = 10;
 const designPriceCache = new Map<string, { price: number; at: number }>();
 async function designSupplement(faces: 1 | 2): Promise<number | null> {
   const pid = DESIGN_PID[faces];
@@ -248,7 +253,7 @@ async function resolveItem(it: any, extraDays: number): Promise<ResolvedItem | {
     // dont la grille tarifaire est verrouillée sur qty = 1.
     designAdd = sup;
     price = Math.round((base + sup) * 100) / 100;
-    days = DESIGN_DAYS;
+    days = prod.supplier === "excelexpo" ? STAND_DESIGN_DAYS : DESIGN_DAYS;
   }
   // Frais de port fixes propres à certains produits hors-gabarit (ex. stands
   // sourcés chez un fournisseur tiers, palette/fret plutôt que colis standard).
