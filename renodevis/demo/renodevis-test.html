@@ -1,0 +1,1200 @@
+<title>RénoDevis base test</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Mise en page : bandeau de test fixe, puis trois espaces (particulier / entreprise / admin).
+   Particulier = hero marine profond + carte de formulaire blanche, sections aérées.
+   Entreprise / admin = interface d'application sobre, accent orange côté pro. */
+:root {
+  --ink: #0d1726;          /* texte principal, marine très profond */
+  --ink-2: #44506a;        /* texte secondaire */
+  --paper: #f5f7fa;        /* fond de page, gris bleuté froid */
+  --surface: #ffffff;
+  --surface-2: #eef2f7;
+  --line: #dde3ec;
+  --hero: #0b1524;         /* hero marine */
+  --hero-2: #12223a;
+  --on-hero: #f4f7fb;
+  --on-hero-2: #b8c4d6;
+  --blue: #1f5fd1;         /* bleu particulier (AA sur blanc) */
+  --blue-ink: #ffffff;
+  --blue-soft: #e8f0fd;
+  --pixel: #5cc8ec;        /* pixel bleu du logo Pixel Studio */
+  --pro: #b4521a;          /* orange entreprise (AA sur blanc) */
+  --pro-ink: #ffffff;
+  --pro-soft: #fdf0e7;
+  --pro-pixel: #f08a3c;
+  --ok: #17703f;  --ok-soft: #e6f4ec;
+  --warn: #8a5a00; --warn-soft: #fdf3dc;
+  --bad: #b3261e; --bad-soft: #fbe9e7;
+  --shadow: 0 1px 2px rgba(13, 23, 38, .06), 0 12px 32px -12px rgba(13, 23, 38, .22);
+  --shadow-lg: 0 2px 4px rgba(13, 23, 38, .08), 0 32px 64px -24px rgba(5, 12, 24, .55);
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --text: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --r: 14px; --r-sm: 9px;
+  --max: 1160px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #e9eef6; --ink-2: #a3afc2; --paper: #0a111c; --surface: #111b2a; --surface-2: #172335; --line: #243349;
+    --hero: #060c16; --hero-2: #0c1828; --blue: #7fb0ff; --blue-ink: #08142a; --blue-soft: #15284a;
+    --pro: #f2a065; --pro-ink: #1d0f05; --pro-soft: #2c1c10;
+    --ok: #7fd3a1; --ok-soft: #12291d; --warn: #f0c56a; --warn-soft: #2a2110; --bad: #ffaaa1; --bad-soft: #321615;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #e9eef6; --ink-2: #a3afc2; --paper: #0a111c; --surface: #111b2a; --surface-2: #172335; --line: #243349;
+  --hero: #060c16; --hero-2: #0c1828; --blue: #7fb0ff; --blue-ink: #08142a; --blue-soft: #15284a;
+  --pro: #f2a065; --pro-ink: #1d0f05; --pro-soft: #2c1c10;
+  --ok: #7fd3a1; --ok-soft: #12291d; --warn: #f0c56a; --warn-soft: #2a2110; --bad: #ffaaa1; --bad-soft: #321615;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--text); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4 { font-family: var(--display); line-height: 1.08; margin: 0; letter-spacing: -.02em; text-wrap: balance; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--pixel); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+.wrap { max-width: var(--max); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* --- Bandeau de test ------------------------------------------------------ */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: #05080f; }
+.testbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: #05080f; color: #d9e0ea; font-size: 13px; }
+.testbar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 8px; }
+.testbar-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: 11.5px; color: #fff; }
+.testbar-label i { width: 8px; height: 8px; background: #ffd34d; border-radius: 1px; }
+.tabs { display: flex; gap: 4px; background: rgba(255,255,255,.07); padding: 3px; border-radius: 10px; }
+.tabs a { text-decoration: none; padding: 6px 12px; border-radius: 8px; font-weight: 600; color: #c6cfdc; min-height: 32px; display: inline-flex; align-items: center; }
+.tabs a[aria-current="page"] { background: #fff; color: #0b1524; }
+.testbar-info { color: #9aa7ba; flex: 1 1 260px; }
+.testbar-info b { color: #fff; font-weight: 600; }
+.testbar-short { display: none; color: #9aa7ba; }
+@media (max-width: 720px) { .testbar-info { display: none; } .testbar-short { display: inline; } .store-chip { display: none; } }
+.store-chip { font-size: 12px; padding: 3px 8px; border-radius: 999px; background: rgba(255,255,255,.08); color: #c6cfdc; white-space: nowrap; }
+
+/* --- Boutons, champs ------------------------------------------------------ */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 11px; border: 1px solid transparent; font-weight: 600; cursor: pointer; text-decoration: none; transition: transform .12s, background .15s, box-shadow .15s; }
+.btn:active { transform: translateY(1px); }
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+.btn-blue { background: var(--blue); color: var(--blue-ink); box-shadow: 0 8px 20px -10px var(--blue); }
+.btn-blue:hover:not([disabled]) { filter: brightness(1.07); }
+.btn-pro { background: var(--pro); color: var(--pro-ink); }
+.btn-pro:hover:not([disabled]) { filter: brightness(1.07); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { background: var(--surface-2); }
+.btn-white { background: #fff; color: #0b1524; }
+.btn-sm { min-height: 38px; padding: 0 14px; border-radius: 9px; font-size: 14px; }
+.btn-link { background: none; border: 0; padding: 6px 0; color: var(--blue); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 40px; }
+.btn-link[disabled] { color: var(--ink-2); text-decoration: none; cursor: default; }
+.field { display: grid; gap: 6px; }
+.field > label, .label { font-weight: 600; font-size: 14px; }
+.input, select.input, textarea.input { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); transition: border-color .15s, box-shadow .15s; }
+textarea.input { min-height: 84px; resize: vertical; }
+.input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); }
+.pro .input:focus { border-color: var(--pro); box-shadow: 0 0 0 4px var(--pro-soft); }
+.input[aria-invalid="true"] { border-color: var(--bad); }
+.err { color: var(--bad); font-size: 13.5px; font-weight: 600; }
+.err:empty { display: none; }
+.hint { color: var(--ink-2); font-size: 13.5px; }
+.grid2 { display: grid; gap: 14px; }
+@media (min-width: 520px) { .grid2 { grid-template-columns: 1fr 1fr; } .grid-cp { grid-template-columns: 8.5rem 1fr; } }
+.check { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; font-size: 14.5px; }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--blue); }
+.pro .check input { accent-color: var(--pro); }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); white-space: nowrap; }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.bad { background: var(--bad-soft); color: var(--bad); }
+.chip.pro { background: var(--pro-soft); color: var(--pro); }
+.chip.blue { background: var(--blue-soft); color: var(--blue); }
+.note { padding: 12px 14px; border-radius: 10px; background: var(--surface-2); font-size: 14px; }
+.note.bad { background: var(--bad-soft); color: var(--bad); font-weight: 600; }
+.note.ok { background: var(--ok-soft); color: var(--ok); font-weight: 600; }
+.note:empty { display: none; }
+
+/* --- PARTICULIER ---------------------------------------------------------- */
+.site-head { background: var(--hero); color: var(--on-hero); }
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 18px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 21px; letter-spacing: -.02em; }
+.logo-mark { display: grid; grid-template-columns: repeat(2, 7px); gap: 2px; }
+.logo-mark i { width: 7px; height: 7px; background: rgba(255,255,255,.18); }
+.logo-mark i:nth-child(2) { background: var(--pixel); box-shadow: 0 0 10px var(--pixel); }
+.pro .logo-mark i:nth-child(2) { background: var(--pro-pixel); box-shadow: 0 0 10px var(--pro-pixel); }
+.free { font-size: 13px; font-weight: 600; color: var(--on-hero); display: inline-flex; align-items: center; gap: 8px; }
+.free::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 4px rgba(74,222,128,.15); }
+
+.hero { position: relative; overflow: hidden; background: radial-gradient(1100px 520px at 85% -10%, rgba(92,200,236,.20), transparent 60%), radial-gradient(700px 400px at -10% 110%, rgba(31,95,209,.28), transparent 60%), linear-gradient(180deg, var(--hero), var(--hero-2)); color: var(--on-hero); }
+.hero::before { /* trame de pixels très discrète */
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 28px 28px; mask-image: linear-gradient(180deg, #000 30%, transparent 95%); -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 95%);
+}
+.hero .wrap { position: relative; display: grid; gap: 36px; padding-block: 28px 64px; }
+@media (min-width: 980px) { .hero .wrap { grid-template-columns: minmax(0, 1fr) 470px; gap: 64px; align-items: start; padding-block: 56px 96px; } }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--on-hero-2); }
+.eyebrow i { width: 18px; height: 1px; background: var(--pixel); }
+.hero h1 { font-size: clamp(2.3rem, 6.4vw, 4.1rem); font-weight: 800; margin-top: 18px; max-width: 13ch; }
+.hero h1 em { font-style: normal; color: var(--pixel); }
+.hero-lead { margin-top: 20px; font-size: 1.12rem; color: var(--on-hero-2); max-width: 46ch; }
+.hero-trades { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.hero-trades span { font-size: 13.5px; font-weight: 600; padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.14); color: var(--on-hero); background: rgba(255,255,255,.04); }
+.hero-proof { display: grid; gap: 12px; margin-top: 34px; padding: 0; list-style: none; }
+.hero-proof li { display: flex; gap: 12px; align-items: center; color: var(--on-hero); font-weight: 500; }
+.hero-proof svg { flex: 0 0 22px; color: var(--pixel); }
+
+.quiz-card { background: var(--surface); color: var(--ink); border-radius: 22px; box-shadow: var(--shadow-lg); padding: 22px 20px 20px; min-width: 0; }
+@media (min-width: 480px) { .quiz-card { padding: 30px 30px 26px; } }
+.quiz-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.bar { height: 4px; background: var(--surface-2); border-radius: 4px; margin: 12px 0 22px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--blue), var(--pixel)); border-radius: 4px; transition: width .35s ease; }
+.step-q { font-size: 1.55rem; font-weight: 700; margin-bottom: 6px; }
+.step-help { color: var(--ink-2); font-size: 14.5px; margin-bottom: 16px; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { padding: 0; }
+.opts { display: grid; gap: 10px; margin-top: 14px; }
+.opts.two { grid-template-columns: 1fr 1fr; }
+.opt { position: relative; }
+.opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.opt span { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; transition: border-color .15s, background .15s, box-shadow .15s; }
+.opt span::after { content: ""; margin-left: auto; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); flex: 0 0 18px; }
+.opt:hover span { border-color: var(--blue); }
+.opt input:checked + span { border-color: var(--blue); background: var(--blue-soft); box-shadow: inset 0 0 0 1px var(--blue); }
+.opt input:checked + span::after { border-color: var(--blue); background: radial-gradient(circle, var(--blue) 45%, transparent 50%); }
+.opt input:focus-visible + span { outline: 3px solid var(--pixel); outline-offset: 2px; }
+.opt.trade span { flex-direction: column; align-items: flex-start; gap: 10px; min-height: 104px; padding: 16px; }
+.opt.trade span::after { position: absolute; top: 14px; right: 14px; }
+.opt.trade svg { color: var(--blue); }
+.quiz-nav { display: flex; gap: 10px; margin-top: 22px; }
+.quiz-nav .btn-blue { flex: 1; }
+.quiz-foot { margin-top: 14px; font-size: 12.5px; color: var(--ink-2); display: flex; gap: 8px; align-items: flex-start; }
+.quiz-foot svg { flex: 0 0 15px; margin-top: 2px; }
+.code-input { font-size: 1.7rem !important; letter-spacing: .45em; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.done-mark { width: 54px; height: 54px; border-radius: 16px; background: var(--blue-soft); color: var(--blue); display: grid; place-items: center; margin-bottom: 18px; }
+
+.section { padding-block: 72px; }
+.section-tight { padding-top: 0; }
+.kicker { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
+.section h2 { font-size: clamp(1.8rem, 4.2vw, 2.7rem); font-weight: 700; margin-top: 10px; max-width: 20ch; }
+.section-lead { color: var(--ink-2); margin-top: 14px; max-width: 58ch; font-size: 1.05rem; }
+.pledges { display: grid; gap: 1px; margin-top: 40px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+@media (min-width: 680px) { .pledges { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1040px) { .pledges { grid-template-columns: repeat(5, 1fr); } }
+.pledge { background: var(--surface); padding: 26px 22px; display: grid; gap: 10px; align-content: start; }
+.pledge svg { color: var(--blue); }
+.pledge h3 { font-size: 1.08rem; font-weight: 700; letter-spacing: -.01em; }
+.pledge p { color: var(--ink-2); font-size: 14.5px; }
+.how { display: grid; gap: 16px; margin-top: 40px; counter-reset: s; }
+@media (min-width: 860px) { .how { grid-template-columns: repeat(3, 1fr); } }
+.how li { list-style: none; position: relative; padding: 26px 24px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); }
+.how .n { font-family: var(--display); font-weight: 800; font-size: 15px; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--hero); color: #fff; margin-bottom: 18px; }
+.how li:nth-child(2) .n { background: var(--blue); color: #fff; }
+.how li:nth-child(3) .n { background: linear-gradient(135deg, var(--blue), var(--pixel)); color: #fff; }
+.how h3 { font-size: 1.15rem; font-weight: 700; }
+.how p { color: var(--ink-2); margin-top: 8px; font-size: 15px; }
+.how ol { padding: 0; margin: 0; }
+.aid { display: grid; gap: 18px; padding: 30px 26px; border-radius: 18px; background: var(--hero); color: var(--on-hero); position: relative; overflow: hidden; }
+.aid::after { content: ""; position: absolute; right: -30px; top: -30px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(92,200,236,.25), transparent 70%); }
+@media (min-width: 860px) { .aid { grid-template-columns: 260px 1fr; gap: 40px; padding: 40px; } }
+.aid-date { font-family: var(--display); font-weight: 800; font-size: 2.1rem; line-height: 1; }
+.aid-date small { display: block; font-family: var(--text); font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--pixel); margin-bottom: 10px; }
+.aid h2 { font-size: 1.45rem; font-weight: 700; margin: 0; max-width: none; }
+.aid p { color: var(--on-hero-2); margin-top: 10px; }
+.faq { margin-top: 32px; display: grid; gap: 0; border-top: 1px solid var(--line); max-width: 860px; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; padding: 20px 44px 20px 0; font-weight: 600; font-size: 1.05rem; position: relative; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 24px; font-weight: 400; color: var(--blue); transition: transform .2s; }
+.faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+.faq details p { padding-bottom: 20px; color: var(--ink-2); max-width: 70ch; }
+.about { display: grid; gap: 28px; align-items: center; padding: 28px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+@media (min-width: 760px) { .about { grid-template-columns: 180px 1fr; gap: 40px; padding: 36px; } }
+.about-photo { width: 180px; max-width: 100%; aspect-ratio: 4 / 5; border-radius: 14px; background: linear-gradient(160deg, var(--surface-2), var(--line)); display: grid; place-items: center; color: var(--ink-2); font-size: 13px; text-align: center; padding: 12px; }
+.about h2 { font-size: 1.6rem; margin: 0; max-width: none; }
+.about p { color: var(--ink-2); margin-top: 10px; }
+.todo { background: #fff2b3; color: #4a3b00; padding: 1px 5px; border-radius: 4px; font-size: .92em; }
+.cta { text-align: center; padding: 56px 24px; border-radius: 22px; background: radial-gradient(600px 300px at 50% 0%, rgba(92,200,236,.18), transparent 70%), var(--hero); color: var(--on-hero); }
+.cta h2 { font-size: clamp(1.9rem, 4.6vw, 2.9rem); margin: 0 auto; max-width: 18ch; }
+.cta p { color: var(--on-hero-2); margin: 14px auto 26px; }
+.foot { padding-block: 40px 56px; color: var(--ink-2); font-size: 14px; }
+.foot .wrap { display: grid; gap: 14px; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.foot nav span { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+
+/* --- ENTREPRISE / ADMIN (interface) -------------------------------------- */
+.app-head { background: var(--hero); color: var(--on-hero); }
+.app-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 16px; flex-wrap: wrap; }
+.app-head .who { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+.app-main { padding-block: 28px 64px; }
+.app-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.app-title h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; }
+.app-title p { color: var(--ink-2); margin-top: 6px; }
+.subnav { display: flex; gap: 4px; overflow-x: auto; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+.subnav button { background: none; border: 0; padding: 12px 14px; font-weight: 600; color: var(--ink-2); border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; min-height: 44px; }
+.subnav button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--pro); }
+.admin .subnav button[aria-selected="true"] { border-bottom-color: var(--ink); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; }
+.panel + .panel { margin-top: 16px; }
+.panel h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
+.stack { display: grid; gap: 14px; }
+.kpis { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 20px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.kpi b { display: block; font-family: var(--display); font-size: 1.8rem; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.kpi span { color: var(--ink-2); font-size: 13px; font-weight: 600; }
+.balance { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 12px; background: var(--pro-soft); color: var(--ink); }
+.balance b { font-family: var(--display); font-size: 1.6rem; color: var(--pro); font-variant-numeric: tabular-nums; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.filters select { width: auto; min-width: 160px; }
+.leads { display: grid; gap: 14px; }
+@media (min-width: 900px) { .leads { grid-template-columns: 1fr 1fr; } }
+.lead { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.lead-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+.lead h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
+.lead dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font-size: 14.5px; }
+.lead dt { color: var(--ink-2); }
+.lead dd { margin: 0; font-weight: 600; }
+.shares { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.shares .dots { display: flex; gap: 3px; }
+.shares .dots i { width: 10px; height: 10px; background: var(--line); border-radius: 2px; }
+.shares .dots i.on { background: var(--pro-pixel); }
+.contact { display: grid; gap: 4px; padding: 14px; border-radius: 10px; background: var(--ok-soft); font-size: 14.5px; }
+.contact b { font-size: 1.05rem; }
+.confirm-box { display: grid; gap: 10px; padding: 14px; border-radius: 10px; background: var(--pro-soft); }
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; background: var(--surface); }
+th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+.empty { padding: 28px; text-align: center; color: var(--ink-2); border: 1px dashed var(--line); border-radius: 12px; }
+.auth { display: grid; gap: 18px; max-width: 980px; }
+@media (min-width: 900px) { .auth { grid-template-columns: 1fr 1.25fr; align-items: start; } }
+.trade-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pw-meter { height: 4px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.pw-meter i { display: block; height: 100%; width: 0; transition: width .2s; }
+.outbox li { list-style: none; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.outbox ul { padding: 0; margin: 0; }
+.outbox pre { white-space: pre-wrap; font: inherit; margin: 6px 0 0; color: var(--ink-2); }
+.cols { display: grid; gap: 16px; }
+@media (min-width: 980px) { .cols { grid-template-columns: 1fr 1fr; } }
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 30; background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 12px; font-weight: 600; box-shadow: var(--shadow); max-width: calc(100% - 32px); }
+</style>
+
+<div class="testbar">
+  <div class="wrap">
+    <span class="testbar-label"><i aria-hidden="true"></i>Base de test</span>
+    <nav class="tabs" aria-label="Espaces">
+      <a href="#particulier" data-tab="particulier">Particulier</a>
+      <a href="#entreprise" data-tab="entreprise">Entreprise</a>
+      <a href="#admin" data-tab="admin">Admin</a>
+    </nav>
+    <span class="testbar-info">Codes SMS et double authentification : <b>123456</b>. Aucun vrai SMS, aucun vrai paiement.</span>
+    <span class="testbar-short">Code : <b style="color:#fff">123456</b></span>
+    <span class="store-chip" id="store-chip">Connexion à la base…</span>
+  </div>
+</div>
+
+<div id="view"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* =========================================================================
+   RénoDevis — base de test (particulier, entreprise, admin)
+   Toutes les règles métier reprennent celles des migrations SQL du dépôt.
+   ========================================================================= */
+(() => {
+"use strict";
+
+// --- Référentiels (identiques à supabase/functions/_shared/trades.ts) -------
+const TRADES = {
+  chassis:   { label: "Châssis",   q: "Combien de fenêtres et de portes ?", key: "quantite",
+               opts: [["1_3","1 à 3"],["4_6","4 à 6"],["7_10","7 à 10"],["plus_10","Plus de 10"]] },
+  isolation: { label: "Isolation", q: "Que souhaitez-vous isoler ?", key: "zone",
+               opts: [["toiture","Toiture ou combles"],["murs","Murs"],["sol","Sol ou cave"],["plusieurs","Plusieurs zones"]] },
+  toiture:   { label: "Toiture",   q: "Quels travaux de toiture ?", key: "travaux",
+               opts: [["refection","Réfection complète"],["reparation","Réparation"],["isolation","Isolation de la toiture"],["autre","Autre"]] },
+  chauffage: { label: "Chauffage", q: "Quel type de chauffage ?", key: "type",
+               opts: [["pompe_a_chaleur","Pompe à chaleur"],["chaudiere","Chaudière"],["poele","Poêle"],["je_ne_sais_pas","Je ne sais pas encore"]] },
+};
+const PROJECTS = [["renovation","Rénovation"],["nouvelle_construction","Nouvelle construction"],["extension","Extension"]];
+const BUDGETS = [["moins_5000","Moins de 5 000 €"],["5000_10000","5 000 à 10 000 €"],["10000_20000","10 000 à 20 000 €"],["plus_20000","Plus de 20 000 €"],["inconnu","Je ne sais pas"]];
+const DELAYS = [["asap","Dès que possible"],["3_mois","Dans les 3 mois"],["6_mois","Dans les 6 mois"]];
+const BUDGET_FLOOR = { moins_5000: 0, "5000_10000": 5000, "10000_20000": 10000, plus_20000: 20000 };
+const CONSENT_VERSION = "demande-devis-2026-10-v1";
+const CONSENT_TEXT = "J'accepte que mes coordonnées soient transmises à 3 entreprises au maximum pour recevoir un devis";
+const CGV_VERSION = "cgv-entreprises-2026-10-v1";
+const PRICE_CENTS = 3500, MAX_COMPANIES = 3, TTL_DAYS = 30, REPORT_DAYS = 7, DUP_DAYS = 30;
+const CODE = "123456";
+const DAY = 86400000;
+const label = (list, v) => (list.find((x) => x[0] === v) || [, v])[1];
+
+// --- Petites aides --------------------------------------------------------
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now());
+const now = () => Date.now() + (state.clock_offset_days || 0) * DAY;
+const fmtDate = (t) => new Date(t).toLocaleString("fr-BE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+const fmtDay = (t) => new Date(t).toLocaleDateString("fr-BE", { day: "numeric", month: "long" });
+const eur = (c) => (c / 100).toLocaleString("fr-BE", { style: "currency", currency: "EUR" });
+const ref = () => "RD-" + uid().replace(/-/g, "").slice(0, 8).toUpperCase();
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2600); }
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} }, del(k) { try { localStorage.removeItem(k); } catch {} } };
+
+function normalizePhone(input) {
+  let s = String(input || "").trim().replace(/[\s./()\-]/g, "");
+  if (s.startsWith("0032")) s = "+32" + s.slice(4);
+  else if (s.startsWith("32") && s.length === 11) s = "+" + s;
+  else if (s.startsWith("0")) s = "+32" + s.slice(1);
+  return /^\+324[6-9][0-9]{7}$/.test(s) ? s : null;
+}
+const mask = (e) => `+32 ${e.slice(3, 4)}•• •• •• ${e.slice(-2)}`;
+function normalizeBce(input) {
+  const d = String(input || "").replace(/^BE/i, "").replace(/\D/g, "");
+  const n = d.length === 9 ? "0" + d : d;
+  return /^[01]\d{9}$/.test(n) ? n : null;
+}
+const bceValid = (n) => !!n && 97 - (Number(n.slice(0, 8)) % 97) === Number(n.slice(8));
+const fmtBce = (n) => `BE ${n.slice(0, 4)}.${n.slice(4, 7)}.${n.slice(7)}`;
+const NAME_RE = /^[\p{L}][\p{L}\p{M}' ’\-]{0,59}$/u;
+const COMMUNE_RE = /^[\p{L}][\p{L}\p{M}0-9' ’\-.()]{0,79}$/u;
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,24}$/i;
+
+// --- Base de test : un document partagé (db) ou, à défaut, le navigateur ---
+const EMPTY = () => ({ v: 1, demandes: [], contacts: {}, entreprises: [], ledger: [], deblocages: [], signalements: [], journal: [], outbox: [], stats: { page_view: 0, quiz_start: 0, submitted: 0, validated: 0 }, clock_offset_days: 0 });
+let state = EMPTY();
+let dbDoc = null, mode = "local", writing = Promise.resolve();
+const LOCAL_KEY = "rd-base-test-v1";
+
+function setChip() {
+  $("#store-chip").textContent = mode === "db" ? "Base partagée enregistrée" : "Base locale (ce navigateur)";
+}
+function loadLocal() {
+  try { const raw = store.get(LOCAL_KEY); if (raw) state = Object.assign(EMPTY(), JSON.parse(raw)); } catch {}
+}
+function save() {
+  const body = JSON.parse(JSON.stringify(state));
+  if (mode === "db" && dbDoc) {
+    writing = writing.then(() => dbDoc.set(body)).catch((e) => toast("Enregistrement impossible : " + (e && e.code || "erreur")));
+  } else {
+    store.set(LOCAL_KEY, JSON.stringify(body));
+  }
+}
+function log(actor, action, detail) {
+  state.journal.unshift({ at: now(), actor, action, detail });
+  state.journal = state.journal.slice(0, 300);
+}
+function send(kind, to, subject, body) {
+  state.outbox.unshift({ at: now(), kind, to, subject, body });
+  state.outbox = state.outbox.slice(0, 60);
+}
+
+// --- Règles métier (miroir des fonctions SQL) -------------------------------
+const balance = (cid) => state.ledger.filter((l) => l.company_id === cid).reduce((s, l) => s + l.delta, 0);
+const company = (id) => state.entreprises.find((c) => c.id === id);
+function inZone(c, cp) { return (c.zones || []).some((z) => z && (cp === z || cp.startsWith(z))); }
+function eligible(c, d) {
+  if (c.status !== "validated" || !c.trades.includes(d.trade) || !inZone(c, d.postal_code)) return false;
+  return d.budget === "inconnu" ? c.accept_unknown : BUDGET_FLOOR[d.budget] >= (c.budget_min || 0);
+}
+function assign(d) {
+  if (d.status !== "validated" || d.expires_at <= now()) return 0;
+  const room = MAX_COMPANIES - d.assigned.length;
+  if (room <= 0) return 0;
+  const picks = state.entreprises
+    .filter((c) => !d.assigned.includes(c.id) && eligible(c, d))
+    .sort((a, b) => (a.last_assigned_at || 0) - (b.last_assigned_at || 0) || Math.random() - .5)
+    .slice(0, room);
+  picks.forEach((c, i) => { d.assigned.push(c.id); c.last_assigned_at = now() + i; });
+  return picks.length;
+}
+function isDuplicate(phone, trade) {
+  return state.demandes.some((d) => d.trade === trade && ["validated", "closed"].includes(d.status) &&
+    state.contacts[d.id]?.phone === phone && now() - d.validated_at < DUP_DAYS * DAY);
+}
+function expireRequests() {
+  let n = 0;
+  for (const d of state.demandes) if (d.status === "validated" && d.expires_at <= now()) { d.status = "expired"; n++; }
+  return n;
+}
+
+// --- Icônes (traits simples) ----------------------------------------------
+const I = {
+  chassis: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M12 3v18M4 12h16"/></svg>',
+  isolation: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"/><path d="M6 7c1.5 2.5 3 2.5 4.5 0s3-2.5 4.5 0 3 2.5 4.5 0" opacity=".55"/></svg>',
+  toiture: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12 12 4l9.5 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>',
+  chauffage: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c3.9 0 6-2.6 6-5.6 0-3.4-2.6-5.3-3.6-8.4-1.6 1.6-2 3.2-2 4.6C11 10 9.5 8.5 9.4 6 7.2 8 6 10.8 6 15.4 6 18.4 8.1 21 12 21Z"/></svg>',
+  check: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5" opacity=".35"/><path d="m7.5 12.3 3 3 6-6.3"/></svg>',
+  shield: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.3 7.5 9.5 4.3-1.2 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m8.8 12 2.2 2.2 4.3-4.4"/></svg>',
+  sms: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10 18.5h4"/><path d="M9 9h6M9 12h4"/></svg>',
+  three: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="9" r="2.5"/><circle cx="12" cy="7" r="2.5"/><circle cx="18" cy="9" r="2.5"/><path d="M2.5 18c.5-2.6 2-4 3.5-4s3 1.4 3.5 4M8.5 16c.6-2.6 1.9-4 3.5-4s2.9 1.4 3.5 4M14.5 18c.5-2.6 2-4 3.5-4s3 1.4 3.5 4"/></svg>',
+  free: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v8.5H4V12"/><rect x="2.5" y="7.5" width="19" height="4.5" rx="1"/><path d="M12 20.5v-13M12 7.5S10.5 3 8 3.5 7.3 7.5 12 7.5ZM12 7.5S13.5 3 16 3.5s.7 4-4 4Z"/></svg>',
+  lock: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></svg>',
+  small_lock: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
+  done: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+};
+const logo = (pro) => `<span class="logo${pro ? " is-pro" : ""}"><span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>RénoDevis${pro ? ' <span class="chip pro">Pro</span>' : ""}</span>`;
+
+/* =========================================================================
+   ESPACE PARTICULIER
+   ========================================================================= */
+const quiz = { step: 0, data: {}, requestId: null, attempts: 0, started: false, cooldown: 0, timer: null };
+const STEPS = 7; // 0..6 avant confirmation
+
+function renderParticulier() {
+  state.stats.page_view++; save();
+  $("#view").className = "";
+  $("#view").innerHTML = `
+  <header class="site-head"><div class="wrap">${logo(false)}<span class="free">Gratuit pour vous</span></div></header>
+  <section class="hero" aria-labelledby="h1"><div class="wrap">
+    <div>
+      <span class="eyebrow"><i aria-hidden="true"></i>Rénovation en Belgique</span>
+      <h1 id="h1">Rénovez sans courir après <em>dix devis</em>.</h1>
+      <p class="hero-lead">Décrivez votre projet en une minute. Jusqu'à trois entreprises partenaires vérifiées vous recontactent pour vous proposer un devis.</p>
+      <div class="hero-trades" aria-label="Travaux proposés">${Object.values(TRADES).map((t) => `<span>${t.label}</span>`).join("")}</div>
+      <ul class="hero-proof">
+        <li>${I.check}Gratuit pour vous, sans engagement</li>
+        <li>${I.check}Trois entreprises maximum, jamais plus</li>
+        <li>${I.check}Demande confirmée par SMS</li>
+      </ul>
+    </div>
+    <div class="quiz-card" id="demande"><form id="quiz" novalidate></form></div>
+  </div></section>
+
+  <section class="section" aria-labelledby="eng"><div class="wrap">
+    <span class="kicker">Nos engagements</span>
+    <h2 id="eng">Une demande simple, des entreprises sérieuses.</h2>
+    <div class="pledges">
+      ${[["shield","Entreprises partenaires vérifiées","Avant d'activer une entreprise, nous vérifions à la main son numéro d'entreprise (BCE)."],
+         ["sms","Une vraie demande, confirmée par SMS","Votre numéro est confirmé par un code. Pas de fausse demande, pas de numéro inventé."],
+         ["three","Trois entreprises maximum","Votre demande n'est jamais transmise à plus de trois entreprises."],
+         ["free","Gratuit pour vous","Vous ne payez rien et ne vous engagez à rien. Vous comparez, vous choisissez."],
+         ["lock","Données protégées","Vos coordonnées ne servent qu'à votre demande. Vous pouvez demander leur suppression à tout moment."]]
+        .map(([i, h, p]) => `<div class="pledge">${I[i]}<h3>${h}</h3><p>${p}</p></div>`).join("")}
+    </div>
+  </div></section>
+
+  <section class="section section-tight" aria-labelledby="how"><div class="wrap">
+    <span class="kicker">Comment ça marche</span>
+    <h2 id="how">Trois étapes, une minute.</h2>
+    <ol class="how">
+      <li><span class="n">1</span><h3>Vous décrivez votre projet</h3><p>Le type de travaux, votre budget et votre délai. Quelques clics suffisent.</p></li>
+      <li><span class="n">2</span><h3>Vous confirmez par SMS</h3><p>Un code à 6 chiffres confirme que la demande vient bien de vous.</p></li>
+      <li><span class="n">3</span><h3>Les entreprises vous recontactent</h3><p>Jusqu'à trois entreprises partenaires vérifiées vous proposent un devis. Vous comparez librement.</p></li>
+    </ol>
+  </div></section>
+
+  <section class="section section-tight" aria-labelledby="aid"><div class="wrap">
+    <div class="aid">
+      <p class="aid-date"><small>Information importante</small>1er octobre 2026</p>
+      <div>
+        <h2 id="aid">Nouveau régime d'aides en Wallonie</h2>
+        <p>Les règles des aides wallonnes à la rénovation ont changé le 1er octobre 2026 et peuvent encore évoluer.</p>
+        <p>RénoDevis ne promet aucune prime et aucun montant d'aide. Avant de signer un devis, vérifiez les conditions en vigueur auprès du Service public de Wallonie ou d'un conseiller en rénovation.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section section-tight" aria-labelledby="faq"><div class="wrap">
+    <span class="kicker">Questions fréquentes</span>
+    <h2 id="faq">Vos questions, nos réponses.</h2>
+    <div class="faq">
+      ${[["Est-ce vraiment gratuit ?","Oui. Le service est gratuit pour vous et sans engagement : vous êtes libre d'accepter ou de refuser les devis."],
+         ["Combien d'entreprises vont me contacter ?","Trois au maximum. Votre demande n'est jamais transmise à plus de trois entreprises partenaires."],
+         ["Qui sont les entreprises partenaires ?","Des entreprises du métier concerné qui interviennent dans votre région. Avant d'activer une entreprise, nous vérifions à la main son inscription à la Banque-Carrefour des Entreprises (BCE)."],
+         ["Comment les entreprises sont-elles choisies ?","Selon le type de travaux, votre commune et votre budget. Quand plusieurs entreprises correspondent, les demandes sont réparties à tour de rôle."],
+         ["Pourquoi un code SMS ?","Pour confirmer que la demande vient bien de vous. Votre numéro sert uniquement à ce que les entreprises vous recontactent pour votre projet."],
+         ["Suis-je obligé d'accepter un devis ?","Non. Vous comparez les propositions et vous décidez librement."],
+         ["Puis-je bénéficier d'une prime ?","Nous ne promettons aucune prime ni aucun montant. Les règles des aides wallonnes ont changé le 1er octobre 2026 et peuvent encore évoluer."],
+         ["Comment supprimer mes données ?","À tout moment, depuis la page « Supprimer mes données » : vous confirmez avec un code SMS et vos données sont effacées."]]
+        .map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("")}
+    </div>
+  </div></section>
+
+  <section class="section section-tight" aria-labelledby="qui"><div class="wrap">
+    <div class="about">
+      <div class="about-photo">Votre photo<br>(logan.webp dans le site)</div>
+      <div>
+        <h2 id="qui">Qui est derrière RénoDevis ?</h2>
+        <p>RénoDevis est un service conçu et géré par Logan Fontaine, fondateur de Pixel Studio, entreprise belge (BCE BE 1032.720.495).</p>
+        <p><span class="todo">[À COMPLÉTER : quelques phrases sur votre démarche.]</span></p>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section section-tight"><div class="wrap">
+    <div class="cta"><h2>Prêt à comparer vos devis ?</h2><p>Gratuit pour vous, sans engagement. Une minute suffit.</p>
+      <button class="btn btn-white" type="button" id="cta-go">Commencer ma demande</button></div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap">
+    <p><strong>RénoDevis</strong> est un service de Pixel Studio (Logan Fontaine), BCE BE 1032.720.495 · Adresse : <span class="todo">[À COMPLÉTER]</span></p>
+    <nav aria-label="Informations légales"><span>Mentions légales</span><span>Confidentialité</span><span>Conditions d'utilisation</span><span>Cookies</span><span>Supprimer mes données</span></nav>
+  </div></footer>`;
+  $("#cta-go").addEventListener("click", () => { $("#demande").scrollIntoView({ behavior: "smooth", block: "start" }); });
+  renderQuiz(false);
+}
+
+function opts(name, list, cls = "") {
+  return `<div class="opts ${cls}">${list.map(([v, l]) => `<label class="opt"><input type="radio" name="${name}" value="${v}" ${quiz.data[name] === v ? "checked" : ""}><span>${esc(l)}</span></label>`).join("")}</div>`;
+}
+
+function renderQuiz(focus = true) {
+  const f = $("#quiz"); if (!f) return;
+  const s = quiz.step, d = quiz.data, t = TRADES[d.trade];
+  const pct = s >= 7 ? 100 : Math.round(((s + 1) / STEPS) * 100);
+  let body = "";
+  if (s === 0) body = `<fieldset><legend class="step-q">Quels travaux souhaitez-vous ?</legend>
+      <p class="step-help">Choisissez un type de travaux. Une demande par type.</p>
+      <div class="opts two">${Object.entries(TRADES).map(([k, v]) => `<label class="opt trade"><input type="radio" name="trade" value="${k}" ${d.trade === k ? "checked" : ""}><span>${I[k]}${v.label}</span></label>`).join("")}</div></fieldset>`;
+  if (s === 1) body = `<fieldset><legend class="step-q">Quel est votre projet ?</legend>${opts("project_type", PROJECTS)}</fieldset>`;
+  if (s === 2) body = `<fieldset><legend class="step-q">${esc(t.q)}</legend>${opts("detail", t.opts, "two")}</fieldset>`;
+  if (s === 3) body = `<fieldset><legend class="step-q">Quel budget pour ce poste ?</legend><p class="step-help">Une estimation suffit : elle aide les entreprises à préparer leur devis.</p>${opts("budget", BUDGETS)}</fieldset>`;
+  if (s === 4) body = `<fieldset><legend class="step-q">Quand souhaitez-vous réaliser les travaux ?</legend>${opts("delay", DELAYS)}</fieldset>`;
+  if (s === 5) body = `<fieldset><legend class="step-q">Où et comment vous joindre ?</legend>
+      <div class="stack" style="margin-top:14px">
+        <div class="grid2 grid-cp">
+          <div class="field"><label for="q-cp">Code postal</label><input class="input" id="q-cp" inputmode="numeric" maxlength="4" autocomplete="postal-code" value="${esc(d.postal_code)}" aria-describedby="e-cp"><span class="err" id="e-cp"></span></div>
+          <div class="field"><label for="q-commune">Commune</label><input class="input" id="q-commune" maxlength="80" autocomplete="address-level2" value="${esc(d.commune)}" aria-describedby="e-commune"><span class="err" id="e-commune"></span></div>
+        </div>
+        <div class="field"><label for="q-prenom">Prénom</label><input class="input" id="q-prenom" maxlength="60" autocomplete="given-name" value="${esc(d.first_name)}" aria-describedby="e-prenom"><span class="err" id="e-prenom"></span></div>
+        <div class="field"><label for="q-tel">Téléphone mobile</label><input class="input" id="q-tel" type="tel" autocomplete="tel" placeholder="0470 12 34 56" value="${esc(d.phone)}" aria-describedby="h-tel e-tel"><span class="hint" id="h-tel">Vous recevrez un code par SMS pour confirmer votre demande.</span><span class="err" id="e-tel"></span></div>
+        <div class="field"><label for="q-mail">E-mail</label><input class="input" id="q-mail" type="email" autocomplete="email" value="${esc(d.email)}" aria-describedby="e-mail"><span class="err" id="e-mail"></span></div>
+        <label class="check"><input type="checkbox" id="q-consent" ${d.consent ? "checked" : ""} aria-describedby="e-consent"><span>${CONSENT_TEXT}</span></label>
+        <span class="err" id="e-consent"></span>
+      </div></fieldset>`;
+  if (s === 6) body = `<fieldset><legend class="step-q">Entrez le code reçu par SMS</legend>
+      <p class="step-help">Nous avons envoyé un code à 6 chiffres au <strong>${esc(mask(d.phone_e164 || ""))}</strong>. Il est valable 10 minutes.</p>
+      <div class="field"><label for="q-code">Code à 6 chiffres</label><input class="input code-input" id="q-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" aria-describedby="e-code"><span class="err" id="e-code"></span></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px">
+        <button type="button" class="btn-link" id="q-resend" ${quiz.cooldown > 0 ? "disabled" : ""}>${quiz.cooldown > 0 ? `Renvoyer le code (${quiz.cooldown} s)` : "Renvoyer le code"}</button>
+        <button type="button" class="btn-link" id="q-change">Modifier mon numéro</button>
+      </div></fieldset>`;
+  if (s === 7) body = `<div tabindex="-1" id="q-done"><div class="done-mark">${I.done}</div>
+      <h2 class="step-q">C'est confirmé, merci !</h2>
+      <p class="step-help" style="margin-top:8px">Votre demande <strong class="tnum">${esc(quiz.doneRef)}</strong> (${esc(TRADES[quiz.doneTrade].label.toLowerCase())}) est enregistrée.</p>
+      <p>Jusqu'à trois entreprises partenaires vérifiées peuvent maintenant vous recontacter par téléphone ou par e-mail pour vous proposer un devis. Vous restez libre de comparer et de choisir.</p>
+      <div class="quiz-nav"><button type="button" class="btn btn-ghost" id="q-new">Faire une autre demande</button></div></div>`;
+
+  const nextLabel = s === 5 ? "Recevoir mon code par SMS" : s === 6 ? "Valider le code" : "Continuer";
+  f.innerHTML = `
+    ${s < 7 ? `<div class="quiz-top"><span>Étape ${s + 1} sur ${STEPS}</span><span>${t && s > 0 ? esc(t.label) : "Gratuit · 1 minute"}</span></div><div class="bar" aria-hidden="true"><i style="width:${pct}%"></i></div>` : ""}
+    <p class="sr" aria-live="polite" id="q-live"></p>
+    ${body}
+    <p class="note bad" id="q-status" role="alert"></p>
+    ${s < 7 ? `<div class="quiz-nav">${s > 0 && s < 6 ? '<button type="button" class="btn btn-ghost" id="q-back">Retour</button>' : ""}<button type="submit" class="btn btn-blue" id="q-next">${nextLabel}</button></div>
+    <p class="quiz-foot">${I.small_lock}<span>Gratuit pour vous. Vos coordonnées ne sont transmises qu'à trois entreprises au maximum, et vous pouvez demander leur suppression à tout moment.</span></p>` : ""}`;
+  const live = $("#q-live"); if (live) live.textContent = s < 7 ? `Étape ${s + 1} sur ${STEPS}` : "Demande confirmée";
+  if (focus) {
+    const target = s === 7 ? $("#q-done") : (s === 5 ? $("#q-cp") : s === 6 ? $("#q-code") : f.querySelector("input:checked") || f.querySelector("input"));
+    target && target.focus({ preventScroll: true });
+    const r = $("#demande").getBoundingClientRect();
+    if (r.top < 40 || r.top > innerHeight * .6) $("#demande").scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+}
+
+const RADIO = { 0: "trade", 1: "project_type", 2: "detail", 3: "budget", 4: "delay" };
+let pointerPick = null;
+
+function quizNext() {
+  const f = $("#quiz"), s = quiz.step, st = $("#q-status");
+  st.textContent = "";
+  if (s <= 4) {
+    const v = f.querySelector(`input[name="${RADIO[s]}"]:checked`)?.value;
+    if (!v) { st.textContent = "Choisissez une réponse pour continuer."; return; }
+    if (s === 0 && quiz.data.trade !== v) quiz.data.detail = undefined;
+    quiz.data[RADIO[s]] = v;
+    quiz.step++; renderQuiz();
+  } else if (s === 5) submitDetails();
+  else if (s === 6) verifyCode();
+}
+
+function submitDetails() {
+  const d = quiz.data;
+  d.postal_code = $("#q-cp").value.trim(); d.commune = $("#q-commune").value.trim().replace(/\s+/g, " ");
+  d.first_name = $("#q-prenom").value.trim(); d.phone = $("#q-tel").value; d.email = $("#q-mail").value.trim().toLowerCase();
+  d.consent = $("#q-consent").checked;
+  const e164 = normalizePhone(d.phone);
+  const errs = {
+    cp: /^[1-9]\d{3}$/.test(d.postal_code) ? "" : "Code postal belge à 4 chiffres.",
+    commune: COMMUNE_RE.test(d.commune) ? "" : "Indiquez votre commune.",
+    prenom: NAME_RE.test(d.first_name) ? "" : "Indiquez votre prénom.",
+    tel: e164 ? "" : "Numéro de GSM belge (ex. 0470 12 34 56).",
+    mail: EMAIL_RE.test(d.email) ? "" : "Adresse e-mail invalide.",
+    consent: d.consent ? "" : "Votre accord est nécessaire pour transmettre la demande.",
+  };
+  const ids = { cp: "q-cp", commune: "q-commune", prenom: "q-prenom", tel: "q-tel", mail: "q-mail", consent: "q-consent" };
+  let first = null;
+  for (const k in errs) { $("#e-" + k).textContent = errs[k]; $("#" + ids[k]).setAttribute("aria-invalid", errs[k] ? "true" : "false"); if (errs[k] && !first) first = $("#" + ids[k]); }
+  if (first) { $("#q-status").textContent = "Certaines informations sont à corriger."; first.focus(); return; }
+  if (isDuplicate(e164, d.trade)) { $("#q-status").textContent = "Une demande avec ce numéro est déjà en cours pour ces travaux. Les entreprises vont vous recontacter."; return; }
+
+  const id = uid();
+  state.demandes.unshift({ id, ref: ref(), trade: d.trade, project_type: d.project_type, detail: { [TRADES[d.trade].key]: d.detail },
+    budget: d.budget, delay: d.delay, postal_code: d.postal_code, commune: d.commune, status: "pending_sms",
+    created_at: now(), validated_at: null, expires_at: null, assigned: [], unlocked_by: [], consent_version: CONSENT_VERSION });
+  state.contacts[id] = { first_name: d.first_name, phone: e164, email: d.email };
+  state.stats.submitted++;
+  send("SMS", mask(e164), "Code de confirmation", `RénoDevis : votre code de confirmation est ${CODE}. Il expire dans 10 minutes.`);
+  log("public", "Demande créée (en attente SMS)", state.demandes[0].ref);
+  save();
+  d.phone_e164 = e164; quiz.requestId = id; quiz.attempts = 0;
+  quiz.step = 6; startCooldown(); renderQuiz();
+}
+
+function startCooldown() {
+  clearInterval(quiz.timer); quiz.cooldown = 60;
+  quiz.timer = setInterval(() => {
+    quiz.cooldown--; const b = $("#q-resend");
+    if (b) { b.disabled = quiz.cooldown > 0; b.textContent = quiz.cooldown > 0 ? `Renvoyer le code (${quiz.cooldown} s)` : "Renvoyer le code"; }
+    if (quiz.cooldown <= 0) clearInterval(quiz.timer);
+  }, 1000);
+}
+
+function verifyCode() {
+  const inp = $("#q-code"), code = inp.value.replace(/\s/g, ""), err = $("#e-code");
+  if (!/^\d{6}$/.test(code)) { err.textContent = "Le code contient 6 chiffres."; inp.setAttribute("aria-invalid", "true"); inp.focus(); return; }
+  if (quiz.attempts >= 5) { err.textContent = "Trop d'essais avec ce code. Demandez un nouveau code."; return; }
+  if (code !== CODE) {
+    quiz.attempts++; const left = 5 - quiz.attempts;
+    err.textContent = left > 0 ? `Code incorrect. Il vous reste ${left} essai${left > 1 ? "s" : ""}.` : "Trop d'essais avec ce code. Demandez un nouveau code.";
+    inp.setAttribute("aria-invalid", "true"); inp.select(); return;
+  }
+  const d = state.demandes.find((x) => x.id === quiz.requestId);
+  if (!d) { $("#q-status").textContent = "Demande introuvable. Recommencez le formulaire."; return; }
+  if (isDuplicate(state.contacts[d.id].phone, d.trade)) {
+    state.demandes = state.demandes.filter((x) => x.id !== d.id); delete state.contacts[d.id]; save();
+    $("#q-status").textContent = "Une demande avec ce numéro est déjà en cours pour ces travaux."; return;
+  }
+  d.status = "validated"; d.validated_at = now(); d.expires_at = now() + TTL_DAYS * DAY;
+  const n = assign(d);
+  state.stats.validated++;
+  const t = TRADES[d.trade];
+  send("E-mail", "Admin (vous)", `Nouvelle demande validée ${d.ref}`,
+    `Métier : ${t.label}\nProjet : ${label(PROJECTS, d.project_type)}\n${t.q} ${label(t.opts, d.detail[t.key])}\nBudget : ${label(BUDGETS, d.budget)}\nDélai : ${label(DELAYS, d.delay)}\nLocalisation : ${d.postal_code} ${d.commune}\nEntreprises attribuées : ${n}`);
+  d.assigned.forEach((cid) => send("E-mail", company(cid).name, "Nouvelle demande disponible", `${t.label} · ${d.postal_code} ${d.commune} · ${label(BUDGETS, d.budget)}`));
+  log("public", `Demande validée par SMS, ${n} entreprise(s) attribuée(s)`, d.ref);
+  save();
+  clearInterval(quiz.timer);
+  quiz.doneRef = d.ref; quiz.doneTrade = d.trade;
+  quiz.step = 7; quiz.data = {}; quiz.requestId = null; renderQuiz();
+}
+
+document.addEventListener("pointerdown", (e) => { const o = e.target.closest?.("#quiz .opt"); pointerPick = o ? o.querySelector("input") : null; });
+document.addEventListener("keydown", (e) => { if (e.target.closest?.("#quiz")) pointerPick = null; });
+document.addEventListener("change", (e) => {
+  const t = e.target; if (!t.closest?.("#quiz") || t.type !== "radio") return;
+  if (!quiz.started) { quiz.started = true; state.stats.quiz_start++; save(); }
+  if (pointerPick === t && quiz.step <= 4) { pointerPick = null; setTimeout(() => { if (t.checked) quizNext(); }, 170); }
+});
+document.addEventListener("submit", (e) => { if (e.target.id === "quiz") { e.preventDefault(); quizNext(); } });
+document.addEventListener("click", (e) => {
+  const id = e.target.closest?.("button")?.id;
+  if (id === "q-back") { quiz.step--; renderQuiz(); }
+  if (id === "q-change") { quiz.step = 5; clearInterval(quiz.timer); renderQuiz(); }
+  if (id === "q-new") { quiz.step = 0; quiz.started = false; renderQuiz(); }
+  if (id === "q-resend") {
+    send("SMS", mask(quiz.data.phone_e164), "Nouveau code", `RénoDevis : votre code de confirmation est ${CODE}.`);
+    quiz.attempts = 0; save(); startCooldown(); renderQuiz(); toast("Un nouveau code vous a été envoyé.");
+  }
+});
+
+/* =========================================================================
+   ESPACE ENTREPRISE
+   ========================================================================= */
+const SESSION_KEY = "rd-session-entreprise";
+const pro = { tab: "demandes", trade: "", delay: "", confirm: null, reporting: null, signup: false };
+
+function renderEntreprise() {
+  const sess = store.get(SESSION_KEY);
+  const c = sess && company(sess);
+  $("#view").className = "pro";
+  if (!c) return renderProAuth();
+  expireRequests();
+  const bal = balance(c.id);
+  $("#view").innerHTML = `
+  <header class="app-head"><div class="wrap">${logo(true)}
+    <div class="who"><span>${esc(c.name)}</span>${statusChip(c.status)}<button class="btn btn-ghost btn-sm" style="color:#fff;border-color:rgba(255,255,255,.25)" id="pro-logout">Se déconnecter</button></div>
+  </div></header>
+  <main class="app-main"><div class="wrap">
+    ${c.status !== "validated" ? `
+      <div class="panel stack"><h1 style="font-size:1.6rem">${c.status === "pending" ? "Inscription en cours de vérification" : c.status === "rejected" ? "Inscription refusée" : "Compte suspendu"}</h1>
+      <p class="hint">${c.status === "pending" ? "Nous vérifions votre numéro BCE avant d'activer votre compte. Vous recevrez un e-mail dès l'activation. (Test : validez l'entreprise depuis l'onglet Admin.)" : "Contactez-nous pour plus d'informations."}</p></div>` : `
+    <div class="app-title"><div><h1>Bonjour ${esc(c.name)}</h1><p>Demandes confirmées par SMS dans votre zone, partagées avec 3 entreprises au maximum.</p></div>
+      <div class="balance"><span>Solde</span><b>${bal}</b><span>crédit${bal > 1 ? "s" : ""}</span></div></div>
+    <div class="subnav" role="tablist">
+      ${[["demandes","Demandes"],["contacts","Mes contacts débloqués"],["credits","Crédits"],["profil","Profil"]].map(([k, l]) => `<button role="tab" data-pro-tab="${k}" aria-selected="${pro.tab === k}">${l}</button>`).join("")}
+    </div>
+    ${pro.tab === "demandes" ? proDemandes(c) : pro.tab === "contacts" ? proContacts(c) : pro.tab === "credits" ? proCredits(c) : proProfil(c)}`}
+  </div></main>`;
+}
+const statusChip = (s) => `<span class="chip ${s === "validated" ? "ok" : s === "pending" ? "warn" : "bad"}">${{ validated: "Validée", pending: "En attente de validation", rejected: "Refusée", suspended: "Suspendue" }[s]}</span>`;
+
+function renderProAuth() {
+  const list = state.entreprises;
+  $("#view").innerHTML = `
+  <header class="app-head"><div class="wrap">${logo(true)}<span class="hint" style="color:var(--on-hero-2)">Espace entreprises partenaires</span></div></header>
+  <main class="app-main"><div class="wrap">
+    <div class="app-title"><div><h1>Recevez des demandes de devis confirmées par SMS.</h1>
+    <p>Chaque demande est partagée avec 3 entreprises au maximum : le contact n'est pas exclusif, et c'est affiché sur chaque fiche.</p></div></div>
+    <div class="auth">
+      <form class="panel stack" id="pro-login" novalidate>
+        <h2>Se connecter</h2>
+        ${list.length ? `<div class="field"><label for="l-co">Entreprise (test)</label><select class="input" id="l-co">${list.map((c) => `<option value="${c.id}">${esc(c.name)} — ${{ validated: "validée", pending: "en attente", rejected: "refusée", suspended: "suspendue" }[c.status]}</option>`).join("")}</select></div>
+        <div class="field"><label for="l-pw">Mot de passe</label><input class="input" id="l-pw" type="password" autocomplete="current-password" placeholder="(test : n'importe lequel)"></div>
+        <div class="field"><label for="l-totp">Code de l'application d'authentification</label><input class="input code-input" id="l-totp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" aria-describedby="l-err"><span class="hint">Double authentification obligatoire. Test : ${CODE}</span></div>
+        <p class="err" id="l-err"></p>
+        <button class="btn btn-pro" type="submit">Se connecter</button>` : `<p class="empty">Aucune entreprise dans la base test. Inscrivez-en une, ou chargez les exemples depuis l'onglet Admin.</p>`}
+      </form>
+      <form class="panel stack" id="pro-signup" novalidate>
+        <h2>Inscrire mon entreprise</h2>
+        <div class="grid2">
+          <div class="field"><label for="s-name">Nom de l'entreprise</label><input class="input" id="s-name" maxlength="120"></div>
+          <div class="field"><label for="s-bce">Numéro BCE</label><input class="input" id="s-bce" placeholder="BE 0412.345.614"><span class="hint">Vérifié à la main avant activation.</span></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="s-mail">E-mail professionnel</label><input class="input" id="s-mail" type="email" autocomplete="email"></div>
+          <div class="field"><label for="s-pw">Mot de passe</label><input class="input" id="s-pw" type="password" autocomplete="new-password" aria-describedby="s-pw-h"><div class="pw-meter" aria-hidden="true"><i id="s-pw-m"></i></div><span class="hint" id="s-pw-h">12 caractères minimum, avec chiffres et lettres.</span></div>
+        </div>
+        <div class="field"><span class="label">Métiers</span><div class="trade-checks">${Object.entries(TRADES).map(([k, t]) => `<label class="check"><input type="checkbox" name="s-trade" value="${k}"><span>${t.label}</span></label>`).join("")}</div></div>
+        <div class="grid2">
+          <div class="field"><label for="s-zone">Zone (codes postaux ou débuts)</label><input class="input" id="s-zone" placeholder="60, 61, 5000"><span class="hint">« 60 » = tous les codes de 6000 à 6099.</span></div>
+          <div class="field"><label for="s-min">Budget minimum accepté</label><select class="input" id="s-min"><option value="0">Tous les budgets</option><option value="5000">5 000 € et plus</option><option value="10000">10 000 € et plus</option><option value="20000">20 000 € et plus</option></select></div>
+        </div>
+        <label class="check"><input type="checkbox" id="s-unknown" checked><span>Accepter aussi les demandes « budget inconnu »</span></label>
+        <label class="check"><input type="checkbox" id="s-cgv"><span>J'accepte les conditions générales entreprises (${CGV_VERSION}) : contact <strong>non exclusif</strong>, chaque demande est partagée avec <strong>3 entreprises au maximum</strong>, revente et réutilisation des contacts interdites.</span></label>
+        <div class="field"><label for="s-totp">Activez la double authentification</label><input class="input code-input" id="s-totp" inputmode="numeric" maxlength="6" placeholder="••••••"><span class="hint">Scannez le QR code avec votre application (Google Authenticator, Microsoft Authenticator…). Test : ${CODE}</span></div>
+        <p class="err" id="s-err"></p>
+        <button class="btn btn-pro" type="submit">Envoyer mon inscription</button>
+      </form>
+    </div>
+  </div></main>`;
+}
+
+function proDemandes(c) {
+  let list = state.demandes.filter((d) => d.assigned.includes(c.id) && d.status !== "pending_sms");
+  if (pro.trade) list = list.filter((d) => d.trade === pro.trade);
+  if (pro.delay) list = list.filter((d) => d.delay === pro.delay);
+  list.sort((a, b) => b.validated_at - a.validated_at);
+  return `
+  <div class="filters">
+    <label class="sr" for="f-trade">Métier</label><select class="input" id="f-trade"><option value="">Tous les métiers</option>${c.trades.map((t) => `<option value="${t}" ${pro.trade === t ? "selected" : ""}>${TRADES[t].label}</option>`).join("")}</select>
+    <label class="sr" for="f-delay">Délai</label><select class="input" id="f-delay"><option value="">Tous les délais</option>${DELAYS.map(([v, l]) => `<option value="${v}" ${pro.delay === v ? "selected" : ""}>${l}</option>`).join("")}</select>
+  </div>
+  ${list.length ? `<div class="leads">${list.map((d) => leadCard(d, c)).join("")}</div>` : `<p class="empty">Aucune demande pour l'instant. Envoyez-en une depuis l'onglet Particulier (métier et code postal dans votre zone).</p>`}`;
+}
+
+function leadCard(d, c) {
+  const t = TRADES[d.trade], mine = d.unlocked_by.includes(c.id), n = d.unlocked_by.length;
+  const open = d.status === "validated" && d.expires_at > now() && n < MAX_COMPANIES;
+  const bal = balance(c.id);
+  const shares = `<div class="shares"><span class="dots" aria-hidden="true">${[0, 1, 2].map((i) => `<i class="${i < n ? "on" : ""}"></i>`).join("")}</span><span>${n} entreprise${n > 1 ? "s" : ""} sur 3 ${n > 1 ? "ont" : "a"} déjà débloqué</span></div>`;
+  let action;
+  if (mine) {
+    const ct = state.contacts[d.id];
+    action = ct ? `<div class="contact"><b>${esc(ct.first_name)}</b><span class="tnum">${esc(ct.phone)}</span><span>${esc(ct.email)}</span></div>` : `<p class="note">Le particulier a demandé l'effacement de ses données.</p>`;
+  } else if (!open) {
+    action = `<p class="note">${d.status === "expired" || d.expires_at <= now() ? "Demande expirée." : "Demande clôturée : 3 entreprises ont débloqué le contact."}</p>`;
+  } else if (pro.confirm === d.id) {
+    action = `<div class="confirm-box"><p><strong>Débloquer ce contact pour ${eur(PRICE_CENTS)} TTC ?</strong><br>1 crédit sera débité. Solde après : ${bal - 1} crédit${bal - 1 > 1 ? "s" : ""}.</p>
+      <div class="row-actions"><button class="btn btn-pro btn-sm" data-unlock="${d.id}">Confirmer le déblocage</button><button class="btn btn-ghost btn-sm" data-cancel>Annuler</button></div></div>`;
+  } else {
+    action = bal < 1
+      ? `<div class="stack"><button class="btn btn-ghost" disabled>Débloquer le contact</button><p class="hint">Solde insuffisant. Rechargez vos crédits par virement (onglet Crédits).</p></div>`
+      : `<button class="btn btn-pro" data-ask="${d.id}">Débloquer le contact</button><span class="hint">${eur(PRICE_CENTS)} TTC · 1 crédit</span>`;
+  }
+  return `<article class="lead">
+    <div class="lead-top"><div><span class="chip pro">${t.label}</span><h3 style="margin-top:10px">${esc(d.postal_code)} ${esc(d.commune)}</h3></div><span class="hint tnum">${d.ref} · ${fmtDay(d.validated_at)}</span></div>
+    <dl><dt>Projet</dt><dd>${label(PROJECTS, d.project_type)}</dd><dt>Travaux</dt><dd>${label(t.opts, d.detail[t.key])}</dd>
+      <dt>Budget</dt><dd>${label(BUDGETS, d.budget)}</dd><dt>Délai</dt><dd>${label(DELAYS, d.delay)}</dd>
+      <dt>Expire le</dt><dd>${fmtDay(d.expires_at)}</dd></dl>
+    ${shares}${action}</article>`;
+}
+
+function proContacts(c) {
+  const mine = state.deblocages.filter((u) => u.company_id === c.id).sort((a, b) => b.at - a.at);
+  if (!mine.length) return `<p class="empty">Aucun contact débloqué pour l'instant.</p>`;
+  return `<div class="stack">${mine.map((u) => {
+    const d = state.demandes.find((x) => x.id === u.demande_id), ct = d && state.contacts[d.id];
+    const rep = state.signalements.find((s) => s.unlock_id === u.id && s.status !== "rejected");
+    const canReport = !rep && now() - u.at <= REPORT_DAYS * DAY;
+    return `<div class="panel stack">
+      <div class="lead-top"><div><strong>${u.ref}</strong> · ${d ? `${TRADES[d.trade].label} · ${esc(d.postal_code)} ${esc(d.commune)}` : "demande effacée"}</div><span class="hint">Débloqué le ${fmtDate(u.at)} · ${eur(u.price_cents)} TTC</span></div>
+      ${ct ? `<div class="contact"><b>${esc(ct.first_name)}</b><span class="tnum">${esc(ct.phone)}</span><span>${esc(ct.email)}</span></div>` : `<p class="note">Coordonnées effacées à la demande du particulier.</p>`}
+      ${rep ? `<p>Signalement « ${rep.reason === "injoignable" ? "injoignable" : "faux numéro"} » : <span class="chip ${rep.status === "accepted" ? "ok" : "warn"}">${rep.status === "accepted" ? "accepté, 1 crédit rendu" : "en cours d'examen"}</span></p>` :
+        canReport ? (pro.reporting === u.id ? reportForm(u) : `<div><button class="btn btn-ghost btn-sm" data-report="${u.id}">Signaler un problème</button> <span class="hint">Possible jusqu'au ${fmtDay(u.at + REPORT_DAYS * DAY)}.</span></div>`) :
+        `<p class="hint">Délai de signalement (${REPORT_DAYS} jours) dépassé.</p>`}
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function reportForm(u) {
+  const recent = now() - u.at < 3 * 3600000;
+  const base = new Date(now() - 60000); base.setSeconds(0, 0);
+  const v = (h) => { const x = new Date(base.getTime() - h * 3600000); return new Date(x.getTime() - x.getTimezoneOffset() * 60000).toISOString().slice(0, 16); };
+  return `<form class="stack" data-report-form="${u.id}" novalidate style="border-top:1px solid var(--line);padding-top:14px">
+    ${recent ? `<p class="note">Les appels doivent avoir eu lieu après le déblocage. Pour tester tout de suite : Admin › Outils de test › « +1 jour », puis revenez ici.</p>` : ""}
+    <div class="field"><label for="r-reason">Motif</label><select class="input" id="r-reason"><option value="injoignable">Injoignable après 3 appels</option><option value="faux_numero">Faux numéro</option></select></div>
+    <div class="field"><span class="label">Date et heure de chaque appel</span><div class="grid2">
+      <input class="input" type="datetime-local" id="r-c1" aria-label="Appel 1" value="${recent ? "" : v(20)}"><input class="input" type="datetime-local" id="r-c2" aria-label="Appel 2" value="${recent ? "" : v(5)}">
+      <input class="input" type="datetime-local" id="r-c3" aria-label="Appel 3" value="${recent ? "" : v(1)}"></div>
+      <span class="hint">Injoignable : 3 appels obligatoires, après le déblocage, au moins 1 h d'intervalle. Faux numéro : 1 appel suffit.</span></div>
+    <div class="field"><label for="r-com">Commentaire</label><textarea class="input" id="r-com" maxlength="1000" placeholder="Messagerie à chaque appel…"></textarea></div>
+    <p class="err" id="r-err"></p>
+    <div class="row-actions"><button class="btn btn-pro btn-sm" type="submit">Envoyer le signalement</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Annuler</button></div>
+  </form>`;
+}
+
+function proCredits(c) {
+  const rows = state.ledger.filter((l) => l.company_id === c.id).sort((a, b) => b.at - a.at);
+  return `<div class="cols"><div class="panel stack"><h2>Recharger mes crédits</h2>
+    <p>1 crédit = 1 contact débloqué (${eur(PRICE_CENTS)} TTC). Au lancement, les crédits s'achètent <strong>par virement sur facture</strong> : contactez-nous avec le nombre de crédits souhaité.</p>
+    <p class="hint">Le paiement en ligne par Bancontact (Mollie) arrivera dans une prochaine version. Test : créditez cette entreprise depuis l'onglet Admin.</p></div>
+    <div class="panel"><h2>Historique</h2>${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Opération</th><th>Référence</th><th>Crédits</th></tr></thead><tbody>
+    ${rows.map((l) => `<tr><td class="tnum">${fmtDate(l.at)}</td><td>${{ topup: "Achat", unlock: "Déblocage", refund: "Remboursement", adjust: "Ajustement" }[l.reason]}</td><td>${esc(l.reference || "")}</td><td class="tnum" style="font-weight:700;color:${l.delta > 0 ? "var(--ok)" : "var(--ink)"}">${l.delta > 0 ? "+" : ""}${l.delta}</td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">Aucune opération.</p>`}</div></div>`;
+}
+
+function proProfil(c) {
+  return `<div class="panel lead"><h2>Profil de l'entreprise</h2><dl>
+    <dt>Nom</dt><dd>${esc(c.name)}</dd><dt>BCE</dt><dd class="tnum">${fmtBce(c.bce)}</dd><dt>E-mail</dt><dd>${esc(c.email)}</dd>
+    <dt>Métiers</dt><dd>${c.trades.map((t) => TRADES[t].label).join(", ")}</dd><dt>Zone</dt><dd>${esc(c.zones.join(", "))}</dd>
+    <dt>Budget minimum</dt><dd>${c.budget_min ? c.budget_min.toLocaleString("fr-BE") + " €" : "Tous"}${c.accept_unknown ? " · budget inconnu accepté" : ""}</dd>
+    <dt>CGV acceptées</dt><dd>${esc(c.cgv_version)} le ${fmtDay(c.created_at)}</dd><dt>Double authentification</dt><dd>Activée</dd></dl></div>`;
+}
+
+document.addEventListener("submit", (e) => {
+  if (e.target.id === "pro-login") {
+    e.preventDefault();
+    const id = $("#l-co").value, code = $("#l-totp").value.trim();
+    if (code !== CODE) { $("#l-err").textContent = "Code de double authentification incorrect."; $("#l-totp").focus(); return; }
+    store.set(SESSION_KEY, id); pro.tab = "demandes"; log("company", "Connexion (2FA)", company(id).name); save(); route();
+  }
+  if (e.target.id === "pro-signup") {
+    e.preventDefault();
+    const err = $("#s-err"), name = $("#s-name").value.trim(), bce = normalizeBce($("#s-bce").value), mail = $("#s-mail").value.trim().toLowerCase();
+    const pw = $("#s-pw").value, trades = $$('input[name="s-trade"]:checked').map((x) => x.value);
+    const zones = $("#s-zone").value.split(/[,;\s]+/).map((z) => z.trim()).filter((z) => /^[1-9]\d{0,3}$/.test(z));
+    const problems = [];
+    if (name.length < 2) problems.push("le nom");
+    if (!bce || !bceValid(bce)) problems.push("un numéro BCE valide");
+    if (bce && state.entreprises.some((c) => c.bce === bce)) problems.push("un numéro BCE pas encore inscrit");
+    if (!EMAIL_RE.test(mail)) problems.push("un e-mail professionnel");
+    if (pw.length < 12 || !/\d/.test(pw) || !/\p{L}/u.test(pw)) problems.push("un mot de passe d'au moins 12 caractères (lettres et chiffres)");
+    if (!trades.length) problems.push("au moins un métier");
+    if (!zones.length) problems.push("une zone");
+    if (!$("#s-cgv").checked) problems.push("l'acceptation des CGV");
+    if ($("#s-totp").value.trim() !== CODE) problems.push("le code de double authentification");
+    if (problems.length) { err.textContent = "Il manque : " + problems.join(", ") + "."; return; }
+    const c = { id: uid(), name, bce, email: mail, status: "pending", trades, zones, budget_min: Number($("#s-min").value), accept_unknown: $("#s-unknown").checked, last_assigned_at: 0, created_at: now(), cgv_version: CGV_VERSION };
+    state.entreprises.push(c);
+    send("E-mail", "Admin (vous)", "Nouvelle entreprise à valider", `${name} · ${fmtBce(bce)} · ${trades.map((t) => TRADES[t].label).join(", ")}`);
+    log("company", "Inscription (CGV " + CGV_VERSION + " acceptées)", name);
+    save(); store.set(SESSION_KEY, c.id); route(); toast("Inscription envoyée. Elle sera vérifiée avant activation.");
+  }
+  const rf = e.target.closest?.("[data-report-form]");
+  if (rf) {
+    e.preventDefault();
+    const u = state.deblocages.find((x) => x.id === rf.dataset.reportForm), err = $("#r-err");
+    const reason = $("#r-reason").value;
+    const calls = [...new Set(["#r-c1", "#r-c2", "#r-c3"].map((s) => $(s).value).filter(Boolean).map((v) => new Date(v).getTime()))].sort((a, b) => a - b);
+    if (calls.some((t) => t < u.at || t > now())) { err.textContent = "Les appels doivent avoir eu lieu après le déblocage et pas dans le futur."; return; }
+    if (reason === "injoignable") {
+      if (calls.length < 3) { err.textContent = "Indiquez la date et l'heure de 3 appels différents."; return; }
+      for (let i = 1; i < calls.length; i++) if (calls[i] - calls[i - 1] < 3600000) { err.textContent = "Laissez au moins 1 heure entre deux appels."; return; }
+    } else if (!calls.length) { err.textContent = "Indiquez au moins un appel."; return; }
+    state.signalements.unshift({ id: uid(), unlock_id: u.id, ref: u.ref, company_id: u.company_id, reason, calls, comment: $("#r-com").value.trim().slice(0, 1000), status: "open", at: now() });
+    send("E-mail", "Admin (vous)", `Signalement ${u.ref}`, `${company(u.company_id).name} · ${reason}`);
+    log("company", `Signalement « ${reason} »`, u.ref);
+    pro.reporting = null; save(); route(); toast("Signalement envoyé : il sera examiné.");
+  }
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id === "s-pw") {
+    const v = e.target.value, sc = Math.min(4, (v.length >= 12) + /\d/.test(v) + /\p{L}/u.test(v) + /[^\p{L}\d]/u.test(v));
+    const m = $("#s-pw-m"); m.style.width = sc * 25 + "%"; m.style.background = sc >= 3 ? "var(--ok)" : sc === 2 ? "var(--warn)" : "var(--bad)";
+  }
+});
+document.addEventListener("change", (e) => {
+  if (e.target.id === "f-trade") { pro.trade = e.target.value; route(); }
+  if (e.target.id === "f-delay") { pro.delay = e.target.value; route(); }
+});
+document.addEventListener("click", (e) => {
+  const b = e.target.closest?.("button"); if (!b) return;
+  if (b.id === "pro-logout") { store.del(SESSION_KEY); route(); }
+  if (b.dataset.proTab) { pro.tab = b.dataset.proTab; pro.confirm = pro.reporting = null; route(); }
+  if (b.dataset.ask) { pro.confirm = b.dataset.ask; route(); }
+  if ("cancel" in b.dataset) { pro.confirm = pro.reporting = null; route(); }
+  if (b.dataset.report) { pro.reporting = b.dataset.report; route(); }
+  if (b.dataset.unlock) unlock(b.dataset.unlock);
+});
+
+function unlock(did) {
+  const c = company(store.get(SESSION_KEY)), d = state.demandes.find((x) => x.id === did);
+  pro.confirm = null;
+  if (!c || c.status !== "validated" || !d || !d.assigned.includes(c.id)) return toast("Action non autorisée.");
+  if (d.unlocked_by.includes(c.id)) return route();
+  if (d.status !== "validated" || d.expires_at <= now() || d.unlocked_by.length >= MAX_COMPANIES) { route(); return toast("Cette demande n'est plus disponible."); }
+  if (balance(c.id) < 1) { route(); return toast("Solde insuffisant."); }
+  const u = { id: uid(), demande_id: d.id, ref: d.ref, company_id: c.id, price_cents: PRICE_CENTS, vat_included: true, payment_ref: "credit", at: now() };
+  state.deblocages.unshift(u);
+  state.ledger.push({ id: uid(), company_id: c.id, delta: -1, reason: "unlock", reference: d.ref, at: now() });
+  d.unlocked_by.push(c.id);
+  if (d.unlocked_by.length >= MAX_COMPANIES) { d.status = "closed"; d.closed_at = now(); }
+  log("company", `Déblocage (${eur(PRICE_CENTS)} TTC, 1 crédit)`, `${d.ref} · ${c.name}`);
+  save(); route(); toast("Contact débloqué.");
+}
+
+/* =========================================================================
+   ADMIN
+   ========================================================================= */
+const adm = { tab: "apercu", confirmReset: false };
+
+function renderAdmin() {
+  expireRequests();
+  $("#view").className = "admin";
+  const v = state.demandes, valid = v.filter((d) => d.status !== "pending_sms");
+  const ca = state.deblocages.reduce((s, u) => s + u.price_cents, 0);
+  const sold = state.ledger.filter((l) => l.reason === "topup").reduce((s, l) => s + l.delta, 0);
+  const pending = state.entreprises.filter((c) => c.status === "pending").length;
+  const openReports = state.signalements.filter((s) => s.status === "open").length;
+  $("#view").innerHTML = `
+  <header class="app-head"><div class="wrap">${logo(false)}<span class="chip" style="background:rgba(255,255,255,.1);color:#fff">Administration</span></div></header>
+  <main class="app-main"><div class="wrap">
+    <div class="kpis">
+      <div class="kpi"><b>${valid.length}</b><span>Demandes validées SMS</span></div>
+      <div class="kpi"><b>${v.length - valid.length}</b><span>En attente de code SMS</span></div>
+      <div class="kpi"><b>${state.deblocages.length}</b><span>Contacts débloqués</span></div>
+      <div class="kpi"><b>${eur(ca)}</b><span>Chiffre d'affaires TTC</span></div>
+      <div class="kpi"><b>${sold}</b><span>Crédits vendus</span></div>
+      <div class="kpi"><b>${state.stats.submitted ? Math.round(state.stats.validated / state.stats.submitted * 100) : 0} %</b><span>Taux de validation SMS</span></div>
+    </div>
+    <div class="subnav" role="tablist">
+      ${[["apercu","Aperçu"],["entreprises",`Entreprises${pending ? ` (${pending})` : ""}`],["credits","Crédits"],["signalements",`Signalements${openReports ? ` (${openReports})` : ""}`],["demandes","Demandes"],["messages","Messages simulés"],["journal","Journal d'audit"],["outils","Outils de test"]]
+        .map(([k, l]) => `<button role="tab" data-adm-tab="${k}" aria-selected="${adm.tab === k}">${l}</button>`).join("")}
+    </div>
+    ${({ apercu: admApercu, entreprises: admEntreprises, credits: admCredits, signalements: admSignalements, demandes: admDemandes, messages: admMessages, journal: admJournal, outils: admOutils })[adm.tab]()}
+  </div></main>`;
+}
+
+function admApercu() {
+  const s = state.stats;
+  return `<div class="cols">
+    <div class="panel"><h2>Entonnoir (mesure sans cookie)</h2><div class="table-wrap"><table><tbody>
+      <tr><td>Pages vues</td><td class="tnum">${s.page_view}</td></tr><tr><td>Débuts de quiz</td><td class="tnum">${s.quiz_start}</td></tr>
+      <tr><td>Demandes envoyées</td><td class="tnum">${s.submitted}</td></tr><tr><td>SMS validés</td><td class="tnum">${s.validated}</td></tr></tbody></table></div>
+      <p class="hint" style="margin-top:10px">Coût par demande validée = dépense publicitaire ÷ SMS validés (par campagne UTM dans la vraie version).</p></div>
+    <div class="panel"><h2>Par métier</h2><div class="table-wrap"><table><thead><tr><th>Métier</th><th>Validées</th><th>Débloquées</th><th>Entreprises actives</th></tr></thead><tbody>
+      ${Object.entries(TRADES).map(([k, t]) => `<tr><td>${t.label}</td><td class="tnum">${state.demandes.filter((d) => d.trade === k && d.status !== "pending_sms").length}</td><td class="tnum">${state.deblocages.filter((u) => state.demandes.find((d) => d.id === u.demande_id)?.trade === k).length}</td><td class="tnum">${state.entreprises.filter((c) => c.status === "validated" && c.trades.includes(k)).length}</td></tr>`).join("")}
+    </tbody></table></div></div></div>`;
+}
+
+function admEntreprises() {
+  if (!state.entreprises.length) return `<p class="empty">Aucune entreprise. Inscrivez-en une depuis l'onglet Entreprise ou chargez les exemples (Outils de test).</p>`;
+  return `<div class="table-wrap"><table><thead><tr><th>Entreprise</th><th>BCE</th><th>Métiers / zone</th><th>Statut</th><th>Crédits</th><th>Actions</th></tr></thead><tbody>
+  ${state.entreprises.map((c) => `<tr><td><strong>${esc(c.name)}</strong><br><span class="hint">${esc(c.email)}</span></td>
+    <td class="tnum">${fmtBce(c.bce)}<br>${bceValid(c.bce) ? '<span class="chip ok">Contrôle BCE OK</span>' : '<span class="chip bad">BCE invalide</span>'}</td>
+    <td>${c.trades.map((t) => TRADES[t].label).join(", ")}<br><span class="hint">${esc(c.zones.join(", "))}${c.budget_min ? ` · min ${c.budget_min.toLocaleString("fr-BE")} €` : ""}</span></td>
+    <td>${statusChip(c.status)}</td><td class="tnum">${balance(c.id)}</td>
+    <td><div class="row-actions">${c.status !== "validated" ? `<button class="btn btn-ghost btn-sm" data-co-status="validated" data-co="${c.id}">Valider</button>` : ""}
+      ${c.status === "pending" ? `<button class="btn btn-ghost btn-sm" data-co-status="rejected" data-co="${c.id}">Refuser</button>` : ""}
+      ${c.status === "validated" ? `<button class="btn btn-ghost btn-sm" data-co-status="suspended" data-co="${c.id}">Suspendre</button>` : ""}</div></td></tr>`).join("")}
+  </tbody></table></div><p class="hint" style="margin-top:10px">À la validation, l'entreprise reçoit aussi les demandes ouvertes de sa zone qui ont encore une place (3 maximum).</p>`;
+}
+
+function admCredits() {
+  const cos = state.entreprises.filter((c) => c.status === "validated");
+  return `<div class="cols"><form class="panel stack" id="adm-credit" novalidate><h2>Créditer une entreprise</h2>
+    ${cos.length ? `<div class="field"><label for="ac-co">Entreprise</label><select class="input" id="ac-co">${cos.map((c) => `<option value="${c.id}">${esc(c.name)} (solde ${balance(c.id)})</option>`).join("")}</select></div>
+    <div class="grid2"><div class="field"><label for="ac-n">Crédits</label><input class="input" id="ac-n" type="number" min="1" max="500" value="5"></div>
+    <div class="field"><label for="ac-ref">Référence (facture, virement)</label><input class="input" id="ac-ref" placeholder="Facture 2026-001"></div></div>
+    <p class="hint">Montant correspondant : <span id="ac-eur">${eur(5 * PRICE_CENTS)}</span> TTC.</p><p class="err" id="ac-err"></p>
+    <button class="btn btn-blue" type="submit">Ajouter les crédits</button>` : `<p class="empty">Aucune entreprise validée.</p>`}</form>
+    <div class="panel"><h2>Mouvements</h2>${state.ledger.length ? `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Entreprise</th><th>Type</th><th>Réf.</th><th>Crédits</th></tr></thead><tbody>
+    ${[...state.ledger].sort((a, b) => b.at - a.at).slice(0, 60).map((l) => `<tr><td class="tnum">${fmtDate(l.at)}</td><td>${esc(company(l.company_id)?.name)}</td><td>${{ topup: "Achat", unlock: "Déblocage", refund: "Remboursement", adjust: "Ajustement" }[l.reason]}</td><td>${esc(l.reference)}</td><td class="tnum">${l.delta > 0 ? "+" : ""}${l.delta}</td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">Aucun mouvement.</p>`}</div></div>`;
+}
+
+function admSignalements() {
+  if (!state.signalements.length) return `<p class="empty">Aucun signalement. Une entreprise peut signaler un contact depuis « Mes contacts débloqués ».</p>`;
+  return `<div class="stack">${state.signalements.map((s) => `<div class="panel stack">
+    <div class="lead-top"><div><strong>${s.ref}</strong> · ${esc(company(s.company_id)?.name)} · ${s.reason === "injoignable" ? "Injoignable" : "Faux numéro"}</div>
+    <span class="chip ${s.status === "open" ? "warn" : s.status === "accepted" ? "ok" : "bad"}">${{ open: "À examiner", accepted: "Accepté · 1 crédit rendu", rejected: "Refusé" }[s.status]}</span></div>
+    <p><span class="label">Appels déclarés :</span> ${s.calls.map((t) => `<span class="chip tnum">${fmtDate(t)}</span>`).join(" ")}</p>
+    ${s.comment ? `<p class="hint">« ${esc(s.comment)} »</p>` : ""}
+    ${s.status === "open" ? `<div class="row-actions"><button class="btn btn-blue btn-sm" data-rep-ok="${s.id}">Accepter et rendre 1 crédit</button><button class="btn btn-ghost btn-sm" data-rep-ko="${s.id}">Refuser</button></div>` : ""}
+  </div>`).join("")}</div>`;
+}
+
+function admDemandes() {
+  expireRequests();
+  if (!state.demandes.length) return `<p class="empty">Aucune demande. Envoyez-en une depuis l'onglet Particulier.</p>`;
+  return `<div class="row-actions" style="margin-bottom:12px"><button class="btn btn-ghost btn-sm" data-csv="demandes">Exporter les demandes (CSV)</button><button class="btn btn-ghost btn-sm" data-csv="deblocages">Exporter les déblocages (CSV)</button></div>
+  <div class="table-wrap"><table><thead><tr><th>Réf.</th><th>Métier</th><th>Lieu</th><th>Budget / délai</th><th>Statut</th><th>Attribuée à</th><th>Débloquée</th><th></th></tr></thead><tbody>
+  ${state.demandes.map((d) => `<tr><td class="tnum">${d.ref}<br><span class="hint">${fmtDate(d.created_at)}</span></td><td>${TRADES[d.trade].label}</td><td>${esc(d.postal_code)} ${esc(d.commune)}</td>
+    <td>${label(BUDGETS, d.budget)}<br><span class="hint">${label(DELAYS, d.delay)}</span></td>
+    <td><span class="chip ${d.status === "validated" ? "ok" : d.status === "pending_sms" ? "warn" : ""}">${{ pending_sms: "Attente SMS", validated: "Ouverte", closed: "Clôturée (3/3)", expired: "Expirée" }[d.status]}</span></td>
+    <td>${d.assigned.map((id) => esc(company(id)?.name)).join("<br>") || '<span class="hint">aucune entreprise éligible</span>'}</td>
+    <td class="tnum">${d.unlocked_by.length}/3</td>
+    <td><button class="btn btn-ghost btn-sm" data-erase="${d.id}">Effacer (RGPD)</button></td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+
+function admMessages() {
+  if (!state.outbox.length) return `<p class="empty">Aucun message. Les SMS et e-mails que la plateforme enverrait apparaissent ici.</p>`;
+  return `<div class="panel outbox"><h2>SMS et e-mails simulés</h2><ul>${state.outbox.map((m) => `<li><span class="chip ${m.kind === "SMS" ? "blue" : ""}">${m.kind}</span> <strong>${esc(m.subject)}</strong> → ${esc(m.to)} <span class="hint">· ${fmtDate(m.at)}</span><pre>${esc(m.body)}</pre></li>`).join("")}</ul></div>`;
+}
+
+function admJournal() {
+  if (!state.journal.length) return `<p class="empty">Journal vide.</p>`;
+  return `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Acteur</th><th>Action</th><th>Objet</th></tr></thead><tbody>
+  ${state.journal.map((j) => `<tr><td class="tnum">${fmtDate(j.at)}</td><td>${{ public: "Particulier", company: "Entreprise", admin: "Admin", system: "Système" }[j.actor]}</td><td>${esc(j.action)}</td><td>${esc(j.detail)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+function admOutils() {
+  return `<div class="cols">
+    <div class="panel stack"><h2>Données d'exemple</h2><p class="hint">Ajoute 4 entreprises fictives (Charleroi, Liège, Namur, Mons ; une en attente de validation) avec des crédits, et 3 demandes d'exemple. Toutes sont marquées « exemple ».</p>
+      <div><button class="btn btn-blue btn-sm" id="adm-seed">Charger les exemples</button></div></div>
+    <div class="panel stack"><h2>Avancer le temps</h2><p class="hint">Pour tester l'expiration (${TTL_DAYS} jours) et le délai de signalement (${REPORT_DAYS} jours). Décalage actuel : <strong>${state.clock_offset_days} jour(s)</strong>.</p>
+      <div class="row-actions"><button class="btn btn-ghost btn-sm" data-clock="1">+1 jour</button><button class="btn btn-ghost btn-sm" data-clock="8">+8 jours</button><button class="btn btn-ghost btn-sm" data-clock="31">+31 jours</button><button class="btn btn-ghost btn-sm" data-clock="0">Revenir à aujourd'hui</button></div></div>
+    <div class="panel stack"><h2>Vider la base test</h2><p class="hint">Supprime toutes les demandes, entreprises, crédits et messages de cette base de test.</p>
+      ${adm.confirmReset ? `<div class="confirm-box"><strong>Tout supprimer définitivement ?</strong><div class="row-actions"><button class="btn btn-pro btn-sm" id="adm-reset-ok">Oui, vider</button><button class="btn btn-ghost btn-sm" id="adm-reset-no">Annuler</button></div></div>` : `<div><button class="btn btn-ghost btn-sm" id="adm-reset">Vider la base…</button></div>`}</div>
+  </div>`;
+}
+
+function seed() {
+  const mk = (first8) => first8 + String(97 - (Number(first8) % 97)).padStart(2, "0");
+  const cos = [
+    ["Menuiserie Exemple (Charleroi)", "04123456", ["chassis"], ["60", "61"], 0, true, "validated", 5],
+    ["Isolation & Toiture Exemple (Liège)", "05234567", ["isolation", "toiture"], ["40", "41"], 5000, false, "validated", 3],
+    ["Rénovation Exemple (Namur)", "06345678", ["chassis", "isolation", "toiture", "chauffage"], ["50", "51", "60"], 0, true, "validated", 0],
+    ["Chauffage Exemple (Mons)", "07456789", ["chauffage"], ["70", "71"], 0, true, "pending", 0],
+  ];
+  for (const [name, f8, trades, zones, min, unk, status, credits] of cos) {
+    const bce = mk(f8); if (state.entreprises.some((c) => c.bce === bce)) continue;
+    const c = { id: uid(), name, bce, email: "contact@" + name.split(" ")[0].toLowerCase().normalize("NFD").replace(/\p{M}/gu, "") + "-exemple.be", status, trades, zones, budget_min: min, accept_unknown: unk, last_assigned_at: 0, created_at: now(), cgv_version: CGV_VERSION };
+    state.entreprises.push(c);
+    if (credits) state.ledger.push({ id: uid(), company_id: c.id, delta: credits, reason: "topup", reference: "Exemple", at: now() });
+  }
+  const reqs = [
+    ["chassis", "renovation", "4_6", "5000_10000", "asap", "6000", "Charleroi", "Exemple Anne", "+32470000101"],
+    ["isolation", "renovation", "toiture", "10000_20000", "3_mois", "4000", "Liège", "Exemple Bruno", "+32470000102"],
+    ["chauffage", "extension", "pompe_a_chaleur", "plus_20000", "6_mois", "5000", "Namur", "Exemple Chloé", "+32470000103"],
+  ];
+  for (const [trade, pt, det, budget, delay, cp, commune, fn, ph] of reqs) {
+    const id = uid();
+    const d = { id, ref: ref(), trade, project_type: pt, detail: { [TRADES[trade].key]: det }, budget, delay, postal_code: cp, commune,
+      status: "validated", created_at: now(), validated_at: now(), expires_at: now() + TTL_DAYS * DAY, assigned: [], unlocked_by: [], consent_version: CONSENT_VERSION };
+    state.demandes.unshift(d);
+    state.contacts[id] = { first_name: fn, phone: ph, email: fn.split(" ")[1].toLowerCase().normalize("NFD").replace(/\p{M}/gu, "") + "@exemple.be" };
+    assign(d);
+  }
+  log("admin", "Données d'exemple chargées", "4 entreprises, 3 demandes");
+}
+
+function csv(kind) {
+  const rows = kind === "demandes"
+    ? [["ref", "metier", "projet", "detail", "budget", "delai", "code_postal", "commune", "statut", "cree_le", "attribuees", "debloquees"],
+       ...state.demandes.map((d) => [d.ref, d.trade, d.project_type, Object.values(d.detail)[0], d.budget, d.delay, d.postal_code, d.commune, d.status, new Date(d.created_at).toISOString(), d.assigned.length, d.unlocked_by.length])]
+    : [["ref", "entreprise", "prix_ttc_eur", "paiement", "date"], ...state.deblocages.map((u) => [u.ref, company(u.company_id)?.name, (u.price_cents / 100).toFixed(2), u.payment_ref, new Date(u.at).toISOString()])];
+  return rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")).join("\r\n");
+}
+
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest?.("button"); if (!b) return;
+  if (b.dataset.admTab) { adm.tab = b.dataset.admTab; adm.confirmReset = false; route(); }
+  if (b.dataset.coStatus) {
+    const c = company(b.dataset.co); c.status = b.dataset.coStatus;
+    let added = 0;
+    if (c.status === "validated") { c.validated_at = now(); for (const d of state.demandes) added += assign(d) && d.assigned.includes(c.id) ? 1 : 0; send("E-mail", c.name, "Votre compte RénoDevis est activé", "Vous pouvez maintenant recevoir des demandes."); }
+    log("admin", `Entreprise ${{ validated: "validée", rejected: "refusée", suspended: "suspendue" }[c.status]}`, c.name);
+    save(); route(); toast(c.status === "validated" ? `Entreprise validée${added ? ` · ${added} demande(s) attribuée(s)` : ""}.` : "Statut mis à jour.");
+  }
+  if (b.dataset.repOk || b.dataset.repKo) {
+    const s = state.signalements.find((x) => x.id === (b.dataset.repOk || b.dataset.repKo));
+    if (s.status !== "open") return;
+    s.status = b.dataset.repOk ? "accepted" : "rejected"; s.resolved_at = now();
+    if (s.status === "accepted") state.ledger.push({ id: uid(), company_id: s.company_id, delta: 1, reason: "refund", reference: "Signalement " + s.ref, at: now() });
+    send("E-mail", company(s.company_id).name, `Signalement ${s.ref}`, s.status === "accepted" ? "Accepté : 1 crédit vous a été rendu." : "Refusé après examen.");
+    log("admin", `Signalement ${s.status === "accepted" ? "accepté (+1 crédit)" : "refusé"}`, s.ref);
+    save(); route();
+  }
+  if (b.dataset.erase) {
+    const d = state.demandes.find((x) => x.id === b.dataset.erase);
+    state.demandes = state.demandes.filter((x) => x.id !== d.id); delete state.contacts[d.id];
+    log("admin", "Effacement RGPD (demande + coordonnées)", d.ref); save(); route(); toast("Demande et coordonnées effacées.");
+  }
+  if (b.dataset.csv) {
+    const data = csv(b.dataset.csv), name = `renodevis-${b.dataset.csv}.csv`;
+    const dl = await (window.claude?.use?.("downloads") ?? null);
+    if (dl) { try { await dl.save({ filename: name, data: "﻿" + data }); } catch { toast("Téléchargement annulé."); } }
+    else { navigator.clipboard?.writeText(data).then(() => toast("CSV copié dans le presse-papiers."), () => toast("Export indisponible ici.")); }
+  }
+  if (b.dataset.clock) { state.clock_offset_days = b.dataset.clock === "0" ? 0 : state.clock_offset_days + Number(b.dataset.clock); const n = expireRequests(); log("admin", "Horloge de test décalée", `${state.clock_offset_days} jour(s)${n ? `, ${n} demande(s) expirée(s)` : ""}`); save(); route(); }
+  if (b.id === "adm-seed") { seed(); save(); route(); toast("Exemples chargés."); }
+  if (b.id === "adm-reset") { adm.confirmReset = true; route(); }
+  if (b.id === "adm-reset-no") { adm.confirmReset = false; route(); }
+  if (b.id === "adm-reset-ok") { state = EMPTY(); adm.confirmReset = false; store.del(SESSION_KEY); save(); route(); toast("Base test vidée."); }
+});
+document.addEventListener("input", (e) => { if (e.target.id === "ac-n") $("#ac-eur").textContent = eur(Math.max(0, Number(e.target.value) || 0) * PRICE_CENTS); });
+document.addEventListener("submit", (e) => {
+  if (e.target.id !== "adm-credit") return;
+  e.preventDefault();
+  const n = Math.floor(Number($("#ac-n").value)), id = $("#ac-co").value, r = $("#ac-ref").value.trim();
+  if (!(n >= 1 && n <= 500)) { $("#ac-err").textContent = "Entre 1 et 500 crédits."; return; }
+  state.ledger.push({ id: uid(), company_id: id, delta: n, reason: "topup", reference: r || "Virement", at: now() });
+  send("E-mail", company(id).name, "Crédits ajoutés", `${n} crédit(s) ajouté(s) à votre compte (${eur(n * PRICE_CENTS)} TTC).`);
+  log("admin", `+${n} crédit(s)`, `${company(id).name} · ${r || "Virement"}`);
+  save(); route(); toast(`${n} crédit(s) ajouté(s).`);
+});
+
+/* =========================================================================
+   Navigation
+   ========================================================================= */
+function route() {
+  const tab = ["particulier", "entreprise", "admin"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "particulier";
+  $$(".tabs a").forEach((a) => a.dataset.tab === tab ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  const y = scrollY, same = route.last === tab;
+  if (tab === "particulier") { if (!same || !$("#quiz")) renderParticulier(); else renderQuiz(false); }
+  else if (tab === "entreprise") renderEntreprise();
+  else renderAdmin();
+  if (same) scrollTo(0, y); else scrollTo(0, 0);
+  route.last = tab;
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest?.(".tabs a"); if (!a) return;
+  e.preventDefault(); history.replaceState(null, "", "#" + a.dataset.tab); route();
+});
+addEventListener("hashchange", route);
+
+loadLocal(); setChip(); route();
+
+// Base partagée (capacité db) si disponible ; sinon on reste sur le navigateur.
+(async () => {
+  const db = await (window.claude?.use?.("db") ?? null);
+  if (!db) { mode = "local"; setChip(); return; }
+  try {
+    dbDoc = db.doc("base/etat");
+    let first = true;
+    dbDoc.onSnapshot((snap) => {
+      if (snap.metadata.hasPendingWrites) return;
+      if (snap.exists) state = Object.assign(EMPTY(), JSON.parse(JSON.stringify(snap.data())));
+      else if (first) { save(); }
+      mode = "db"; setChip();
+      if (first || !document.activeElement || !document.activeElement.closest?.("form")) {
+        if (route.last === "particulier" && $("#quiz")) renderQuiz(false); else route();
+      }
+      first = false;
+    }, () => { mode = "local"; dbDoc = null; setChip(); });
+    mode = "db"; setChip();
+  } catch { mode = "local"; dbDoc = null; setChip(); }
+})();
+})();
+</script>
