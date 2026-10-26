@@ -5,6 +5,7 @@ import {
 } from "../../supabase/functions/_shared/validation.ts";
 import { randomOtp, hmacHex } from "../../supabase/functions/_shared/crypto.ts";
 import { CONSENT_TEXT, CONSENT_VERSION } from "../../supabase/functions/_shared/consent.ts";
+import { provinceOf } from "../../supabase/functions/_shared/provinces.ts";
 import { adminEmail } from "../../supabase/functions/_shared/handler.ts";
 
 export const validBody = () => ({
@@ -52,6 +53,10 @@ describe("validation du formulaire", () => {
     ["postal_code", { postal_code: "60000" }],
     ["postal_code", { postal_code: "0600" }],
     ["commune", { commune: "<script>" }],
+    ["commune", { commune: "" }],
+    ["commune", { commune: "   " }],
+    ["commune", { commune: "M" }],
+    ["postal_code", { postal_code: "" }],
     ["first_name", { first_name: "" }],
     ["first_name", { first_name: "Robert'); DROP TABLE" }],
     ["phone", { phone: "071123456" }],
@@ -80,6 +85,21 @@ describe("validation du formulaire", () => {
     expect(validateTrack({ event: "sms_validated", session_id: crypto.randomUUID() })).toBeNull();
     expect(validateTrack({ event: "quiz_step", session_id: "x" })).toBeNull();
     expect(validateTrack({ event: "quiz_step", step: 3, session_id: crypto.randomUUID() })?.step).toBe(3);
+  });
+});
+
+describe("provinces", () => {
+  it.each([["1000", "BRU"], ["1348", "WBR"], ["1500", "VBR"], ["2000", "VAN"], ["3000", "VBR"], ["3500", "VLI"],
+    ["4000", "WLG"], ["5000", "WNA"], ["6000", "WHT"], ["6700", "WLX"], ["7000", "WHT"], ["8000", "VWV"], ["9000", "VOV"]])(
+    "%s → %s", (cp, code) => expect(provinceOf(cp)?.code).toBe(code));
+  it("couvre tous les codes de 1000 à 9999", () => {
+    for (let n = 1000; n <= 9999; n++) expect(provinceOf(String(n))).not.toBeNull();
+  });
+  it("mêmes plages que la fonction SQL rd_province", () => {
+    const sql = readFileSync(new URL("../../supabase/migrations/20261027090400_rd_zones_provinces.sql", import.meta.url), "utf8");
+    const pairs = [...sql.matchAll(/between (\d{4}) and (\d{4}) then '([A-Z]{3})'/g)].map((m) => [m[1], m[3]]);
+    expect(pairs.length).toBe(12);
+    for (const [start, code] of pairs) expect(provinceOf(start)?.code).toBe(code);
   });
 });
 

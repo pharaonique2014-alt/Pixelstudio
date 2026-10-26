@@ -98,6 +98,19 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .btn-link[disabled] { color: var(--ink-2); text-decoration: none; cursor: default; }
 .field { display: grid; gap: 6px; }
 .field > label, .label { font-weight: 600; font-size: 14px; }
+.req { color: var(--bad); font-weight: 700; margin-left: 2px; }
+.req-note { font-size: 13px; color: var(--ink-2); }
+.prov-group { display: grid; gap: 8px; }
+.prov-group + .prov-group { margin-top: 12px; }
+.prov-group h4 { font-family: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); letter-spacing: .06em; }
+.prov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.prov { position: relative; }
+.prov input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.prov span { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14.5px; font-weight: 600; background: var(--surface); }
+.prov span::before { content: ""; width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--line); flex: 0 0 14px; }
+.prov input:checked + span { border-color: var(--pro); background: var(--pro-soft); }
+.prov input:checked + span::before { background: var(--pro); border-color: var(--pro); }
+.prov input:focus-visible + span { outline: 3px solid var(--pixel); outline-offset: 2px; }
 .input, select.input, textarea.input { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); transition: border-color .15s, box-shadow .15s; }
 textarea.input { min-height: 84px; resize: vertical; }
 .input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); }
@@ -336,6 +349,27 @@ const PRICE_CENTS = 3500, MAX_COMPANIES = 3, TTL_DAYS = 30, REPORT_DAYS = 7, DUP
 const CODE = "123456";
 const DAY = 86400000;
 const label = (list, v) => (list.find((x) => x[0] === v) || [, v])[1];
+// Provinces belges d'après le code postal (plages officielles bpost)
+const PROVINCES = [
+  ["BRU", "Bruxelles-Capitale", "Bruxelles", [[1000, 1299]]],
+  ["WBR", "Brabant wallon", "Wallonie", [[1300, 1499]]],
+  ["WHT", "Hainaut", "Wallonie", [[6000, 6599], [7000, 7999]]],
+  ["WLG", "Liège", "Wallonie", [[4000, 4999]]],
+  ["WLX", "Luxembourg", "Wallonie", [[6600, 6999]]],
+  ["WNA", "Namur", "Wallonie", [[5000, 5999]]],
+  ["VBR", "Brabant flamand", "Flandre", [[1500, 1999], [3000, 3499]]],
+  ["VAN", "Anvers", "Flandre", [[2000, 2999]]],
+  ["VLI", "Limbourg", "Flandre", [[3500, 3999]]],
+  ["VOV", "Flandre orientale", "Flandre", [[9000, 9999]]],
+  ["VWV", "Flandre occidentale", "Flandre", [[8000, 8999]]],
+];
+const provinceOf = (cp) => { const n = Number(cp); return (PROVINCES.find((p) => p[3].some(([a, b]) => n >= a && n <= b)) || [])[0] || null; };
+const provinceLabel = (code) => (PROVINCES.find((p) => p[0] === code) || [, code])[1];
+function zoneText(c) {
+  const parts = (c.provinces || []).map(provinceLabel);
+  if ((c.zones || []).length) parts.push("codes " + c.zones.join(", "));
+  return parts.join(" · ") || "aucune zone";
+}
 
 // --- Petites aides --------------------------------------------------------
 const $ = (s, r = document) => r.querySelector(s);
@@ -401,7 +435,9 @@ function send(kind, to, subject, body) {
 // --- Règles métier (miroir des fonctions SQL) -------------------------------
 const balance = (cid) => state.ledger.filter((l) => l.company_id === cid).reduce((s, l) => s + l.delta, 0);
 const company = (id) => state.entreprises.find((c) => c.id === id);
-function inZone(c, cp) { return (c.zones || []).some((z) => z && (cp === z || cp.startsWith(z))); }
+function inZone(c, cp) {
+  return (c.provinces || []).includes(provinceOf(cp)) || (c.zones || []).some((z) => z && (cp === z || cp.startsWith(z)));
+}
 function eligible(c, d) {
   if (c.status !== "validated" || !c.trades.includes(d.trade) || !inZone(c, d.postal_code)) return false;
   return d.budget === "inconnu" ? c.accept_unknown : BUDGET_FLOOR[d.budget] >= (c.budget_min || 0);
@@ -442,6 +478,7 @@ const I = {
   small_lock: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
   done: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
 };
+const R = '<span class="req" aria-hidden="true">*</span>';
 const logo = (pro) => `<span class="logo${pro ? " is-pro" : ""}"><span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>RénoDevis${pro ? ' <span class="chip pro">Pro</span>' : ""}</span>`;
 
 /* =========================================================================
@@ -561,15 +598,16 @@ function renderQuiz(focus = true) {
   if (s === 3) body = `<fieldset><legend class="step-q">Quel budget pour ce poste ?</legend><p class="step-help">Une estimation suffit : elle aide les entreprises à préparer leur devis.</p>${opts("budget", BUDGETS)}</fieldset>`;
   if (s === 4) body = `<fieldset><legend class="step-q">Quand souhaitez-vous réaliser les travaux ?</legend>${opts("delay", DELAYS)}</fieldset>`;
   if (s === 5) body = `<fieldset><legend class="step-q">Où et comment vous joindre ?</legend>
+      <p class="req-note"><span class="req" aria-hidden="true">*</span> Tous les champs sont obligatoires : sans votre localité, aucune entreprise ne peut recevoir votre demande.</p>
       <div class="stack" style="margin-top:14px">
         <div class="grid2 grid-cp">
-          <div class="field"><label for="q-cp">Code postal</label><input class="input" id="q-cp" inputmode="numeric" maxlength="4" autocomplete="postal-code" value="${esc(d.postal_code)}" aria-describedby="e-cp"><span class="err" id="e-cp"></span></div>
-          <div class="field"><label for="q-commune">Commune</label><input class="input" id="q-commune" maxlength="80" autocomplete="address-level2" value="${esc(d.commune)}" aria-describedby="e-commune"><span class="err" id="e-commune"></span></div>
+          <div class="field"><label for="q-cp">Code postal<span class="req" aria-hidden="true">*</span></label><input class="input" id="q-cp" required aria-required="true" inputmode="numeric" maxlength="4" autocomplete="postal-code" value="${esc(d.postal_code)}" aria-describedby="e-cp"><span class="err" id="e-cp"></span></div>
+          <div class="field"><label for="q-commune">Commune<span class="req" aria-hidden="true">*</span></label><input class="input" id="q-commune" required aria-required="true" maxlength="80" autocomplete="address-level2" value="${esc(d.commune)}" aria-describedby="e-commune"><span class="err" id="e-commune"></span></div>
         </div>
-        <div class="field"><label for="q-prenom">Prénom</label><input class="input" id="q-prenom" maxlength="60" autocomplete="given-name" value="${esc(d.first_name)}" aria-describedby="e-prenom"><span class="err" id="e-prenom"></span></div>
-        <div class="field"><label for="q-tel">Téléphone mobile</label><input class="input" id="q-tel" type="tel" autocomplete="tel" placeholder="0470 12 34 56" value="${esc(d.phone)}" aria-describedby="h-tel e-tel"><span class="hint" id="h-tel">Vous recevrez un code par SMS pour confirmer votre demande.</span><span class="err" id="e-tel"></span></div>
-        <div class="field"><label for="q-mail">E-mail</label><input class="input" id="q-mail" type="email" autocomplete="email" value="${esc(d.email)}" aria-describedby="e-mail"><span class="err" id="e-mail"></span></div>
-        <label class="check"><input type="checkbox" id="q-consent" ${d.consent ? "checked" : ""} aria-describedby="e-consent"><span>${CONSENT_TEXT}</span></label>
+        <div class="field"><label for="q-prenom">Prénom<span class="req" aria-hidden="true">*</span></label><input class="input" id="q-prenom" required aria-required="true" maxlength="60" autocomplete="given-name" value="${esc(d.first_name)}" aria-describedby="e-prenom"><span class="err" id="e-prenom"></span></div>
+        <div class="field"><label for="q-tel">Téléphone mobile<span class="req" aria-hidden="true">*</span></label><input class="input" id="q-tel" required aria-required="true" type="tel" autocomplete="tel" placeholder="0470 12 34 56" value="${esc(d.phone)}" aria-describedby="h-tel e-tel"><span class="hint" id="h-tel">Vous recevrez un code par SMS pour confirmer votre demande.</span><span class="err" id="e-tel"></span></div>
+        <div class="field"><label for="q-mail">E-mail<span class="req" aria-hidden="true">*</span></label><input class="input" id="q-mail" required aria-required="true" type="email" autocomplete="email" value="${esc(d.email)}" aria-describedby="e-mail"><span class="err" id="e-mail"></span></div>
+        <label class="check"><input type="checkbox" id="q-consent" required aria-required="true" ${d.consent ? "checked" : ""} aria-describedby="e-consent"><span>${CONSENT_TEXT}${R}</span></label>
         <span class="err" id="e-consent"></span>
       </div></fieldset>`;
   if (s === 6) body = `<fieldset><legend class="step-q">Entrez le code reçu par SMS</legend>
@@ -625,11 +663,11 @@ function submitDetails() {
   d.consent = $("#q-consent").checked;
   const e164 = normalizePhone(d.phone);
   const errs = {
-    cp: /^[1-9]\d{3}$/.test(d.postal_code) ? "" : "Code postal belge à 4 chiffres.",
-    commune: COMMUNE_RE.test(d.commune) ? "" : "Indiquez votre commune.",
-    prenom: NAME_RE.test(d.first_name) ? "" : "Indiquez votre prénom.",
-    tel: e164 ? "" : "Numéro de GSM belge (ex. 0470 12 34 56).",
-    mail: EMAIL_RE.test(d.email) ? "" : "Adresse e-mail invalide.",
+    cp: !d.postal_code ? "Le code postal est obligatoire." : /^[1-9]\d{3}$/.test(d.postal_code) && provinceOf(d.postal_code) ? "" : "Code postal belge à 4 chiffres (ex. 6000).",
+    commune: !d.commune ? "La commune est obligatoire." : d.commune.length >= 2 && COMMUNE_RE.test(d.commune) ? "" : "Indiquez le nom de votre commune.",
+    prenom: !d.first_name ? "Le prénom est obligatoire." : NAME_RE.test(d.first_name) ? "" : "Indiquez votre prénom (lettres uniquement).",
+    tel: !String(d.phone || "").trim() ? "Le numéro de GSM est obligatoire." : e164 ? "" : "Numéro de GSM belge (ex. 0470 12 34 56).",
+    mail: !d.email ? "L'e-mail est obligatoire." : EMAIL_RE.test(d.email) ? "" : "Adresse e-mail invalide.",
     consent: d.consent ? "" : "Votre accord est nécessaire pour transmettre la demande.",
   };
   const ids = { cp: "q-cp", commune: "q-commune", prenom: "q-prenom", tel: "q-tel", mail: "q-mail", consent: "q-consent" };
@@ -758,21 +796,26 @@ function renderProAuth() {
       <form class="panel stack" id="pro-signup" novalidate>
         <h2>Inscrire mon entreprise</h2>
         <div class="grid2">
-          <div class="field"><label for="s-name">Nom de l'entreprise</label><input class="input" id="s-name" maxlength="120"></div>
-          <div class="field"><label for="s-bce">Numéro BCE</label><input class="input" id="s-bce" placeholder="BE 0412.345.614"><span class="hint">Vérifié à la main avant activation.</span></div>
+          <div class="field"><label for="s-name">Nom de l'entreprise<span class="req" aria-hidden="true">*</span></label><input class="input" id="s-name" maxlength="120" required aria-required="true"></div>
+          <div class="field"><label for="s-bce">Numéro BCE<span class="req" aria-hidden="true">*</span></label><input class="input" id="s-bce" placeholder="BE 0412.345.614" required aria-required="true"><span class="hint">Vérifié à la main avant activation.</span></div>
         </div>
         <div class="grid2">
-          <div class="field"><label for="s-mail">E-mail professionnel</label><input class="input" id="s-mail" type="email" autocomplete="email"></div>
-          <div class="field"><label for="s-pw">Mot de passe</label><input class="input" id="s-pw" type="password" autocomplete="new-password" aria-describedby="s-pw-h"><div class="pw-meter" aria-hidden="true"><i id="s-pw-m"></i></div><span class="hint" id="s-pw-h">12 caractères minimum, avec chiffres et lettres.</span></div>
+          <div class="field"><label for="s-mail">E-mail professionnel<span class="req" aria-hidden="true">*</span></label><input class="input" id="s-mail" type="email" autocomplete="email" required aria-required="true"></div>
+          <div class="field"><label for="s-pw">Mot de passe<span class="req" aria-hidden="true">*</span></label><input class="input" id="s-pw" type="password" autocomplete="new-password" aria-describedby="s-pw-h" required aria-required="true"><div class="pw-meter" aria-hidden="true"><i id="s-pw-m"></i></div><span class="hint" id="s-pw-h">12 caractères minimum, avec chiffres et lettres.</span></div>
         </div>
-        <div class="field"><span class="label">Métiers</span><div class="trade-checks">${Object.entries(TRADES).map(([k, t]) => `<label class="check"><input type="checkbox" name="s-trade" value="${k}"><span>${t.label}</span></label>`).join("")}</div></div>
+        <p class="req-note"><span class="req" aria-hidden="true">*</span> Champs obligatoires.</p>
+        <div class="field"><span class="label">Métiers${R}</span><div class="trade-checks">${Object.entries(TRADES).map(([k, t]) => `<label class="check"><input type="checkbox" name="s-trade" value="${k}"><span>${t.label}</span></label>`).join("")}</div></div>
+        <fieldset class="field"><legend class="label">Zone d'intervention${R}</legend>
+          <span class="hint">Cochez les provinces où vous intervenez. Vous ne recevrez que les demandes de ces provinces.</span>
+          ${["Wallonie", "Bruxelles", "Flandre"].map((reg) => `<div class="prov-group"><h4>${reg}</h4><div class="prov-grid">${PROVINCES.filter((p) => p[2] === reg).map((p) => `<label class="prov"><input type="checkbox" name="s-prov" value="${p[0]}"><span>${p[1]}</span></label>`).join("")}</div></div>`).join("")}
+        </fieldset>
         <div class="grid2">
-          <div class="field"><label for="s-zone">Zone (codes postaux ou débuts)</label><input class="input" id="s-zone" placeholder="60, 61, 5000"><span class="hint">« 60 » = tous les codes de 6000 à 6099.</span></div>
+          <div class="field"><label for="s-zone">Ou seulement certaines localités (facultatif)</label><input class="input" id="s-zone" placeholder="6000, 6001, 61"><span class="hint">Codes postaux précis, ou débuts de code (« 61 » = 6100 à 6199), en plus des provinces cochées.</span></div>
           <div class="field"><label for="s-min">Budget minimum accepté</label><select class="input" id="s-min"><option value="0">Tous les budgets</option><option value="5000">5 000 € et plus</option><option value="10000">10 000 € et plus</option><option value="20000">20 000 € et plus</option></select></div>
         </div>
         <label class="check"><input type="checkbox" id="s-unknown" checked><span>Accepter aussi les demandes « budget inconnu »</span></label>
-        <label class="check"><input type="checkbox" id="s-cgv"><span>J'accepte les conditions générales entreprises (${CGV_VERSION}) : contact <strong>non exclusif</strong>, chaque demande est partagée avec <strong>3 entreprises au maximum</strong>, revente et réutilisation des contacts interdites.</span></label>
-        <div class="field"><label for="s-totp">Activez la double authentification</label><input class="input code-input" id="s-totp" inputmode="numeric" maxlength="6" placeholder="••••••"><span class="hint">Scannez le QR code avec votre application (Google Authenticator, Microsoft Authenticator…). Test : ${CODE}</span></div>
+        <label class="check"><input type="checkbox" id="s-cgv" required aria-required="true"><span>J'accepte les conditions générales entreprises (${CGV_VERSION}) : contact <strong>non exclusif</strong>, chaque demande est partagée avec <strong>3 entreprises au maximum</strong>, revente et réutilisation des contacts interdites.</span></label>
+        <div class="field"><label for="s-totp">Activez la double authentification${R}</label><input class="input code-input" id="s-totp" required aria-required="true" inputmode="numeric" maxlength="6" placeholder="••••••"><span class="hint">Scannez le QR code avec votre application (Google Authenticator, Microsoft Authenticator…). Test : ${CODE}</span></div>
         <p class="err" id="s-err"></p>
         <button class="btn btn-pro" type="submit">Envoyer mon inscription</button>
       </form>
@@ -790,7 +833,7 @@ function proDemandes(c) {
     <label class="sr" for="f-trade">Métier</label><select class="input" id="f-trade"><option value="">Tous les métiers</option>${c.trades.map((t) => `<option value="${t}" ${pro.trade === t ? "selected" : ""}>${TRADES[t].label}</option>`).join("")}</select>
     <label class="sr" for="f-delay">Délai</label><select class="input" id="f-delay"><option value="">Tous les délais</option>${DELAYS.map(([v, l]) => `<option value="${v}" ${pro.delay === v ? "selected" : ""}>${l}</option>`).join("")}</select>
   </div>
-  ${list.length ? `<div class="leads">${list.map((d) => leadCard(d, c)).join("")}</div>` : `<p class="empty">Aucune demande pour l'instant. Envoyez-en une depuis l'onglet Particulier (métier et code postal dans votre zone).</p>`}`;
+  ${list.length ? `<div class="leads">${list.map((d) => leadCard(d, c)).join("")}</div>` : `<p class="empty">Aucune demande pour l'instant. Envoyez-en une depuis l'onglet Particulier (un de vos métiers, un code postal dans votre zone).</p>`}`;
 }
 
 function leadCard(d, c) {
@@ -813,7 +856,7 @@ function leadCard(d, c) {
       : `<button class="btn btn-pro" data-ask="${d.id}">Débloquer le contact</button><span class="hint">${eur(PRICE_CENTS)} TTC · 1 crédit</span>`;
   }
   return `<article class="lead">
-    <div class="lead-top"><div><span class="chip pro">${t.label}</span><h3 style="margin-top:10px">${esc(d.postal_code)} ${esc(d.commune)}</h3></div><span class="hint tnum">${d.ref} · ${fmtDay(d.validated_at)}</span></div>
+    <div class="lead-top"><div><span class="chip pro">${t.label}</span><h3 style="margin-top:10px">${esc(d.postal_code)} ${esc(d.commune)}</h3><span class="hint">${esc(provinceLabel(provinceOf(d.postal_code)))}</span></div><span class="hint tnum">${d.ref} · ${fmtDay(d.validated_at)}</span></div>
     <dl><dt>Projet</dt><dd>${label(PROJECTS, d.project_type)}</dd><dt>Travaux</dt><dd>${label(t.opts, d.detail[t.key])}</dd>
       <dt>Budget</dt><dd>${label(BUDGETS, d.budget)}</dd><dt>Délai</dt><dd>${label(DELAYS, d.delay)}</dd>
       <dt>Expire le</dt><dd>${fmtDay(d.expires_at)}</dd></dl>
@@ -866,7 +909,7 @@ function proCredits(c) {
 function proProfil(c) {
   return `<div class="panel lead"><h2>Profil de l'entreprise</h2><dl>
     <dt>Nom</dt><dd>${esc(c.name)}</dd><dt>BCE</dt><dd class="tnum">${fmtBce(c.bce)}</dd><dt>E-mail</dt><dd>${esc(c.email)}</dd>
-    <dt>Métiers</dt><dd>${c.trades.map((t) => TRADES[t].label).join(", ")}</dd><dt>Zone</dt><dd>${esc(c.zones.join(", "))}</dd>
+    <dt>Métiers</dt><dd>${c.trades.map((t) => TRADES[t].label).join(", ")}</dd><dt>Zone</dt><dd>${esc(zoneText(c))}</dd>
     <dt>Budget minimum</dt><dd>${c.budget_min ? c.budget_min.toLocaleString("fr-BE") + " €" : "Tous"}${c.accept_unknown ? " · budget inconnu accepté" : ""}</dd>
     <dt>CGV acceptées</dt><dd>${esc(c.cgv_version)} le ${fmtDay(c.created_at)}</dd><dt>Double authentification</dt><dd>Activée</dd></dl></div>`;
 }
@@ -882,7 +925,9 @@ document.addEventListener("submit", (e) => {
     e.preventDefault();
     const err = $("#s-err"), name = $("#s-name").value.trim(), bce = normalizeBce($("#s-bce").value), mail = $("#s-mail").value.trim().toLowerCase();
     const pw = $("#s-pw").value, trades = $$('input[name="s-trade"]:checked').map((x) => x.value);
-    const zones = $("#s-zone").value.split(/[,;\s]+/).map((z) => z.trim()).filter((z) => /^[1-9]\d{0,3}$/.test(z));
+    const rawZones = $("#s-zone").value.split(/[,;\s]+/).map((z) => z.trim()).filter(Boolean);
+    const zones = rawZones.filter((z) => /^[1-9]\d{0,3}$/.test(z));
+    const provinces = $$('input[name="s-prov"]:checked').map((x) => x.value);
     const problems = [];
     if (name.length < 2) problems.push("le nom");
     if (!bce || !bceValid(bce)) problems.push("un numéro BCE valide");
@@ -890,13 +935,14 @@ document.addEventListener("submit", (e) => {
     if (!EMAIL_RE.test(mail)) problems.push("un e-mail professionnel");
     if (pw.length < 12 || !/\d/.test(pw) || !/\p{L}/u.test(pw)) problems.push("un mot de passe d'au moins 12 caractères (lettres et chiffres)");
     if (!trades.length) problems.push("au moins un métier");
-    if (!zones.length) problems.push("une zone");
+    if (!provinces.length && !zones.length) problems.push("une zone d'intervention (au moins une province ou un code postal)");
+    if (rawZones.length !== zones.length) problems.push("des codes postaux valides dans « certaines localités » (chiffres uniquement)");
     if (!$("#s-cgv").checked) problems.push("l'acceptation des CGV");
     if ($("#s-totp").value.trim() !== CODE) problems.push("le code de double authentification");
-    if (problems.length) { err.textContent = "Il manque : " + problems.join(", ") + "."; return; }
-    const c = { id: uid(), name, bce, email: mail, status: "pending", trades, zones, budget_min: Number($("#s-min").value), accept_unknown: $("#s-unknown").checked, last_assigned_at: 0, created_at: now(), cgv_version: CGV_VERSION };
+    if (problems.length) { err.textContent = "À compléter : " + problems.join(", ") + "."; err.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+    const c = { id: uid(), name, bce, email: mail, status: "pending", trades, provinces, zones, budget_min: Number($("#s-min").value), accept_unknown: $("#s-unknown").checked, last_assigned_at: 0, created_at: now(), cgv_version: CGV_VERSION };
     state.entreprises.push(c);
-    send("E-mail", "Admin (vous)", "Nouvelle entreprise à valider", `${name} · ${fmtBce(bce)} · ${trades.map((t) => TRADES[t].label).join(", ")}`);
+    send("E-mail", "Admin (vous)", "Nouvelle entreprise à valider", `${name} · ${fmtBce(bce)} · ${trades.map((t) => TRADES[t].label).join(", ")} · ${zoneText({ provinces, zones })}`);
     log("company", "Inscription (CGV " + CGV_VERSION + " acceptées)", name);
     save(); store.set(SESSION_KEY, c.id); route(); toast("Inscription envoyée. Elle sera vérifiée avant activation.");
   }
@@ -1002,7 +1048,7 @@ function admEntreprises() {
   return `<div class="table-wrap"><table><thead><tr><th>Entreprise</th><th>BCE</th><th>Métiers / zone</th><th>Statut</th><th>Crédits</th><th>Actions</th></tr></thead><tbody>
   ${state.entreprises.map((c) => `<tr><td><strong>${esc(c.name)}</strong><br><span class="hint">${esc(c.email)}</span></td>
     <td class="tnum">${fmtBce(c.bce)}<br>${bceValid(c.bce) ? '<span class="chip ok">Contrôle BCE OK</span>' : '<span class="chip bad">BCE invalide</span>'}</td>
-    <td>${c.trades.map((t) => TRADES[t].label).join(", ")}<br><span class="hint">${esc(c.zones.join(", "))}${c.budget_min ? ` · min ${c.budget_min.toLocaleString("fr-BE")} €` : ""}</span></td>
+    <td>${c.trades.map((t) => TRADES[t].label).join(", ")}<br><span class="hint">${esc(zoneText(c))}${c.budget_min ? ` · min ${c.budget_min.toLocaleString("fr-BE")} €` : ""}</span></td>
     <td>${statusChip(c.status)}</td><td class="tnum">${balance(c.id)}</td>
     <td><div class="row-actions">${c.status !== "validated" ? `<button class="btn btn-ghost btn-sm" data-co-status="validated" data-co="${c.id}">Valider</button>` : ""}
       ${c.status === "pending" ? `<button class="btn btn-ghost btn-sm" data-co-status="rejected" data-co="${c.id}">Refuser</button>` : ""}
@@ -1038,7 +1084,7 @@ function admDemandes() {
   if (!state.demandes.length) return `<p class="empty">Aucune demande. Envoyez-en une depuis l'onglet Particulier.</p>`;
   return `<div class="row-actions" style="margin-bottom:12px"><button class="btn btn-ghost btn-sm" data-csv="demandes">Exporter les demandes (CSV)</button><button class="btn btn-ghost btn-sm" data-csv="deblocages">Exporter les déblocages (CSV)</button></div>
   <div class="table-wrap"><table><thead><tr><th>Réf.</th><th>Métier</th><th>Lieu</th><th>Budget / délai</th><th>Statut</th><th>Attribuée à</th><th>Débloquée</th><th></th></tr></thead><tbody>
-  ${state.demandes.map((d) => `<tr><td class="tnum">${d.ref}<br><span class="hint">${fmtDate(d.created_at)}</span></td><td>${TRADES[d.trade].label}</td><td>${esc(d.postal_code)} ${esc(d.commune)}</td>
+  ${state.demandes.map((d) => `<tr><td class="tnum">${d.ref}<br><span class="hint">${fmtDate(d.created_at)}</span></td><td>${TRADES[d.trade].label}</td><td>${esc(d.postal_code)} ${esc(d.commune)}<br><span class="hint">${esc(provinceLabel(provinceOf(d.postal_code)))}</span></td>
     <td>${label(BUDGETS, d.budget)}<br><span class="hint">${label(DELAYS, d.delay)}</span></td>
     <td><span class="chip ${d.status === "validated" ? "ok" : d.status === "pending_sms" ? "warn" : ""}">${{ pending_sms: "Attente SMS", validated: "Ouverte", closed: "Clôturée (3/3)", expired: "Expirée" }[d.status]}</span></td>
     <td>${d.assigned.map((id) => esc(company(id)?.name)).join("<br>") || '<span class="hint">aucune entreprise éligible</span>'}</td>
@@ -1060,7 +1106,7 @@ function admJournal() {
 
 function admOutils() {
   return `<div class="cols">
-    <div class="panel stack"><h2>Données d'exemple</h2><p class="hint">Ajoute 4 entreprises fictives (Charleroi, Liège, Namur, Mons ; une en attente de validation) avec des crédits, et 3 demandes d'exemple. Toutes sont marquées « exemple ».</p>
+    <div class="panel stack"><h2>Données d'exemple</h2><p class="hint">Ajoute 4 entreprises fictives (Hainaut, Liège + Luxembourg, Namur + Brabant wallon, et une en attente de validation) avec des crédits, et 3 demandes d'exemple. Toutes sont marquées « exemple ».</p>
       <div><button class="btn btn-blue btn-sm" id="adm-seed">Charger les exemples</button></div></div>
     <div class="panel stack"><h2>Avancer le temps</h2><p class="hint">Pour tester l'expiration (${TTL_DAYS} jours) et le délai de signalement (${REPORT_DAYS} jours). Décalage actuel : <strong>${state.clock_offset_days} jour(s)</strong>.</p>
       <div class="row-actions"><button class="btn btn-ghost btn-sm" data-clock="1">+1 jour</button><button class="btn btn-ghost btn-sm" data-clock="8">+8 jours</button><button class="btn btn-ghost btn-sm" data-clock="31">+31 jours</button><button class="btn btn-ghost btn-sm" data-clock="0">Revenir à aujourd'hui</button></div></div>
@@ -1072,14 +1118,14 @@ function admOutils() {
 function seed() {
   const mk = (first8) => first8 + String(97 - (Number(first8) % 97)).padStart(2, "0");
   const cos = [
-    ["Menuiserie Exemple (Charleroi)", "04123456", ["chassis"], ["60", "61"], 0, true, "validated", 5],
-    ["Isolation & Toiture Exemple (Liège)", "05234567", ["isolation", "toiture"], ["40", "41"], 5000, false, "validated", 3],
-    ["Rénovation Exemple (Namur)", "06345678", ["chassis", "isolation", "toiture", "chauffage"], ["50", "51", "60"], 0, true, "validated", 0],
-    ["Chauffage Exemple (Mons)", "07456789", ["chauffage"], ["70", "71"], 0, true, "pending", 0],
+    ["Menuiserie Exemple (Charleroi)", "04123456", ["chassis"], ["WHT"], 0, true, "validated", 5],
+    ["Isolation & Toiture Exemple (Liège)", "05234567", ["isolation", "toiture"], ["WLG", "WLX"], 5000, false, "validated", 3],
+    ["Rénovation Exemple (Namur)", "06345678", ["chassis", "isolation", "toiture", "chauffage"], ["WNA", "WBR"], 0, true, "validated", 0],
+    ["Chauffage Exemple (Mons)", "07456789", ["chauffage"], ["WHT"], 0, true, "pending", 0],
   ];
-  for (const [name, f8, trades, zones, min, unk, status, credits] of cos) {
+  for (const [name, f8, trades, provinces, min, unk, status, credits] of cos) {
     const bce = mk(f8); if (state.entreprises.some((c) => c.bce === bce)) continue;
-    const c = { id: uid(), name, bce, email: "contact@" + name.split(" ")[0].toLowerCase().normalize("NFD").replace(/\p{M}/gu, "") + "-exemple.be", status, trades, zones, budget_min: min, accept_unknown: unk, last_assigned_at: 0, created_at: now(), cgv_version: CGV_VERSION };
+    const c = { id: uid(), name, bce, email: "contact@" + name.split(" ")[0].toLowerCase().normalize("NFD").replace(/\p{M}/gu, "") + "-exemple.be", status, trades, provinces, zones: [], budget_min: min, accept_unknown: unk, last_assigned_at: 0, created_at: now(), cgv_version: CGV_VERSION };
     state.entreprises.push(c);
     if (credits) state.ledger.push({ id: uid(), company_id: c.id, delta: credits, reason: "topup", reference: "Exemple", at: now() });
   }

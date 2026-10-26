@@ -3,6 +3,7 @@
 
 import { BUDGETS, DELAYS, PROJECT_TYPES, TRADES, values } from "./trades.ts";
 import { CONSENT_VERSION } from "./consent.ts";
+import { provinceOf } from "./provinces.ts";
 
 export type Submission = {
   trade: string;
@@ -25,7 +26,7 @@ export type Result<T> = { ok: true; value: T } | { ok: false; errors: Record<str
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const NAME_RE = /^[\p{L}][\p{L}\p{M}' ’\-]{0,59}$/u;
-const COMMUNE_RE = /^[\p{L}][\p{L}\p{M}0-9' ’\-.()]{0,79}$/u;
+const COMMUNE_RE = /^[\p{L}][\p{L}\p{M}0-9' ’\-.()]{1,79}$/u; // 2 caractères minimum
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,24}$/i;
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
 
@@ -83,11 +84,14 @@ export function validateSubmission(body: unknown): Result<Submission> {
     else errors.detail = "Répondez à la question sur vos travaux.";
   }
 
+  // Localité obligatoire : sans elle, la demande ne peut être attribuée à personne
   const postal_code = str(b.postal_code);
-  if (!/^[1-9][0-9]{3}$/.test(postal_code)) errors.postal_code = "Code postal belge à 4 chiffres.";
+  if (!postal_code) errors.postal_code = "Le code postal est obligatoire.";
+  else if (!provinceOf(postal_code)) errors.postal_code = "Code postal belge à 4 chiffres.";
 
   const commune = str(b.commune).replace(/\s+/g, " ");
-  if (!COMMUNE_RE.test(commune)) errors.commune = "Indiquez votre commune.";
+  if (!commune) errors.commune = "La commune est obligatoire.";
+  else if (!COMMUNE_RE.test(commune)) errors.commune = "Indiquez le nom de votre commune.";
 
   const first_name = str(b.first_name).replace(/\s+/g, " ");
   if (!NAME_RE.test(first_name)) errors.first_name = "Indiquez votre prénom.";
