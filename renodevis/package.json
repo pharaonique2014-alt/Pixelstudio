@@ -1,0 +1,27 @@
+{
+  "name": "renodevis",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "RénoDevis — mise en relation particuliers / entreprises de rénovation (Pixel Studio). Prototype de test, non publié.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:sql && npm run test:unit",
+    "test:sql": "bash tests/sql/run.sh",
+    "test:unit": "vitest run",
+    "test:e2e": "npm run build && node tests/e2e/run.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@fontsource/montserrat": "5.2.8",
+    "@fontsource/playfair-display": "5.2.8",
+    "@types/pg": "8.15.5",
+    "pg": "8.16.3",
+    "typescript": "5.9.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.3"
+  }
+}
