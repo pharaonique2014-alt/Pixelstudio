@@ -1,0 +1,25 @@
+/* =============================================================================
+   RénoDevis — espace ENTREPRISE
+   Motif pixel : ORANGE = entreprise (reprend l'accent #d9772b de pxlstudio.be).
+   ========================================================================== */
+@import "./base.css";
+
+:root {
+  --pro: #a8501a;            /* orange foncé : texte / boutons sur fond clair (AA) */
+  --pro-pixel: #f08a3c;      /* pixel orange du logo (décoratif) */
+  --on-pro: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --pro: #f2a065; --on-pro: #1a0f06; }
+}
+:root[data-theme="dark"] { --pro: #f2a065; --on-pro: #1a0f06; }
+
+.page-top { padding: 18px 0; border-bottom: 3px solid var(--pro-pixel); background: var(--surface); }
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-title); font-weight: 700; font-size: 1.35rem; color: var(--text);
+}
+.brand-pixel { width: 14px; height: 14px; background: var(--pro-pixel); box-shadow: 0 0 14px 2px rgba(240, 138, 60, .45); }
+.legal h2 { border-left: 6px solid var(--pro-pixel); padding-left: 10px; }
+.legal a { color: var(--pro); }
+.site-footer { padding: 36px 0 48px; font-size: .9rem; color: var(--text-muted); border-top: 1px solid var(--line); }

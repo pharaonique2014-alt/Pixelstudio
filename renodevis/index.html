@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="fr-BE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Devis châssis gratuits en Belgique | RénoDevis</title>
+  <meta name="description" content="Changez vos fenêtres sans courir après dix devis. Décrivez votre projet de châssis : jusqu'à trois entreprises partenaires vérifiées vous recontactent. Gratuit pour vous.">
+  <!-- Page test publicitaire : non indexée tant que le test tourne -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#2b4558">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/src/styles/particulier.css">
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+  <a class="skip-link" href="#demande">Aller au formulaire</a>
+
+  <header class="hero">
+    <div class="container site-top">
+      <span class="brand" aria-label="RénoDevis"><span class="brand-pixel" aria-hidden="true"></span>RénoDevis</span>
+      <span class="badge-free">Gratuit pour vous</span>
+    </div>
+
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <h1>Changez vos fenêtres sans courir après dix devis.</h1>
+        <p class="hero-lead">Décrivez votre projet de châssis en une minute. Jusqu'à trois entreprises partenaires vérifiées vous recontactent pour vous proposer un devis.</p>
+        <ul class="hero-points">
+          <li>Gratuit pour vous, sans engagement</li>
+          <li>Trois entreprises maximum</li>
+          <li>Demande confirmée par SMS</li>
+        </ul>
+      </div>
+
+      <div class="window" id="demande">
+        <div class="window-pane">
+          <noscript><p><strong>Le formulaire nécessite JavaScript.</strong> Activez-le dans votre navigateur pour envoyer votre demande.</p></noscript>
+
+          <form id="quiz" class="quiz" novalidate aria-describedby="quiz-status" data-trade="chassis">
+            <div class="quiz-progress" aria-hidden="true">
+              <span class="quiz-progress-label" id="quiz-progress-label">Étape 1 sur 6</span>
+              <span class="quiz-pixels"><span></span><span></span><span></span><span></span><span></span><span></span></span>
+            </div>
+            <p class="visually-hidden" aria-live="polite" id="quiz-live"></p>
+
+            <fieldset class="step" data-step="1">
+              <legend>Quel est votre projet ?</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="project_type" value="renovation" required><span>Rénovation</span></label>
+                <label class="choice"><input type="radio" name="project_type" value="nouvelle_construction"><span>Nouvelle construction</span></label>
+                <label class="choice"><input type="radio" name="project_type" value="extension"><span>Extension</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="step" data-step="2" hidden>
+              <legend>Combien de fenêtres et de portes ?</legend>
+              <div class="choices two">
+                <label class="choice"><input type="radio" name="detail" value="1_3" required><span>1 à 3</span></label>
+                <label class="choice"><input type="radio" name="detail" value="4_6"><span>4 à 6</span></label>
+                <label class="choice"><input type="radio" name="detail" value="7_10"><span>7 à 10</span></label>
+                <label class="choice"><input type="radio" name="detail" value="plus_10"><span>Plus de 10</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="step" data-step="3" hidden>
+              <legend>Quel budget prévoyez-vous pour ce poste ?</legend>
+              <p class="step-help">Une estimation suffit : elle aide les entreprises à préparer leur devis.</p>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="budget" value="moins_5000" required><span>Moins de 5 000 €</span></label>
+                <label class="choice"><input type="radio" name="budget" value="5000_10000"><span>5 000 à 10 000 €</span></label>
+                <label class="choice"><input type="radio" name="budget" value="10000_20000"><span>10 000 à 20 000 €</span></label>
+                <label class="choice"><input type="radio" name="budget" value="plus_20000"><span>Plus de 20 000 €</span></label>
+                <label class="choice"><input type="radio" name="budget" value="inconnu"><span>Je ne sais pas</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="step" data-step="4" hidden>
+              <legend>Quand souhaitez-vous réaliser les travaux ?</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="delay" value="asap" required><span>Dès que possible</span></label>
+                <label class="choice"><input type="radio" name="delay" value="3_mois"><span>Dans les 3 mois</span></label>
+                <label class="choice"><input type="radio" name="delay" value="6_mois"><span>Dans les 6 mois</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="step" data-step="5" hidden>
+              <legend>Où et comment vous joindre ?</legend>
+              <div class="field-row">
+                <div class="field">
+                  <label for="postal_code">Code postal</label>
+                  <input type="text" id="postal_code" name="postal_code" inputmode="numeric" autocomplete="postal-code" maxlength="4" pattern="[1-9][0-9]{3}" required aria-describedby="err-postal_code">
+                  <p class="field-error" id="err-postal_code"></p>
+                </div>
+                <div class="field">
+                  <label for="commune">Commune</label>
+                  <input type="text" id="commune" name="commune" autocomplete="address-level2" maxlength="80" required aria-describedby="err-commune">
+                  <p class="field-error" id="err-commune"></p>
+                </div>
+              </div>
+              <div class="field">
+                <label for="first_name">Prénom</label>
+                <input type="text" id="first_name" name="first_name" autocomplete="given-name" maxlength="60" required aria-describedby="err-first_name">
+                <p class="field-error" id="err-first_name"></p>
+              </div>
+              <div class="field">
+                <label for="phone">Téléphone mobile</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="0470 12 34 56" maxlength="20" required aria-describedby="phone-help err-phone">
+                <p class="step-help field-help" id="phone-help">Vous recevrez un code par SMS pour confirmer votre demande.</p>
+                <p class="field-error" id="err-phone"></p>
+              </div>
+              <div class="field">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" autocomplete="email" maxlength="254" required aria-describedby="err-email">
+                <p class="field-error" id="err-email"></p>
+              </div>
+              <div class="consent">
+                <input type="checkbox" id="consent" name="consent" required aria-describedby="err-consent">
+                <label for="consent" id="consent-text">J'accepte que mes coordonnées soient transmises à 3 entreprises au maximum pour recevoir un devis</label>
+              </div>
+              <p class="field-error" id="err-consent"></p>
+              <div id="captcha" class="captcha"></div>
+              <p class="quiz-reassure">Gratuit pour vous. Vos données sont traitées selon notre <a href="/legal/confidentialite.html">politique de confidentialité</a> et vous pouvez demander leur suppression à tout moment.</p>
+            </fieldset>
+
+            <fieldset class="step" data-step="6" hidden>
+              <legend>Entrez le code reçu par SMS</legend>
+              <p class="step-help" id="code-help">Nous avons envoyé un code à 6 chiffres au <strong id="code-phone">votre numéro</strong>. Il est valable 10 minutes.</p>
+              <div class="field">
+                <label for="code">Code à 6 chiffres</label>
+                <input type="text" id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" aria-describedby="code-help err-code">
+                <p class="field-error" id="err-code"></p>
+              </div>
+              <div class="quiz-nav quiz-nav-code">
+                <button type="button" class="btn-link" id="resend">Renvoyer le code</button>
+                <button type="button" class="btn-link" id="change-phone">Modifier mon numéro</button>
+              </div>
+            </fieldset>
+
+            <div class="step confirm" data-step="7" hidden tabindex="-1">
+              <div class="confirm-pixel" aria-hidden="true"></div>
+              <h2 class="step-title">C'est confirmé, merci !</h2>
+              <p>Votre demande <span class="confirm-ref" id="confirm-ref"></span> est enregistrée.</p>
+              <p>Jusqu'à trois entreprises partenaires vérifiées peuvent maintenant vous recontacter par téléphone ou par e-mail pour vous proposer un devis. Vous restez libre de comparer et de choisir.</p>
+              <p class="quiz-reassure">Gratuit pour vous, sans engagement.</p>
+            </div>
+
+            <p class="quiz-status" id="quiz-status" role="alert"></p>
+
+            <div class="quiz-nav" id="quiz-nav">
+              <button type="button" class="btn btn-ghost" id="back" hidden>Retour</button>
+              <button type="submit" class="btn btn-primary" id="next">Suivant</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <section class="section" aria-labelledby="engagements-title">
+      <div class="container">
+        <h2 class="section-title" id="engagements-title">Nos cinq engagements</h2>
+        <ul class="pledges">
+          <li class="pledge">
+            <span class="pledge-icon" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i></i><i></i></span>
+            <h3>Entreprises partenaires vérifiées</h3>
+            <p>Avant d'activer une entreprise, nous vérifions à la main son numéro d'entreprise (BCE).</p>
+          </li>
+          <li class="pledge">
+            <span class="pledge-icon" aria-hidden="true"><i class="on"></i><i></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
+            <h3>Une vraie demande, confirmée par SMS</h3>
+            <p>Votre numéro est confirmé par un code. Pas de fausse demande, pas de numéro inventé.</p>
+          </li>
+          <li class="pledge">
+            <span class="pledge-icon" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span>
+            <h3>Trois entreprises maximum</h3>
+            <p>Votre demande n'est jamais transmise à plus de trois entreprises. Pas de démarchage en série.</p>
+          </li>
+          <li class="pledge">
+            <span class="pledge-icon" aria-hidden="true"><i></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+            <h3>Gratuit pour vous</h3>
+            <p>Vous ne payez rien et ne vous engagez à rien. Vous comparez les devis, vous choisissez.</p>
+          </li>
+          <li class="pledge">
+            <span class="pledge-icon" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i></span>
+            <h3>Données protégées</h3>
+            <p>Vos coordonnées ne servent qu'à votre demande. Vous pouvez demander leur suppression à tout moment.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-tight" aria-labelledby="etapes-title">
+      <div class="container">
+        <h2 class="section-title" id="etapes-title">Comment ça marche ?</h2>
+        <ol class="steps">
+          <li>
+            <span class="num" aria-hidden="true">1</span>
+            <h3>Vous décrivez votre projet</h3>
+            <p>Quelques questions sur vos châssis, votre budget et votre délai. Une minute suffit.</p>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">2</span>
+            <h3>Vous confirmez par SMS</h3>
+            <p>Un code à 6 chiffres confirme que la demande vient bien de vous.</p>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">3</span>
+            <h3>Les entreprises vous recontactent</h3>
+            <p>Jusqu'à trois entreprises partenaires vérifiées vous proposent un devis. Vous comparez librement.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section-tight" aria-labelledby="aides-title">
+      <div class="container">
+        <div class="notice">
+          <p class="notice-label">Information importante</p>
+          <h2 id="aides-title">1er octobre 2026 : nouveau régime d'aides en Wallonie</h2>
+          <p>Les règles des aides wallonnes à la rénovation ont changé le 1er octobre 2026 et peuvent encore évoluer.</p>
+          <p>RénoDevis ne promet aucune prime et aucun montant d'aide. Avant de signer un devis, vérifiez les conditions en vigueur auprès du Service public de Wallonie ou d'un conseiller en rénovation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tight" aria-labelledby="faq-title">
+      <div class="container">
+        <h2 class="section-title" id="faq-title">Questions fréquentes</h2>
+        <div class="faq">
+          <details>
+            <summary>Est-ce vraiment gratuit ?</summary>
+            <div><p>Oui. Le service est gratuit pour vous et sans engagement : vous êtes libre d'accepter ou de refuser les devis que vous recevez.</p></div>
+          </details>
+          <details>
+            <summary>Combien d'entreprises vont me contacter ?</summary>
+            <div><p>Trois au maximum. Votre demande n'est jamais transmise à plus de trois entreprises partenaires.</p></div>
+          </details>
+          <details>
+            <summary>Qui sont les entreprises partenaires ?</summary>
+            <div><p>Des entreprises de châssis qui interviennent dans votre région. Avant d'activer une entreprise, nous vérifions à la main son inscription à la Banque-Carrefour des Entreprises (BCE).</p></div>
+          </details>
+          <details>
+            <summary>Comment les entreprises sont-elles choisies ?</summary>
+            <div><p>Selon le type de travaux, votre commune et votre budget. Quand plusieurs entreprises correspondent, les demandes sont réparties à tour de rôle entre elles.</p></div>
+          </details>
+          <details>
+            <summary>Pourquoi un code SMS ?</summary>
+            <div><p>Pour confirmer que la demande vient bien de vous. Votre numéro sert uniquement à ce que les entreprises vous recontactent au sujet de votre projet.</p></div>
+          </details>
+          <details>
+            <summary>Suis-je obligé d'accepter un devis ?</summary>
+            <div><p>Non. Vous comparez les propositions et vous décidez librement, sans aucune obligation.</p></div>
+          </details>
+          <details>
+            <summary>Puis-je bénéficier d'une prime ?</summary>
+            <div><p>Nous ne promettons aucune prime ni aucun montant. Les règles des aides wallonnes ont changé le 1er octobre 2026 et peuvent encore évoluer : renseignez-vous auprès du Service public de Wallonie avant de signer.</p></div>
+          </details>
+          <details>
+            <summary>Comment supprimer mes données ?</summary>
+            <div><p>À tout moment, depuis la page <a href="/effacement.html">Supprimer mes données</a> : vous confirmez avec un code SMS et vos données sont effacées de notre base.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tight" aria-labelledby="qui-title">
+      <div class="container about">
+        <img src="/logan.webp" width="220" height="328" alt="Logan Fontaine, fondateur de Pixel Studio" loading="lazy" decoding="async">
+        <div>
+          <h2 id="qui-title">Qui est derrière RénoDevis ?</h2>
+          <p>RénoDevis est un service conçu et géré par Logan Fontaine, fondateur de Pixel Studio, une entreprise belge (BCE BE 1032.720.495).</p>
+          <p><span class="todo">[À COMPLÉTER : quelques phrases sur votre démarche et pourquoi vous avez créé RénoDevis.]</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final" aria-labelledby="final-title">
+      <div class="container">
+        <h2 id="final-title">Prêt à comparer vos devis ?</h2>
+        <p>Gratuit pour vous, sans engagement. Une minute suffit.</p>
+        <a class="btn btn-light" href="#demande" id="cta-final">Commencer ma demande</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>RénoDevis</strong> est un service de Pixel Studio (Logan Fontaine), BCE BE 1032.720.495.<br>
+        Adresse : <span class="todo">[À COMPLÉTER]</span> · Contact : <span class="todo">[À COMPLÉTER]</span></p>
+      <nav aria-label="Informations légales">
+        <ul>
+          <li><a href="/legal/mentions-legales.html">Mentions légales</a></li>
+          <li><a href="/legal/confidentialite.html">Confidentialité</a></li>
+          <li><a href="/legal/conditions-utilisation.html">Conditions d'utilisation</a></li>
+          <li><a href="/legal/cookies.html">Cookies</a></li>
+          <li><a href="/effacement.html">Supprimer mes données</a></li>
+          <li><button type="button" class="btn-link" data-cookie-settings hidden>Gérer les cookies</button></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

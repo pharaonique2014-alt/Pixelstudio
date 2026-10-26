@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr-BE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supprimer mes données | RénoDevis</title>
+  <meta name="description" content="Demandez la suppression de vos données RénoDevis en confirmant votre numéro par SMS.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/src/styles/particulier.css">
+  <script type="module" src="/src/erase.ts"></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+  <header class="page-top">
+    <div class="container"><a class="brand brand-dark" href="/"><span class="brand-pixel" aria-hidden="true"></span>RénoDevis</a></div>
+  </header>
+  <main id="contenu" class="legal">
+    <div class="container">
+      <h1>Supprimer mes données</h1>
+      <p>Vous avez envoyé une demande de devis et souhaitez que nous effacions vos données ? Indiquez le numéro de GSM utilisé : nous vous envoyons un code par SMS pour vérifier qu'il s'agit bien de vous.</p>
+      <p>Après confirmation, vos demandes, vos coordonnées et les codes associés sont <strong>supprimés de notre base de données</strong>. Cette action est définitive.</p>
+
+      <form id="erase-start" class="erase-form" novalidate>
+        <div class="field">
+          <label for="phone">Numéro de GSM</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="0470 12 34 56" maxlength="20" required aria-describedby="err-phone">
+          <p class="field-error" id="err-phone"></p>
+        </div>
+        <div id="captcha"></div>
+        <button type="submit" class="btn btn-primary">Recevoir un code par SMS</button>
+      </form>
+
+      <form id="erase-confirm" class="erase-form" novalidate hidden>
+        <p id="erase-sent">Si ce numéro figure dans notre base, un code à 6 chiffres vient de lui être envoyé.</p>
+        <div class="field">
+          <label for="code">Code reçu par SMS</label>
+          <input type="text" id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required aria-describedby="err-code">
+          <p class="field-error" id="err-code"></p>
+        </div>
+        <button type="submit" class="btn btn-primary">Supprimer définitivement mes données</button>
+      </form>
+
+      <div id="erase-done" hidden tabindex="-1">
+        <h2>C'est fait.</h2>
+        <p id="erase-result"></p>
+      </div>
+
+      <p class="quiz-status" id="erase-status" role="alert"></p>
+
+      <h2>Autres demandes</h2>
+      <p>Pour exercer vos autres droits (accès, rectification, opposition…) ou si vous n'avez plus accès à ce numéro, écrivez-nous : <span class="todo">[À COMPLÉTER : e-mail de contact]</span>. Détails dans notre <a href="/legal/confidentialite.html">politique de confidentialité</a>.</p>
+      <p>Si une entreprise vous a déjà contacté, elle a reçu vos coordonnées pour votre demande. Nous l'informons de votre demande d'effacement. <span class="todo">[À METTRE EN PLACE en phase 2 : notification automatique aux entreprises ayant reçu les coordonnées.]</span></p>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>RénoDevis</strong> est un service de Pixel Studio (Logan Fontaine), BCE BE 1032.720.495.</p>
+      <nav aria-label="Informations légales"><ul>
+        <li><a href="/legal/mentions-legales.html">Mentions légales</a></li>
+        <li><a href="/legal/confidentialite.html">Confidentialité</a></li>
+        <li><a href="/legal/conditions-utilisation.html">Conditions d'utilisation</a></li>
+        <li><a href="/legal/cookies.html">Cookies</a></li>
+      </ul></nav>
+    </div>
+  </footer>
+</body>
+</html>

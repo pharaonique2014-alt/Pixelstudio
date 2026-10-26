@@ -1,0 +1,124 @@
+/* =============================================================================
+   RénoDevis — base commune (particulier + entreprise)
+   Identité héritée de pxlstudio.be : Montserrat (texte), Playfair Display
+   (titres), fond sombre #1a1a1a / texte #e4e1dc, fond clair #f3efe6 / #241f1a.
+   Polices auto-hébergées : aucun appel à Google Fonts.
+   ========================================================================== */
+@import "@fontsource/montserrat/latin-400.css";
+@import "@fontsource/montserrat/latin-600.css";
+@import "@fontsource/montserrat/latin-700.css";
+@import "@fontsource/playfair-display/latin-700.css";
+
+:root {
+  color-scheme: light dark;
+
+  --font-text: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-title: "Playfair Display", Georgia, "Times New Roman", serif;
+
+  /* Clair (repris du thème clair de pxlstudio.be) */
+  --bg: #f3efe6;
+  --surface: #ffffff;
+  --surface-2: #fbf8f2;
+  --text: #241f1a;
+  --text-muted: #574f46;
+  --line: #ddd6ca;
+
+  /* Ardoise (mur de pixels, blocs) — reprend #46687d / #2c5f82 du site */
+  --slate-900: #1b2c38;
+  --slate-800: #233a49;
+  --slate-700: #2b4558;
+  --slate-600: #35566c;
+  --slate-500: #46687d;
+
+  --focus: #1b6fa3;
+  --radius: 6px;
+  --gutter: 16px;
+  --max: 1080px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161514;
+    --surface: #1f1e1c;
+    --surface-2: #262420;
+    --text: #e4e1dc;
+    --text-muted: #b9b2a8;
+    --line: #3a352d;
+    --focus: #8fd3f4;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161514;
+  --surface: #1f1e1c;
+  --surface-2: #262420;
+  --text: #e4e1dc;
+  --text-muted: #b9b2a8;
+  --line: #3a352d;
+  --focus: #8fd3f4;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-text);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 { font-family: var(--font-title); line-height: 1.15; margin: 0 0 .5em; font-weight: 700; }
+h1 { font-size: clamp(2rem, 6.5vw, 3.4rem); letter-spacing: -.01em; }
+h2 { font-size: clamp(1.6rem, 4.5vw, 2.4rem); }
+h3 { font-size: 1.2rem; }
+p { margin: 0 0 1em; }
+img { max-width: 100%; height: auto; display: block; }
+
+a { color: inherit; text-underline-offset: .2em; }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.container { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+
+.skip-link {
+  position: absolute; left: var(--gutter); top: -100px; z-index: 100;
+  background: var(--surface); color: var(--text); padding: 10px 16px; font-weight: 700;
+}
+.skip-link:focus { top: 12px; }
+
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.todo { background: #fff3a8; color: #3b3200; padding: 0 .25em; border-radius: 2px; }
+
+/* --- Pages légales ---------------------------------------------------------- */
+.legal { padding: 40px 0 64px; }
+.legal .container { max-width: 760px; }
+.legal h1 { font-size: clamp(1.8rem, 5vw, 2.4rem); }
+.legal h2 { font-size: 1.35rem; margin-top: 2em; }
+.legal ul { padding-left: 1.2em; }
+.legal .draft-note {
+  border: 2px dashed var(--line); padding: 12px 16px; border-radius: var(--radius);
+  background: var(--surface-2); font-size: .92rem;
+}
+.legal .decision {
+  display: block; margin: .6em 0 1em; padding: 8px 12px; font-size: .9rem;
+  border-left: 4px solid #8a6d00; background: var(--surface-2);
+}
+.legal table { border-collapse: collapse; width: 100%; font-size: .92rem; margin: 1em 0; }
+.legal th, .legal td { border: 1px solid var(--line); padding: 8px; text-align: left; vertical-align: top; }
+.legal-back { display: inline-block; margin-bottom: 24px; font-weight: 600; }
