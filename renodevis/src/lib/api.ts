@@ -1,10 +1,15 @@
 // Appels à la fonction serveur `public-api` (seule API utilisée par les pages publiques).
 
+import { demoPost, showDemoBanner } from "./demo-api";
+
 const BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "/api";
+const DEMO = import.meta.env.VITE_DEMO === "1";
+if (DEMO) showDemoBanner();
 
 export type ApiResult = { status: number; data: Record<string, any> };
 
 export async function post(route: string, body: unknown, opts: { keepalive?: boolean } = {}): Promise<ApiResult> {
+  if (DEMO) return demoPost(route, body as Record<string, any>);
   try {
     const res = await fetch(`${BASE}/${route}`, {
       method: "POST",

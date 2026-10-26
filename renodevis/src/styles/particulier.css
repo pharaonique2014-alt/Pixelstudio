@@ -293,3 +293,10 @@
 .brand-dark { color: var(--text); }
 .erase-form { max-width: 420px; margin: 24px 0 32px; }
 .erase-form .btn { width: 100%; margin-top: 8px; }
+
+/* --- Bandeau « Mode test » (build de démonstration uniquement) -------------- */
+.demo-banner {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 60;
+  background: var(--slate-900); color: #fff; font-size: .85rem; line-height: 1.4;
+  padding: 8px var(--gutter); text-align: center; border-bottom: 2px solid var(--pixel);
+}

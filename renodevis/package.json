@@ -12,7 +12,8 @@
     "test": "npm run test:sql && npm run test:unit",
     "test:sql": "bash tests/sql/run.sh",
     "test:unit": "vitest run",
-    "test:e2e": "npm run build && node tests/e2e/run.mjs"
+    "test:e2e": "npm run build && node tests/e2e/run.mjs",
+    "build:demo": "node tools/build-demo.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.10.2",

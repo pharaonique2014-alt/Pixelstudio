@@ -5,7 +5,21 @@ import { securityHeaders } from "./dev/security-headers.ts";
 
 const page = (p: string) => resolve(import.meta.dirname, p);
 
-export default defineConfig({
+// Build « mode test » : une page à la fois, tout intégré dans le HTML
+// (voir tools/build-demo.mjs). Jamais utilisé pour la vraie mise en ligne.
+const demoPage = process.env.RD_DEMO_PAGE;
+
+export default defineConfig(demoPage ? {
+  base: "./",
+  build: {
+    outDir: `dist-demo/${demoPage.replace(/\W/g, "_")}`,
+    emptyOutDir: true,
+    assetsInlineLimit: 100_000_000,
+    cssCodeSplit: false,
+    modulePreload: false,
+    rollupOptions: { input: page(demoPage), output: { codeSplitting: false } },
+  },
+} : {
   plugins: [mockApi()],
   // HSTS / upgrade-insecure-requests sans effet en http://localhost
   preview: { headers: securityHeaders() },
