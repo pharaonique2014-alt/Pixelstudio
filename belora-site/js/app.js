@@ -90,7 +90,20 @@
   }
   function isJoined(id) { return st().joined.indexOf(id) > -1; }
   function isPast(a) { return new Date(a.date).getTime() + 2 * HOUR <= S.now(); }
-  function seatsLeft(a) { return Math.max(0, a.places - participants(a).length); }
+  function weight(id) { var u = userById(id); return u && u.situation === "couple" ? 2 : 1; }
+  function seatsUsed(a) { return participants(a).reduce(function (n, id) { return n + weight(id); }, 0); }
+  function seatsLeft(a) { return Math.max(0, a.places - seatsUsed(a)); }
+  function isCouple(u) { return !!u && u.situation === "couple"; }
+  function ageTxt(u) { return isCouple(u) ? "Couple" : u.age + " ans"; }
+  function nameAge(u) { return isCouple(u) ? u.prenom : u.prenom + ", " + u.age + " ans"; }
+  function butLabel(u) { return isCouple(u) ? "Des amis et des sorties à deux" : BUT[u.but || "ouvert"].label; }
+  function cannotJoin(a) {
+    var me = st().me, need = isCouple(me) ? 2 : 1, left = seatsLeft(a);
+    if (isCouple(me) && a.ambiance === "rencontres") return "Réservé aux personnes seules";
+    if (left === 0) return "Complet";
+    if (left < need) return "Il faut 2 places";
+    return "";
+  }
   function priceLabel(a) { return a.prix ? eur(a.prix) : "Gratuit"; }
   function avatar(u, o) {
     o = o || {};
@@ -122,11 +135,16 @@
     alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.500v.01"/>',
     search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
     arrow: '<path d="M9 6l6 6-6 6"/>',
+    heart: '<path d="M12 20s-7-4.600-7-10a4 4 0 0 1 7-2.500A4 4 0 0 1 19 10c0 5.400-7 10-7 10z"/>',
     arrowL: '<path d="M15 6l-6 6 6 6"/>'
   };
   function ic(n, c) { return '<svg class="ic' + (c ? " " + c : "") + '" viewBox="0 0 24 24" aria-hidden="true">' + ICONS[n] + "</svg>"; }
   var EMO = { "🔒": "lock", "📍": "pin", "🗓": "cal", "💶": "euro", "👥": "users", "🛡": "shield", "🎁": "gift", "⚠": "alert", "🚶": "route", "🤝": "users", "✔": "check" };
   function emo(h) { return h.replace(/(🔒|📍|🗓|💶|👥|🛡|🎁|⚠|🚶|🤝|✔|🎉|👋|😀|🙂|🙁|👤|📅)️?/g, function (m, k) { return EMO[k] ? ic(EMO[k]) : ""; }); }
+  var BUT = BELORA_BUT, AMB = BELORA_AMB;
+  function seatsPct(a) { return Math.min(100, Math.round(seatsUsed(a) / a.places * 100)); }
+  function butTag(u) { if (u && u.situation === "couple") return '<span class="tag but-ouvert">Couple</span>'; return u && u.but && BUT[u.but] ? '<span class="tag but-' + u.but + '">' + BUT[u.but].short + "</span>" : ""; }
+  function ambTag(a) { return a.ambiance && a.ambiance !== "tous" ? '<span class="amb ' + a.ambiance + '">' + AMB[a.ambiance] + "</span>" : ""; }
   var CATC = { Marche: "#2E7D5B", Repas: "#D9503A", Culture: "#2B4C7A", Danse: "#B8407A", Jeux: "#A86B0A", Voyage: "#1F8A9A" };
   var fmtWd = new Intl.DateTimeFormat("fr-BE", { weekday: "short" }), fmtMo = new Intl.DateTimeFormat("fr-BE", { month: "short" });
   function dparts(iso) { var d = new Date(iso); return { wd: fmtWd.format(d).replace(".", ""), day: d.getDate(), mo: fmtMo.format(d).replace(".", ""), h: fmtHour.format(d).replace(":", "h") }; }
@@ -137,7 +155,7 @@
 
   V.bienvenue = function () {
     var pts = [["route", "Des sorties près de chez vous", "Marches, repas, thés dansants, visites : choisissez ce qui vous plaît."],
-      ["users", "En petit groupe, en lieu public", "Vous voyez qui participe avant de vous inscrire."],
+      ["users", "Amis, sorties ou rencontre amoureuse", "Seul(e) ou en couple, vous indiquez ce que vous cherchez et trouvez les sorties qui vous correspondent."],
       ["shield", "Votre sécurité d'abord", "Numéro de GSM vérifié, alertes contre les arnaques, signalement en un geste."],
       ["gift", "7 jours gratuits", "Puis 19,99 € par mois, sans engagement, résiliable en un clic."]];
     return '<section class="wpanel"><svg class="wbg" viewBox="0 0 300 260" aria-hidden="true"><path transform="translate(90,120) scale(2.2)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".13"/><path transform="translate(205,150) scale(2.6)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".10"/></svg>' +
@@ -179,9 +197,20 @@
     return (edit ? '<a class="back" href="#/profil">← Retour</a>' : "") +
       "<h1>" + (edit ? "Modifier mon profil" : "Créons votre profil") + "</h1>" +
       '<form data-form="' + (edit ? "profile-edit" : "profile-new") + '" novalidate>' +
-      '<label for="prenom">Votre prénom</label><input id="prenom" name="prenom" type="text" autocomplete="given-name" maxlength="30" value="' + esc(me.prenom || "") + '" required>' +
-      '<label for="age">Votre âge</label><input id="age" name="age" type="number" inputmode="numeric" min="50" max="99" value="' + esc(me.age || "") + '" required>' +
+      '<div class="label">Vous vous inscrivez</div><div class="plans">' + [["seul", "Seul(e)"], ["couple", "En couple, à deux"]].map(function (o) {
+        return '<label class="plan"><input type="radio" name="situation" value="' + o[0] + '"' + ((me.situation || "seul") === o[0] ? " checked" : "") + '><span class="box"><b>' + o[1] + "</b></span></label>";
+      }).join("") + "</div>" +
+      '<label for="prenom">Votre prénom <span class="muted small">(pour un couple : vos deux prénoms)</span></label><input id="prenom" name="prenom" type="text" autocomplete="given-name" maxlength="30" value="' + esc(me.prenom || "") + '" required>' +
+      '<label for="age">Votre âge <span class="muted small">(pour un couple : l\'âge de la personne la plus jeune)</span></label><input id="age" name="age" type="number" inputmode="numeric" min="50" max="99" value="' + esc(me.age || "") + '" required>' +
       '<label for="ville">Votre ville (pour trouver les sorties proches)</label><select id="ville" name="ville">' + cities + "</select>" +
+      '<div id="romance"' + ((me.situation || "seul") === "couple" ? " hidden" : "") + '><div class="label">Ce que vous cherchez</div><div class="plans">' + ["amitie", "couple", "ouvert"].map(function (k) {
+        var cur = me.but || "ouvert";
+        return '<label class="plan"><input type="radio" name="but" value="' + k + '"' + (cur === k ? " checked" : "") + '><span class="box"><b>' + BUT[k].label + "</b></span></label>";
+      }).join("") + "</div>" +
+      '<div class="info small" style="margin-top:12px"><b>Facultatif.</b> Ces deux informations servent à mieux vous proposer des sorties et des personnes. Elles ne sont montrées qu\'aux membres abonnés, et vous pouvez les laisser vides.</div>' +
+      '<div class="row"><div style="flex:1;min-width:150px"><label for="genre">Je suis</label><select id="genre" name="genre"><option value="">Je préfère ne pas dire</option><option value="F"' + (me.genre === "F" ? " selected" : "") + '>Une femme</option><option value="H"' + (me.genre === "H" ? " selected" : "") + '>Un homme</option></select></div>' +
+      '<div style="flex:1;min-width:150px"><label for="cherche">Je souhaite rencontrer</label><select id="cherche" name="cherche"><option value="">Peu importe</option><option value="femmes"' + (me.cherche === "femmes" ? " selected" : "") + '>Des femmes</option><option value="hommes"' + (me.cherche === "hommes" ? " selected" : "") + '>Des hommes</option></select></div></div></div>' +
+      '<div class="info small" id="couplenote"' + ((me.situation || "seul") === "couple" ? "" : " hidden") + '>Les couples cherchent des amis et des sorties à deux. Vous prenez deux places par sortie et vous n\'avez pas accès aux soirées réservées aux célibataires.</div>' +
       '<div class="label">Vos centres d\'intérêt</div><div class="chips">' + chips + "</div>" +
       '<label for="bio">Quelques mots sur vous (facultatif)</label><textarea id="bio" name="bio" maxlength="280" placeholder="Ce que vous aimez, ce que vous cherchez…">' + esc(me.bio || "") + "</textarea>" +
       '<label for="photo">Votre photo (facultatif)</label><div class="row">' + avatar(me.prenom ? me : { prenom: "?", color: "#9AA5B8" }, {}) +
@@ -202,12 +231,12 @@
       (ppl.length > 4 ? '<span class="more">+' + (ppl.length - 4) + "</span>" : "") + "</span>";
   }
   function actCard(a, d) {
-    var joined = isJoined(a.id), left = seatsLeft(a), n = participants(a).length, pct = Math.min(100, Math.round(n / a.places * 100)), p = dparts(a.date);
+    var joined = isJoined(a.id), left = seatsLeft(a), n = participants(a).length, pct = seatsPct(a), p = dparts(a.date), why = cannotJoin(a);
     var btn = joined ? '<button class="btn ok block" data-action="open-act" data-id="' + a.id + '">' + ic("check") + " Inscrit(e) · voir</button>" :
-      left === 0 ? '<button class="btn block" disabled>Complet</button>' :
+      why ? '<button class="btn block" disabled>' + why + '</button>' :
       '<button class="btn primary block" data-action="join" data-id="' + a.id + '">Je participe</button>';
     return '<article class="act" style="--cat:' + (CATC[a.cat] || "#1F3A5F") + '" data-action="open-act" data-id="' + a.id + '">' +
-      '<div class="act-main">' + dbox(a.date) + '<div class="act-body"><span class="cat">' + esc(a.cat) + "</span><h3>" + esc(a.titre) + "</h3>" +
+      '<div class="act-main">' + dbox(a.date) + '<div class="act-body"><span class="cat">' + esc(a.cat) + "</span>" + ambTag(a) + "<h3>" + esc(a.titre) + "</h3>" +
       '<p class="meta">' + ic("clock") + p.h + '<span class="sep"></span>' + ic("pin") + esc(a.ville) + (d ? " · " + d + " km" : "") + '</p></div><span class="price-pill">' + priceLabel(a) + "</span></div>" +
       '<div class="act-foot">' + stackHtml(a) + '<div class="seats"><span>' + (left === 0 ? "Complet" : left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "")) + '</span><i><b style="width:' + pct + '%"></b></i></div></div>' + btn + "</article>";
   }
@@ -216,7 +245,7 @@
     return st().activities.filter(function (a) { return new Date(a.date).getTime() + 2 * HOUR > now; })
       .map(function (a) { return { a: a, d: dist(ville, a.ville) }; })
       .filter(function (x) {
-        return x.d <= f.rayon && (!f.cat || x.a.cat === f.cat) &&
+        return x.d <= f.rayon && (!f.cat || x.a.cat === f.cat) && (!f.amb || x.a.ambiance === "tous" || x.a.ambiance === f.amb) &&
           (!f.q || norm(x.a.titre + " " + x.a.lieu + " " + x.a.ville + " " + x.a.cat).indexOf(norm(f.q)) > -1);
       })
       .sort(function (p, q) { return new Date(p.a.date) - new Date(q.a.date); });
@@ -237,10 +266,14 @@
     var cats = ['<button class="chip' + (!f.cat ? " on" : "") + '" data-action="filter-cat" data-v="">Toutes</button>'].concat(BELORA_CATS.map(function (c) {
       return '<button class="chip' + (f.cat === c ? " on" : "") + '" data-action="filter-cat" data-v="' + c + '">' + c + "</button>";
     })).join("");
+    var ambs = [["", "Tout"], ["amis", "Entre amis"], ["rencontres", "Rencontres"]].map(function (o) {
+      return '<button class="chip' + ((f.amb || "") === o[0] ? " on" : "") + '" data-action="filter-amb" data-v="' + o[0] + '">' + o[1] + "</button>";
+    }).join("");
     return '<header class="pagehead"><p class="eyebrow">Bonjour ' + esc(st().me.prenom) + "</p><h1>Sorties près de chez vous</h1></header>" + banner +
       '<div class="filters"><div class="selrow"><label class="selpill">' + ic("pin") + '<span class="sr">Ma ville</span><select id="f-ville" data-filter="ville">' + cities + "</select></label>" +
       '<label class="selpill narrow">' + ic("route") + '<span class="sr">Distance</span><select id="f-rayon" data-filter="rayon">' + rayons + "</select></label></div>" +
       '<div class="searchbox">' + ic("search") + '<label for="f-q" class="sr">Rechercher</label><input id="f-q" data-filter="q" type="text" placeholder="Marche, danse, repas…" value="' + esc(f.q) + '"></div>' +
+      '<div class="chips scroll" aria-label="Type de sortie">' + ambs + "</div>" +
       '<div class="chips scroll">' + cats + "</div></div>" +
       '<div id="actlist">' + listHtml() + "</div>";
   };
@@ -250,18 +283,19 @@
     var acc = hasAccess(), joined = isJoined(a.id), left = seatsLeft(a), ppl = participants(a), d = dist(st().me.ville, a.ville);
     var btn = isPast(a) ? '<button class="btn" disabled>Terminée</button>' : joined ?
       '<button class="btn danger" data-action="leave" data-id="' + a.id + '">Me désinscrire</button>' :
-      left === 0 ? '<button class="btn" disabled>Complet</button>' : '<button class="btn primary" data-action="join" data-id="' + a.id + '">Je participe</button>';
+      cannotJoin(a) ? '<button class="btn" disabled>' + cannotJoin(a) + '</button>' : '<button class="btn primary" data-action="join" data-id="' + a.id + '">' + (isCouple(st().me) ? "Nous participons" : "Je participe") + '</button>';
     var list = ppl.length ? ppl.map(function (pid) {
       var u = userById(pid), me = pid === "me";
       return '<a class="person" href="#/membre/' + pid + '">' + avatar(u, { blur: !acc && !me }) +
-        '<span class="meta"><b>' + esc(u.prenom) + (me ? " (vous)" : "") + "</b>" +
-        (me || acc ? '<span class="small muted">' + esc(u.age) + " ans · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
+        '<span class="meta"><b>' + esc(u.prenom) + (me ? " (vous)" : "") + " " + butTag(u) + "</b>" +
+        (me || acc ? '<span class="small muted">' + esc(ageTxt(u)) + " · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
     }).join("") : "<p>Personne pour l'instant. Soyez le premier ou la première à vous inscrire !</p>";
     var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets · 7 jours gratuits</a>' : "";
     var fact = function (i, t, sub) { return "<li>" + ic(i) + "<span><b>" + t + "</b>" + (sub ? "<small>" + sub + "</small>" : "") + "</span></li>"; };
     return '<a class="back" href="#" data-action="back">' + ic("arrowL") + " Retour</a>" +
-      '<article class="detail" style="--cat:' + (CATC[a.cat] || "#1F3A5F") + '"><div class="dhead">' + dbox(a.date, true) + '<div><span class="cat">' + esc(a.cat) + "</span><h1>" + esc(a.titre) + "</h1></div></div>" +
+      '<article class="detail" style="--cat:' + (CATC[a.cat] || "#1F3A5F") + '"><div class="dhead">' + dbox(a.date, true) + '<div><span class="cat">' + esc(a.cat) + "</span>" + ambTag(a) + "<h1>" + esc(a.titre) + "</h1></div></div>" +
       '<ul class="facts">' + fact("clock", esc(when(a.date))) + fact("pin", esc(a.lieu), esc(a.ville) + (d ? " · à " + d + " km" : "")) +
+      fact(a.ambiance === "rencontres" ? "heart" : "users", AMB[a.ambiance || "tous"], a.ambiance === "rencontres" ? "Pour celles et ceux qui souhaitent faire une rencontre amoureuse" : a.ambiance === "amis" ? "Ambiance conviviale, sans attente amoureuse" : "Amis ou rencontres, chacun à son rythme") +
       fact("euro", priceLabel(a), a.prix ? "par personne" : "Chacun règle ses consommations") +
       fact("users", ppl.length + " inscrit" + (ppl.length > 1 ? "s" : ""), left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "")) + "</ul>" +
       '<p class="desc">' + esc(a.desc) + '</p><p class="small muted">Organisé par ' + esc(a.orga) + " · Source : " + esc(a.source) + "</p></article>" +
@@ -281,9 +315,10 @@
       '<a class="btn primary block" href="#/abonnement">Voir les profils – 7 jours gratuits</a></section>';
     var common = st().activities.filter(function (a) { return a.inscrits.indexOf(id) > -1 && isJoined(a.id); });
     return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true }) +
-      "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + ", " + esc(u.age) + " ans</h1><p>📍 " + esc(u.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
+      "<h1 style=\"margin-top:10px\">" + esc(nameAge(u)) + "</h1><p>📍 " + esc(u.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
       '<div class="chips" style="justify-content:center">' + u.interets.map(function (i) { return '<span class="tag">' + esc(i) + "</span>"; }).join("") + "</div>" +
-      '<p style="margin-top:12px">' + esc(u.bio) + "</p>" +
+      '<p class="small" style="margin:10px 0 0"><b>Cherche :</b> ' + esc(butLabel(u)) + (!isCouple(u) && u.but !== "amitie" && u.cherche ? " · souhaite rencontrer " + esc(u.cherche) : "") + "</p>" +
+      '<p style="margin-top:8px">' + esc(u.bio) + "</p>" +
       (common.length ? '<p class="small muted">Vous participez aussi à : ' + common.map(function (a) { return esc(a.titre); }).join(", ") + "</p>" : "") +
       '<a class="btn primary block" href="#/messages/' + id + '">Écrire à ' + esc(u.prenom) + "</a>" +
       '<div class="row" style="justify-content:center;margin-top:10px"><button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button><button class="btn small ghost" data-action="block" data-id="' + id + '">Bloquer</button></div></section>';
@@ -335,9 +370,13 @@
     var u = userById(id); if (!u || u.suspended || st().blocked.indexOf(id) > -1) { go("messages"); return ""; }
     delete st().unread[id]; persist(); refreshDot();
     var th = st().conversations[id] || [];
-    return '<a class="back" href="#/messages">← Messages</a><div class="row between"><a class="person" style="border:0" href="#/membre/' + id + '">' + avatar(u) + "<b>" + esc(u.prenom) + '</b></a>' +
+    var mine = st().me.but, theirs = u.but, hint = "";
+    if (isCouple(u)) hint = '<div class="info small">' + esc(u.prenom) + " est un couple qui cherche des amis et des sorties à deux.</div>";
+    else if (mine !== theirs && (mine === "couple" || theirs === "couple") && (mine === "amitie" || theirs === "amitie"))
+      hint = '<div class="info small">' + (theirs === "amitie" ? esc(u.prenom) + " cherche surtout des amis pour sortir. Soyez clair(e) sur vos intentions, avec respect." : esc(u.prenom) + " cherche une relation amoureuse, alors que vous cherchez des amis. Dites-le simplement dès le début.") + "</div>";
+    return '<a class="back" href="#/messages">← Messages</a><div class="row between"><a class="person" style="border:0" href="#/membre/' + id + '">' + avatar(u) + "<b>" + esc(u.prenom) + " " + butTag(u) + '</b></a>' +
       '<button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button></div>' +
-      '<div class="bubbles" id="thread">' + (th.length ? th.map(bubble).join("") : '<p class="muted">Dites bonjour à ' + esc(u.prenom) + " !</p>") + "</div>" +
+      hint + '<div class="bubbles" id="thread">' + (th.length ? th.map(bubble).join("") : '<p class="muted">Dites bonjour à ' + esc(u.prenom) + " !</p>") + "</div>" +
       '<form class="composer" data-form="send" data-id="' + id + '"><label for="msg" class="sr" style="position:absolute;left:-9999px">Votre message</label><input id="msg" name="msg" type="text" autocomplete="off" placeholder="Votre message…" maxlength="500"><button class="btn primary" type="submit">Envoyer</button></form>';
   };
 
@@ -347,7 +386,7 @@
       cancelled: "Résilié – actif jusqu'au " + (st().sub.endsAt ? new Date(st().sub.endsAt).toLocaleDateString("fr-BE") : ""), expired: "Essai ou abonnement terminé"
     }[ss];
     var shift = st().shiftDays ? " (démo : +" + st().shiftDays + " j)" : "";
-    return '<section class="card center">' + avatar(me, { big: true }) + '<h1 style="margin-top:10px">' + esc(me.prenom) + ", " + esc(me.age) + " ans</h1><p>📍 " + esc(me.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
+    return '<section class="card center">' + avatar(me, { big: true }) + '<h1 style="margin-top:10px">' + esc(nameAge(me)) + "</h1><p>📍 " + esc(me.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
       "<p>" + esc(me.bio || "") + '</p><a class="btn ghost block" href="#/profil/modifier">Modifier mon profil</a></section>' +
       '<section class="card"><h2>Mon abonnement</h2><p>' + esc(label) + '</p><a class="btn primary block" href="#/abonnement">Gérer mon abonnement</a></section>' +
       '<section class="card"><h2>Confort de lecture</h2><button class="btn ghost block" data-action="toggle-size">' + (st().bigText ? "Texte normal" : "Agrandir le texte") + "</button></section>" +
@@ -419,7 +458,7 @@
       '<section class="card"><h2>Ajouter une activité</h2><p class="small muted">Copiez ici les sorties trouvées dans les groupes ou agendas locaux (avec l\'accord de l\'organisateur).</p>' +
       '<form data-form="admin-add"><label for="n-t">Titre</label><input id="n-t" name="titre" type="text" required>' +
       '<div class="row"><div style="flex:1;min-width:140px"><label for="n-c">Catégorie</label><select id="n-c" name="cat">' + cats + '</select></div><div style="flex:1;min-width:140px"><label for="n-v">Ville</label><select id="n-v" name="ville">' + cities + "</select></div></div>" +
-      '<label for="n-l">Lieu précis</label><input id="n-l" name="lieu" type="text" required>' +
+      '<label for="n-a">Ambiance</label><select id="n-a" name="ambiance"><option value="tous">Pour tous</option><option value="amis">Entre amis</option><option value="rencontres">Rencontres</option></select><label for="n-l">Lieu précis</label><input id="n-l" name="lieu" type="text" required>' +
       '<div class="row"><div style="flex:1;min-width:140px"><label for="n-d">Date</label><input id="n-d" name="date" type="date" value="' + today + '" required></div><div style="flex:1;min-width:120px"><label for="n-h">Heure</label><input id="n-h" name="heure" type="time" value="14:00" required></div></div>' +
       '<div class="row"><div style="flex:1;min-width:120px"><label for="n-p">Prix (€)</label><input id="n-p" name="prix" type="number" min="0" step="0.5" value="0"></div><div style="flex:1;min-width:120px"><label for="n-n">Places</label><input id="n-n" name="places" type="number" min="1" value="12"></div></div>' +
       '<label for="n-o">Organisateur</label><input id="n-o" name="orga" type="text" placeholder="Nom du groupe ou de l\'association">' +
@@ -492,7 +531,7 @@
     "open-act": function (el) { go("activite/" + el.dataset.id); },
     "join": function (el) {
       var a = actById(el.dataset.id); if (!a) return;
-      if (seatsLeft(a) === 0) { toast("Cette sortie est complète."); return; }
+      var why = cannotJoin(a); if (why && !isJoined(a.id)) { toast(why === "Complet" ? "Cette sortie est complète." : why === "Il faut 2 places" ? "Il ne reste qu'une place : un couple en demande deux." : "Cette sortie s'adresse aux personnes seules."); return; }
       if (!isJoined(a.id)) { st().joined.push(a.id); a.inscrits.push("me"); }
       var trial = startTrialIfNeeded(); persist();
       if (!trial) toast("Vous êtes inscrit(e) !");
@@ -505,6 +544,7 @@
       persist(); toast("Vous êtes désinscrit(e)."); render();
     },
     "filter-cat": function (el) { st().filters.cat = el.dataset.v; persist(); render(); },
+    "filter-amb": function (el) { st().filters.amb = el.dataset.v; persist(); render(); },
     "close": function () { closeModal(); render(); },
     "start-trial": function () { startTrialIfNeeded(); render(); },
     "subscribe": function () {
@@ -586,7 +626,7 @@
       var titre = f.titre.value.trim(), lieu = f.lieu.value.trim();
       if (!titre || !lieu || !f.date.value || !f.heure.value) return showErr("Titre, lieu, date et heure sont obligatoires.", f);
       var d = new Date(f.date.value + "T" + f.heure.value);
-      st().activities.push({ id: "a" + Date.now(), titre: titre, cat: f.cat.value, ville: f.ville.value, lieu: lieu, date: d.toISOString(), prix: Math.max(0, +f.prix.value || 0), places: Math.max(1, +f.places.value || 1), desc: f.desc.value.trim(), orga: f.orga.value.trim() || "Belora", source: f.source.value.trim() || "Belora", lien: "", inscrits: [] });
+      st().activities.push({ id: "a" + Date.now(), ambiance: f.ambiance.value, titre: titre, cat: f.cat.value, ville: f.ville.value, lieu: lieu, date: d.toISOString(), prix: Math.max(0, +f.prix.value || 0), places: Math.max(1, +f.places.value || 1), desc: f.desc.value.trim(), orga: f.orga.value.trim() || "Belora", source: f.source.value.trim() || "Belora", lien: "", inscrits: [] });
       persist(); toast("Activité ajoutée."); render();
     }
   };
@@ -597,11 +637,13 @@
     if (age > 99) return showErr("Merci de vérifier votre âge.", f);
     if (!edit && !f.cgu.checked) return showErr("Merci de cocher la case pour accepter les conditions.", f);
     var interets = [].map.call(f.querySelectorAll("input[name=interets]:checked"), function (i) { return i.value; });
-    var data = { prenom: prenom, age: age, ville: f.ville.value, bio: f.bio.value.trim(), interets: interets };
+    var situation = (f.querySelector("input[name=situation]:checked") || {}).value || "seul";
+    var but = situation === "couple" ? "amitie" : (f.querySelector("input[name=but]:checked") || {}).value || "ouvert";
+    var data = { prenom: prenom, age: age, ville: f.ville.value, bio: f.bio.value.trim(), interets: interets, situation: situation, but: but, genre: situation === "couple" ? "" : f.genre.value, cherche: situation === "couple" ? "" : f.cherche.value };
     if (edit) { Object.assign(st().me, data); if (tmpPhoto) st().me.photo = tmpPhoto; persist(); toast("Profil enregistré."); go("profil"); return; }
     var colors = ["#1F3A5F", "#D9503A", "#4F7F6A", "#6B4C9A", "#B5651D"];
     st().me = Object.assign({ id: "me", phone: st().pending.phone, color: colors[prenom.length % colors.length], photo: tmpPhoto || "" }, data);
-    st().filters.ville = data.ville; st().pending = null; persist(); tmpPhoto = null;
+    st().filters.ville = data.ville; st().filters.amb = but === "amitie" ? "amis" : but === "couple" ? "rencontres" : ""; st().pending = null; persist(); tmpPhoto = null;
     go("activites");
     openModal('<h2>Bienvenue sur Belora, ' + esc(prenom) + ' !</h2><p>Trois conseils pour des rencontres sereines :</p><ul class="small"><li>Rendez-vous toujours dans un lieu public.</li><li>Ne donnez jamais d\'argent, même à quelqu\'un de sympathique.</li><li>Un doute ? Utilisez le bouton « Signaler ».</li></ul><button class="btn primary block" data-action="close">J\'ai compris</button>');
   }
@@ -620,6 +662,7 @@
   });
   document.addEventListener("change", function (ev) {
     var t = ev.target;
+    if (t.name === "situation") { var c = t.value === "couple", r = $("#romance"), n = $("#couplenote"); if (r) r.hidden = c; if (n) n.hidden = !c; return; }
     if (t.dataset && t.dataset.filter) { var l = $("#actlist"); if (l) l.innerHTML = emo(listHtml()); return; }
     if (t.id === "photo" && t.files && t.files[0]) {
       var rd = new FileReader();

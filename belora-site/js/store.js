@@ -1,6 +1,6 @@
 /* Stockage local de la démo (navigateur). Remplaçable plus tard par Supabase. */
 window.Store = (function () {
-  var KEY = "belora_test_v1";
+  var KEY = "belora_test_v2";
   var DAY = 864e5;
   var Store = { state: null };
 
@@ -11,7 +11,7 @@ window.Store = (function () {
       var hm = a.heure.split(":");
       d.setHours(+hm[0], +hm[1], 0, 0);
       return {
-        id: a.id, titre: a.titre, cat: a.cat, ville: a.ville, lieu: a.lieu,
+        id: a.id, ambiance: a.ambiance || "tous", titre: a.titre, cat: a.cat, ville: a.ville, lieu: a.lieu,
         date: d.toISOString(), prix: a.prix, places: a.places, desc: a.desc,
         orga: a.orga, source: a.source, lien: "", inscrits: a.inscrits.slice()
       };
@@ -28,7 +28,7 @@ window.Store = (function () {
       feedback: {},
       reports: [],
       blocked: [],
-      filters: { ville: "", rayon: 50, cat: "", q: "" },
+      filters: { ville: "", rayon: 50, cat: "", q: "", amb: "" },
       shiftDays: 0,
       bigText: false
     };
