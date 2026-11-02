@@ -284,11 +284,12 @@
     st().likes[cat][uid] = S.now();
     if (u.likesMe && u.likesMe[cat]) {
       st().matches[cat][uid] = S.now();
-      var started = startTrialQuiet(); persist();
+      persist();
+      var chat = hasAccess();
       openModal("<h2>C'est réciproque !</h2><p>" + (cat === "amour" ? "Vous et <b>" + esc(u.prenom) + "</b> vous plaisez mutuellement." : "Vous et <b>" + esc(u.prenom) + "</b> avez envie de devenir amis et de sortir ensemble.") + "</p>" +
         '<p class="small muted">Catégorie : ' + CATS[cat].label + ". Votre discussion restera dans cette catégorie.</p>" +
-        (started ? '<div class="success">Votre essai gratuit de 7 jours démarre maintenant.</div>' : "") +
-        '<div class="vstack"><a class="btn primary block" href="#/messages/' + uid + '" data-action="close-go" data-to="messages/' + uid + '">Lui écrire</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>');
+        (chat ? '<div class="vstack"><a class="btn primary block" href="#/messages/' + uid + '" data-action="close-go" data-to="messages/' + uid + '">Lui écrire</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>'
+          : '<div class="info small">Pour discuter, il faut l\'essai gratuit de 7 jours ou l\'abonnement. <b>L\'essai démarre dès votre première inscription à une sortie.</b></div><div class="vstack"><a class="btn primary block" href="#/activites" data-action="close-go" data-to="activites">Choisir une sortie</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>'));
     } else {
       persist(); toast("J'aime envoyé à " + u.prenom + ". Vous serez prévenu(e) si c'est réciproque.");
     }
@@ -635,14 +636,14 @@
     else if (ss === "active") head = '<div class="success">✔ Abonnement actif jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
     else if (ss === "cancelled") head = '<div class="info">Abonnement résilié. Vous gardez l\'accès jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
     else if (ss === "expired") head = '<div class="error">Votre essai est terminé. Abonnez-vous pour retrouver les messages et les profils.</div>';
-    else head = '<div class="info">7 jours gratuits, sans carte bancaire. L\'essai démarre dès votre première inscription à une sortie.</div>';
+    else head = '<div class="info">7 jours gratuits, sans carte bancaire. <b>L\'essai démarre dès votre première inscription à une sortie.</b></div>';
     var plans = Object.keys(PLANS).map(function (k, i) {
       var p = PLANS[k];
       return '<label class="plan"><input type="radio" name="plan" value="' + k + '"' + (i === 0 ? " checked" : "") + '><span class="box"><span><b>' + p.label + '</b><br><span class="small muted">' + p.note + '</span></span><span class="p">' + eur(p.price) + "<small>" + p.unit + "</small></span></span></label>";
     }).join("");
     var canTrial = ss === "none";
     var cta = ss === "active" ? '<button class="btn danger block" data-action="cancel-sub">Résilier mon abonnement</button>' :
-      (canTrial ? '<button class="btn primary block" data-action="start-trial">Commencer mes 7 jours gratuits</button><div style="height:10px"></div>' : "") +
+      (canTrial ? '<a class="btn primary block" href="#/activites">Choisir une sortie pour démarrer mon essai gratuit</a><div style="height:10px"></div>' : "") +
       (ss === "cancelled" || ss === "active" ? "" : '<button class="btn ' + (canTrial ? "ghost" : "primary") + ' block" data-action="subscribe">S\'abonner maintenant</button>');
     return '<a class="back" href="#" data-action="back">← Retour</a><h1>Mon abonnement</h1>' + head +
       '<section class="card"><h2>Gratuit pour tous</h2><p class="small">✔ Voir toutes les activités<br>✔ S\'inscrire aux sorties<br>✔ Voir le prénom des participants</p>' +
