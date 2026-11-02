@@ -1,6 +1,6 @@
 /* Stockage local de la démo (navigateur). Remplaçable plus tard par Supabase. */
 window.Store = (function () {
-  var KEY = "belora_test_v3";
+  var KEY = "belora_test_v4";
   var DAY = 864e5;
   var Store = { state: null };
 

@@ -59,3 +59,33 @@ window.BELORA_ACTIVITIES_SEED = [
   { id: "a20", ambiance: "rencontres", titre: "Soirée rencontres pour célibataires 50+", cat: "Repas", ville: "Bruxelles", lieu: "Restaurant La Table Ronde, centre-ville", jours: 9, heure: "19:30", prix: 15, places: 20, orga: "Belora", source: "Belora", desc: "Un dîner en petites tables qui changent entre les plats, pour discuter avec plusieurs personnes. Pour celles et ceux qui souhaitent faire une rencontre amoureuse.", inscrits: ["u2", "u12"] },
   { id: "a21", ambiance: "rencontres", titre: "Dîner des célibataires", cat: "Repas", ville: "Namur", lieu: "Auberge de la Citadelle", jours: 13, heure: "19:00", prix: 18, places: 16, orga: "Belora", source: "Belora", desc: "Une soirée conviviale et sans pression, avec un animateur pour briser la glace.", inscrits: ["u3"] }
 ];
+
+/* Questionnaire (QCM) : 13 questions, toutes facultatives */
+window.BELORA_QUESTIONS = [
+  { id: "rythme", label: "Rythme", q: "Votre rythme idéal ?", opts: ["Tranquille", "Actif", "Sportif"] },
+  { id: "dispo", label: "Disponible", q: "Quand sortez-vous le plus facilement ?", multi: true, opts: ["Journées en semaine", "Soirs de semaine", "Week-ends", "Flexible"] },
+  { id: "deplacement", label: "Déplacement", q: "Comment vous déplacez-vous ?", opts: ["Voiture (covoiturage possible)", "Transports en commun", "À pied ou à vélo", "Plutôt près de chez moi"] },
+  { id: "sorties", label: "Sorties préférées", q: "Vos sorties préférées ?", multi: true, opts: ["Nature et balades", "Restaurant", "Musées et expos", "Danse et musique", "Jeux et cartes", "Voyages"] },
+  { id: "contact", label: "Contact", q: "Face aux nouvelles personnes, vous êtes…", opts: ["Je me lie vite", "Je prends mon temps", "Plutôt discret(e)"] },
+  { id: "amitie", label: "Compte le plus", q: "Qu'est-ce qui compte le plus chez un ami ?", opts: ["L'humour", "L'écoute", "La fiabilité", "La curiosité"] },
+  { id: "situation", label: "Situation", q: "Votre situation ?", opts: ["Retraité(e)", "En activité", "À temps partiel"] },
+  { id: "animaux", label: "Animaux", q: "Les animaux ?", opts: ["J'en ai un", "J'adore", "Plutôt pas fan", "Allergique"] },
+  { id: "famille", label: "Famille", q: "Votre entourage familial ?", opts: ["Très présent (petits-enfants…)", "Un peu présent", "Peu disponible"] },
+  { id: "repas", label: "Repas", q: "Au restaurant, vous mangez…", opts: ["De tout", "Végétarien", "Régime particulier"] },
+  { id: "tabac", label: "Tabac", q: "Le tabac ?", pub: true, opts: ["Non-fumeur", "Fume occasionnellement", "Fume régulièrement"], short: { "Non-fumeur": "Non-fumeur", "Fume occasionnellement": "Fume parfois", "Fume régulièrement": "Fumeur" } },
+  { id: "alcool", label: "Alcool", q: "L'alcool ?", pub: true, opts: ["Jamais", "Occasionnellement", "Volontiers"], short: { "Jamais": "Sans alcool", "Occasionnellement": "Alcool occasionnel", "Volontiers": "Boit volontiers" } },
+  { id: "voyages", label: "Voyages", q: "Voyages ?", opts: ["Pas vraiment", "Quelques escapades", "Plusieurs voyages par an"] }
+];
+(function () {
+  function rng(seed) { var h = 2166136261; for (var i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return function () { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return (h >>> 0) / 4294967296; }; }
+  window.BELORA_USERS.forEach(function (u) {
+    var r = rng(u.id + "belora"); u.rep = {};
+    window.BELORA_QUESTIONS.forEach(function (q) {
+      if (q.id === "famille" && r() < 0.2) return;
+      if (q.multi) { var n = 1 + Math.floor(r() * Math.min(3, q.opts.length)), pool = q.opts.slice(), pick = [];
+        while (pick.length < n) pick.push(pool.splice(Math.floor(r() * pool.length), 1)[0]); u.rep[q.id] = pick; }
+      else u.rep[q.id] = q.opts[Math.floor(r() * q.opts.length)];
+    });
+  });
+})();

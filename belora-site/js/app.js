@@ -169,6 +169,50 @@
   function dparts(iso) { var d = new Date(iso); return { wd: fmtWd.format(d).replace(".", ""), day: d.getDate(), mo: fmtMo.format(d).replace(".", ""), h: fmtHour.format(d).replace(":", "h") }; }
   function dbox(iso, big) { var p = dparts(iso); return '<div class="datebox' + (big ? " big" : "") + '"><span>' + p.wd + "</span><b>" + p.day + "</b><span>" + p.mo + "</span></div>"; }
 
+
+  /* ---------- Questionnaire (QCM) ---------- */
+  var QUESTIONS = BELORA_QUESTIONS, qState = null, lastCur = null;
+  function repOf(u) { return (u && u.rep) || {}; }
+  function filled(v) { return Array.isArray(v) ? v.length > 0 : !!v; }
+  function answeredCount(u) { var r = repOf(u); return QUESTIONS.filter(function (q) { return filled(r[q.id]); }).length; }
+  function compat(a, b) {
+    var ra = repOf(a), rb = repOf(b), sum = 0, n = 0, common = [];
+    QUESTIONS.forEach(function (q) {
+      var x = ra[q.id], y = rb[q.id]; if (!filled(x) || !filled(y)) return; n++;
+      if (q.multi) { var inter = x.filter(function (v) { return y.indexOf(v) > -1; }); sum += inter.length / (x.length + y.length - inter.length); common = common.concat(inter); }
+      else if (x === y) { sum += 1; common.push(x); }
+    });
+    return n >= 3 ? { pct: Math.round(sum / n * 100), common: common } : null;
+  }
+  function pubTags(u, withCompat) {
+    var r = repOf(u), t = [];
+    QUESTIONS.forEach(function (q) { if (q.pub && filled(r[q.id])) t.push('<span class="tag pub">' + esc(q.short ? q.short[r[q.id]] || r[q.id] : r[q.id]) + "</span>"); });
+    var c = withCompat ? compat(st().me, u) : null;
+    if (c) t.push('<span class="tag ok">' + c.pct + " % compatible</span>");
+    return t.length ? '<span class="ptags">' + t.join("") + "</span>" : "";
+  }
+  function answersList(u, title) {
+    var r = repOf(u), rows = QUESTIONS.filter(function (q) { return filled(r[q.id]); }).map(function (q) {
+      var v = r[q.id]; return "<li><span>" + esc(q.label) + "</span><b>" + esc(Array.isArray(v) ? v.join(", ") : v) + "</b></li>";
+    }).join("");
+    return rows ? '<h3 class="qa-title">' + esc(title) + '</h3><ul class="qa">' + rows + "</ul>" : "";
+  }
+  function memberAnswers(u) {
+    var c = compat(st().me, u), h = "";
+    if (c) h += '<p class="compat"><b>' + c.pct + " % compatible</b>" + (c.common.length ? '<br><span class="small muted">Points communs : ' + c.common.map(esc).join(" · ") + "</span>" : "") + "</p>";
+    return h + answersList(u, "À propos de " + u.prenom);
+  }
+  function startQuestions(signup) { qState = { i: 0, ans: JSON.parse(JSON.stringify(st().me.rep || {})), signup: !!signup }; go("questions"); }
+  function showTips(prenom) {
+    openModal('<h2>Bienvenue sur Belora, ' + esc(prenom) + ' !</h2><p>Trois conseils pour des rencontres sereines :</p><ul class="small"><li>Rendez-vous toujours dans un lieu public.</li><li>Ne donnez jamais d\'argent, même à quelqu\'un de sympathique.</li><li>Un doute ? Utilisez le bouton « Signaler ».</li></ul><button class="btn primary block" data-action="close">J\'ai compris</button>');
+  }
+  function finishQuestions() {
+    var signup = qState && qState.signup;
+    if (qState) { st().me.rep = qState.ans; persist(); }
+    qState = null;
+    if (signup) { go("activites"); showTips(st().me.prenom); } else { toast("Réponses enregistrées."); go("profil"); }
+  }
+
   /* ---------- Vues ---------- */
   var V = {};
 
@@ -308,7 +352,7 @@
       var u = userById(pid), me = pid === "me";
       return '<a class="person" href="#/membre/' + pid + '">' + avatar(u, { blur: !acc && !me }) +
         '<span class="meta"><b>' + esc(u.prenom) + (me ? " (vous)" : "") + " " + butTag(u) + "</b>" +
-        (me || acc ? '<span class="small muted">' + esc(ageTxt(u)) + (isCouple(u) ? (weight(pid, a) === 2 ? " · à deux" : " · un seul des deux") : "") + " · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
+        (me || acc ? '<span class="small muted">' + esc(ageTxt(u)) + (isCouple(u) ? (weight(pid, a) === 2 ? " · à deux" : " · un seul des deux") : "") + " · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + pubTags(u, !me && acc) + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
     }).join("") : "<p>Personne pour l'instant. Soyez le premier ou la première à vous inscrire !</p>";
     var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets · 7 jours gratuits</a>' : "";
     var fact = function (i, t, sub) { return "<li>" + ic(i) + "<span><b>" + t + "</b>" + (sub ? "<small>" + sub + "</small>" : "") + "</span></li>"; };
@@ -325,20 +369,35 @@
       '<div class="actionbar"><div class="ab-info"><b>' + priceLabel(a) + "</b><small>" + esc(dparts(a.date).wd) + " " + dparts(a.date).day + " " + esc(dparts(a.date).mo) + " · " + dparts(a.date).h + "</small></div>" + btn + "</div>";
   };
 
+  V.questions = function () {
+    if (!qState) qState = { i: 0, ans: JSON.parse(JSON.stringify(st().me.rep || {})), signup: false };
+    var Q = QUESTIONS, i = qState.i, q = Q[i], cur = qState.ans[q.id], last = i === Q.length - 1;
+    var isOn = function (o) { return q.multi ? (cur || []).indexOf(o) > -1 : cur === o; };
+    return '<div class="qhead"><span>Question ' + (i + 1) + " sur " + Q.length + '</span><a href="#" data-action="q-quit">' + (qState.signup ? "Terminer plus tard" : "Enregistrer et quitter") + "</a></div>" +
+      '<div class="qbar" role="progressbar" aria-valuemin="0" aria-valuemax="' + Q.length + '" aria-valuenow="' + (i + 1) + '"><i style="width:' + Math.round((i + 1) / Q.length * 100) + '%"></i></div>' +
+      '<h1 class="qtitle">' + esc(q.q) + "</h1>" + (q.multi ? '<p class="muted small">Plusieurs réponses possibles.</p>' : "") +
+      (q.pub ? '<p class="small muted">👥 Cette réponse est visible par tous les membres.</p>' : "") +
+      '<div class="qopts">' + q.opts.map(function (o) {
+        return '<button type="button" class="qopt' + (isOn(o) ? " on" : "") + '" data-action="q-pick" data-v="' + esc(o) + '" aria-pressed="' + isOn(o) + '">' + (isOn(o) ? "✔" : "") + "<span>" + esc(o) + "</span></button>";
+      }).join("") + "</div>" +
+      '<div class="qnav">' + (i > 0 ? '<button type="button" class="btn ghost" data-action="q-prev">Précédent</button>' : "<span></span>") + '<button type="button" class="btn primary" data-action="q-next">' + (last ? "Terminer" : "Suivant") + "</button></div>" +
+      '<p class="center"><a href="#" data-action="q-next">Passer cette question</a></p>';
+  };
+
   V.membre = function (id) {
     var u = userById(id); if (!u) { go("activites"); return ""; }
     if (id === "me") { go("profil"); return ""; }
     if (u.suspended || st().blocked.indexOf(id) > -1) return '<a class="back" href="#/activites">← Retour</a><div class="card"><p>Ce profil n\'est plus disponible.</p></div>';
     var acc = hasAccess();
     if (!acc) return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true, blur: true }) +
-      "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + '</h1><p>🔒 La photo, l\'âge et la présentation sont réservés aux abonnés.</p>' +
+      "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + '</h1><p>' + pubTags(u) + '</p><p>🔒 La photo, l\'âge, la présentation, la compatibilité et les autres réponses sont réservés aux abonnés.</p>' +
       '<a class="btn primary block" href="#/abonnement">Voir les profils – 7 jours gratuits</a></section>';
     var common = st().activities.filter(function (a) { return a.inscrits.indexOf(id) > -1 && isJoined(a.id); });
     return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true }) +
       "<h1 style=\"margin-top:10px\">" + esc(nameAge(u)) + "</h1><p>📍 " + esc(u.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
       '<div class="chips" style="justify-content:center">' + u.interets.map(function (i) { return '<span class="tag">' + esc(i) + "</span>"; }).join("") + "</div>" +
       '<p class="small" style="margin:10px 0 0"><b>Cherche :</b> ' + esc(butLabel(u)) + (!isCouple(u) && u.but !== "amitie" && u.cherche ? " · souhaite rencontrer " + esc(u.cherche) : "") + "</p>" +
-      '<p style="margin-top:8px">' + esc(u.bio) + "</p>" +
+      '<p style="margin-top:8px">' + esc(u.bio) + "</p>" + memberAnswers(u) +
       (common.length ? '<p class="small muted">Vous participez aussi à : ' + common.map(function (a) { return esc(a.titre); }).join(", ") + "</p>" : "") +
       '<a class="btn primary block" href="#/messages/' + id + '">Écrire à ' + esc(u.prenom) + "</a>" +
       '<div class="row" style="justify-content:center;margin-top:10px"><button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button><button class="btn small ghost" data-action="block" data-id="' + id + '">Bloquer</button></div></section>';
@@ -414,6 +473,9 @@
     var shift = st().shiftDays ? " (démo : +" + st().shiftDays + " j)" : "";
     return '<section class="card center">' + avatar(me, { big: true }) + '<h1 style="margin-top:10px">' + esc(nameAge(me)) + "</h1><p>📍 " + esc(me.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
       "<p>" + esc(me.bio || "") + '</p><a class="btn ghost block" href="#/profil/modifier">Modifier mon profil</a></section>' +
+      (function () { var n = answeredCount(me), pc = Math.round(n / QUESTIONS.length * 100);
+        return '<section class="card"><h2>Mon profil complété à ' + pc + ' %</h2><div class="qbar"><i style="width:' + pc + '%"></i></div><p class="small muted">' + n + " réponse" + (n > 1 ? "s" : "") + " sur " + QUESTIONS.length + ". Plus votre profil est complet, plus on vous propose des personnes qui vous ressemblent.</p>" + answersList(me, "Mes réponses") +
+          '<button class="btn primary block" style="margin-top:12px" data-action="q-start">' + (n ? "Modifier mes réponses" : "Répondre aux questions") + "</button></section>"; })() +
       '<section class="card"><h2>Mon abonnement</h2><p>' + esc(label) + '</p><a class="btn primary block" href="#/abonnement">Gérer mon abonnement</a></section>' +
       '<section class="card"><h2>Votre avis sur le site</h2><p class="small muted">Qu\'est-ce qui vous a plu ? Qu\'est-ce qui vous a gêné ou paru compliqué ?</p><label for="fb" class="sr">Votre avis</label><textarea id="fb" placeholder="Écrivez ici…"></textarea><button class="btn navy block" style="margin-top:10px" data-action="copy-fb">Copier mon avis</button><p class="small muted">Collez-le ensuite dans un message à la personne qui vous a envoyé ce lien.</p></section>' +
       '<section class="card"><h2>Confort de lecture</h2><button class="btn ghost block" data-action="toggle-size">' + (st().bigText ? "Texte normal" : "Agrandir le texte") + "</button></section>" +
@@ -516,7 +578,7 @@
     var tab = r === "activite" || r === "membre" ? "activites" : r;
     [].forEach.call(document.querySelectorAll("#tabbar a"), function (a) { a.classList.toggle("on", a.dataset.tab === tab); });
     refreshDot();
-    window.scrollTo(0, 0);
+    if (lastCur !== current) { lastCur = current; window.scrollTo(0, 0); }
     if (key === "conv") { var m = $("#msg"); if (m) m.focus(); var t = $("#thread"); if (t) t.lastElementChild && t.lastElementChild.scrollIntoView({ block: "end" }); }
   }
   window.addEventListener("hashchange", function () { var h = location.hash.replace(/^#\/?/, ""); if (h && h !== current) { current = h; render(); } });
@@ -587,6 +649,16 @@
 
   var actions = {
     "back": function () { back(); },
+    "q-start": function () { startQuestions(false); },
+    "q-pick": function (el) {
+      var q = QUESTIONS[qState.i], v = el.dataset.v, a = qState.ans;
+      if (q.multi) { var arr = a[q.id] || [], k = arr.indexOf(v); if (k > -1) arr.splice(k, 1); else arr.push(v); a[q.id] = arr; if (!arr.length) delete a[q.id]; }
+      else if (a[q.id] === v) delete a[q.id]; else a[q.id] = v;
+      render();
+    },
+    "q-next": function (el, ev) { ev.preventDefault(); if (qState.i < QUESTIONS.length - 1) { qState.i++; render(); window.scrollTo(0, 0); } else finishQuestions(); },
+    "q-prev": function () { qState.i = Math.max(0, qState.i - 1); render(); window.scrollTo(0, 0); },
+    "q-quit": function (el, ev) { ev.preventDefault(); finishQuestions(); },
     "show-msg": function (el) { var th = st().conversations[el.dataset.id] || [], m = th[+el.dataset.i]; if (m) { m.shown = true; persist(); render(); } },
     "send-anyway": function () { var pm = pendingMsg; pendingMsg = null; closeModal(); if (pm) pushMine(pm.id, pm.txt); },
     "open-act": function (el) { go("activite/" + el.dataset.id); },
@@ -719,8 +791,7 @@
     var colors = ["#1F3A5F", "#D9503A", "#4F7F6A", "#6B4C9A", "#B5651D"];
     st().me = Object.assign({ id: "me", phone: st().pending.phone, color: colors[prenom.length % colors.length], photo: tmpPhoto || "" }, data);
     st().filters.ville = data.ville; st().filters.amb = but === "amitie" ? "amis" : but === "couple" ? "rencontres" : ""; st().pending = null; persist(); tmpPhoto = null;
-    go("activites");
-    openModal('<h2>Bienvenue sur Belora, ' + esc(prenom) + ' !</h2><p>Trois conseils pour des rencontres sereines :</p><ul class="small"><li>Rendez-vous toujours dans un lieu public.</li><li>Ne donnez jamais d\'argent, même à quelqu\'un de sympathique.</li><li>Un doute ? Utilisez le bouton « Signaler ».</li></ul><button class="btn primary block" data-action="close">J\'ai compris</button>');
+    startQuestions(true);
   }
   document.addEventListener("submit", function (ev) {
     var f = ev.target.closest("form[data-form]"); if (!f) return;
