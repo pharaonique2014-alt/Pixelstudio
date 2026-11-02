@@ -1,0 +1,30 @@
+{
+  "id": "./",
+  "name": "Convivia – Sorties, amitiés & rencontres 50+",
+  "short_name": "Convivia",
+  "description": "Des sorties près de chez vous, des amitiés et des rencontres bienveillantes pour les 50 ans et plus.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1F3A5F",
+  "theme_color": "#1F3A5F",
+  "categories": ["social", "lifestyle"],
+  "icons": [
+    { "src": "pwa/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "pwa/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "pwa/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "pwa/screen-1.png", "sizes": "540x1170", "type": "image/png", "form_factor": "narrow", "label": "Des sorties près de chez vous" },
+    { "src": "pwa/screen-2.png", "sizes": "540x1170", "type": "image/png", "form_factor": "narrow", "label": "Amitié ou amour : deux listes séparées" },
+    { "src": "pwa/screen-3.png", "sizes": "540x1170", "type": "image/png", "form_factor": "narrow", "label": "Une sortie en un coup d'œil" }
+  ],
+  "shortcuts": [
+    { "name": "Activités", "short_name": "Activités", "url": "./#/activites", "icons": [{ "src": "pwa/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Découvrir des profils", "short_name": "Découvrir", "url": "./#/decouvrir", "icons": [{ "src": "pwa/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Mes messages", "short_name": "Messages", "url": "./#/messages", "icons": [{ "src": "pwa/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

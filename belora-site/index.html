@@ -2,18 +2,26 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Convivia – Sorties, amitiés & rencontres 50+</title>
   <meta name="description" content="Convivia : des sorties près de chez vous, des amitiés et des rencontres bienveillantes pour les 50 ans et plus.">
-  <meta name="theme-color" content="#F2705A">
-  <link rel="icon" type="image/png" href="assets/favicon-32.png">
-  <link rel="apple-touch-icon" href="assets/icone-app-192.png">
+  <meta name="theme-color" content="#1F3A5F">
+  <meta name="color-scheme" content="light dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Convivia">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="pwa/favicon-32.png">
+  <link rel="apple-touch-icon" href="pwa/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div id="splash" aria-hidden="true"><img src="assets/convivia-logo-vertical-fond-sombre.svg" alt=""></div>
+  <div id="offline" role="status" hidden>Vous êtes hors connexion. L'application reste utilisable.</div>
   <div class="demo-banner" role="note">Site de démonstration – aucun SMS ni paiement réel n'est envoyé.</div>
   <header class="topbar" id="topbar">
     <a href="#/activites" class="brand" aria-label="Convivia, accueil">
@@ -27,16 +35,16 @@
 
   <nav class="tabbar" id="tabbar" aria-label="Navigation principale">
     <a href="#/activites" data-tab="activites">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v3M17 2v3M3 9h18M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/></svg>
       <span>Activités</span>
     </a>
     <a href="#/decouvrir" data-tab="decouvrir">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.500 8.500l-2 5-5 2 2-5z"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><path d="M16 5a3.500 3.500 0 0 1 0 7M18 14.500c2.200.8 3.500 2.700 3.500 5.500"/></svg>
       <span>Découvrir</span>
     </a>
     <a href="#/sorties" data-tab="sorties">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.800-8 11-8 11z"/></svg>
-      <span>Mes sorties</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M9 15.500l2 2 4-4"/></svg>
+      <span>Agenda</span>
     </a>
     <a href="#/messages" data-tab="messages">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.500 7.200L3 21l1.800-5.500A8 8 0 1 1 21 12z"/></svg>
@@ -44,7 +52,7 @@
     </a>
     <a href="#/profil" data-tab="profil">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.400 3.600-7 8-7s8 2.600 8 7"/></svg>
-      <span>Mon profil</span>
+      <span>Profil</span>
     </a>
   </nav>
 

@@ -272,3 +272,50 @@ h1{font-size:1.65rem;font-weight:900;letter-spacing:-.01em;text-wrap:balance}
 
 .likecount{margin:8px 0;padding:10px 14px;border-radius:16px;background:color-mix(in srgb,var(--gold) 25%,var(--card));color:var(--head);font-size:.88rem;font-weight:600}
 .likecount.zero{background:#FDECEA;color:var(--warn);font-weight:800}
+
+/* ===== Application installable ===== */
+#splash{position:fixed;inset:0;z-index:100;background:#1F3A5F;display:grid;place-items:center;pointer-events:none;transition:opacity .4s ease}
+#splash img{width:min(72vw,340px);height:auto;animation:splashIn .7s cubic-bezier(.2,.8,.2,1) both}
+#splash.hide{opacity:0}
+@keyframes splashIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+#offline{position:sticky;top:0;z-index:60;background:#B3261E;color:#fff;text-align:center;font-weight:700;font-size:.8rem;padding:6px 12px calc(6px)}
+#offline[hidden]{display:none}
+#app.enter{animation:enter .28s cubic-bezier(.2,.7,.2,1)}
+@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.demo-banner{padding-top:calc(5px + env(safe-area-inset-top,0px))}
+.installbar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:10px 8px 10px 12px;margin:8px 0 12px}
+.installbar img{border-radius:12px;flex:none}
+.installbar .ib-t{flex:1;min-width:0;line-height:1.25}
+.installbar .ib-t b{display:block;color:var(--head);font-size:.95rem}
+.installbar .ib-t span{display:block;font-size:.75rem;color:var(--muted)}
+.installbar .btn{flex:none;min-height:44px;padding:8px 14px}
+.ib-x{flex:none;width:40px;height:44px;border:0;background:transparent;color:var(--muted);font-size:1.5rem;line-height:1;cursor:pointer;border-radius:12px}
+.steps{list-style:none;margin:14px 0 18px;padding:0;display:grid;gap:14px}
+.steps li{display:flex;gap:12px;align-items:flex-start}
+.steps .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--coral);color:#fff;font-weight:800;display:grid;place-items:center}
+.steps .ic{width:1.2em;height:1.2em;color:var(--coral-dark);vertical-align:-.25em}
+.faq{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:0 0 10px;overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;padding:16px 46px 16px 16px;font-weight:800;color:var(--head);position:relative;min-height:56px;display:flex;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:1.5rem;color:var(--coral-dark);font-weight:700}
+.faq[open] summary::after{content:"–"}
+.faq>div{padding:0 16px 14px;font-size:.92rem}
+.faq>div p{margin:.3rem 0 .6rem}
+.pcth{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.pct{color:var(--coral-dark);font-weight:900}
+.person .preview{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (display-mode: standalone){.footer-links a[href="#/admin"]{display:none}}
+
+/* ===== Affinage mobile ===== */
+.filters{position:static;padding:6px 0 4px;gap:8px}
+.selpill.narrow{flex:0 0 6.7rem}
+.pagehead h1{font-size:1.5rem}
+.ctop{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ctop .amb{margin-left:0}
+.ctop .price-pill{margin-left:auto}
+.act h3{margin:6px 0 6px}
+.tabbar a{font-size:.64rem;gap:3px}
+.tabbar a span{white-space:nowrap}
+.selpill.narrow{flex:0 0 7.9rem}
+.ctop .amb{background:none!important;padding:0;font-size:.68rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.ctop .amb::before{content:"· ";font-weight:900}

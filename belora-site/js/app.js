@@ -301,6 +301,39 @@
     }).join("") + "</div>";
   }
 
+
+  /* ---------- Installation de l'application (PWA) ---------- */
+  var deferredInstall = null;
+  function inIframe() { try { return window.self !== window.top; } catch (e) { return true; } }
+  function isStandalone() {
+    try { return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true; } catch (e) { return false; }
+  }
+  function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1); }
+  function installable() { return !inIframe() && !isStandalone() && (!!deferredInstall || isIOS()); }
+  function installDismissed() { return !!st().installLater && Date.now() - st().installLater < 7 * 864e5; }
+  function installBar() {
+    if (!installable() || installDismissed()) return "";
+    return '<div class="installbar"><img src="assets/convivia-icone-arrondie.svg" alt="" width="44" height="44"><div class="ib-t"><b>Installer Convivia</b><span>Plein écran, accès direct.</span></div>' +
+      '<button class="btn small primary" data-action="install">' + (deferredInstall ? "Installer" : "Comment faire ?") + '</button><button class="ib-x" data-action="install-later" aria-label="Plus tard">×</button></div>';
+  }
+  function installCard() {
+    if (!installable()) return "";
+    return '<section class="card"><h2>Installer l\'application</h2><p class="small muted">Ajoutez Convivia à votre écran d\'accueil : elle s\'ouvre en plein écran, comme une vraie application.</p>' +
+      '<button class="btn primary block" data-action="install">' + (deferredInstall ? "Installer Convivia" : "Voir comment faire") + "</button></section>";
+  }
+  function iosModal() {
+    openModal('<h2>Ajouter Convivia à l\'écran d\'accueil</h2><ol class="steps">' +
+      '<li><span class="n">1</span><div>Dans <b>Safari</b>, touchez le bouton <b>Partager</b> <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg> en bas de l\'écran.</div></li>' +
+      '<li><span class="n">2</span><div>Faites défiler et touchez <b>Sur l\'écran d\'accueil</b> <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg></div></li>' +
+      '<li><span class="n">3</span><div>Touchez <b>Ajouter</b> en haut à droite. Convivia apparaît avec son icône, comme une application.</div></li></ol>' +
+      '<button class="btn primary block" data-action="close">J\'ai compris</button>');
+  }
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault(); deferredInstall = e;
+    if (st().me && /^(activites|profil)$/.test((current || "").split("/")[0])) render();
+  });
+  window.addEventListener("appinstalled", function () { deferredInstall = null; toast("Convivia est installée !"); render(); });
+
   /* ---------- Vues ---------- */
   var V = {};
 
@@ -314,7 +347,7 @@
       '<ul class="pts">' + pts.map(function (x) { return '<li><span class="pi">' + ic(x[0]) + "</span><div><b>" + x[1] + "</b><span>" + x[2] + "</span></div></li>"; }).join("") + "</ul>" +
       '<div class="info small"><b>Vous testez Convivia ?</b> Aucun SMS ni paiement réel : le code de vérification est <b>123456</b>. Vos données restent sur votre téléphone. Essayez de vous inscrire, de rejoindre une sortie, d\'aimer des profils dans « Découvrir » et, pour discuter, de simuler un abonnement (aucun paiement réel). Dites-nous ce qui vous semble confus.</div>' +
       '<a class="btn primary block big" href="#/connexion">Commencer</a>' +
-      '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
+      '<p class="footer-links"><a href="#/aide">Aide</a><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
   };
 
   V.connexion = function () {
@@ -388,8 +421,8 @@
       why ? '<button class="btn block" disabled>' + why + '</button>' :
       '<button class="btn primary block" data-action="join" data-id="' + a.id + '">Je participe</button>';
     return '<article class="act" style="--cat:' + (CATC[a.cat] || "#1F3A5F") + '" data-action="open-act" data-id="' + a.id + '">' +
-      '<div class="act-main">' + dbox(a.date) + '<div class="act-body"><span class="cat">' + esc(a.cat) + "</span>" + ambTag(a) + "<h3>" + esc(a.titre) + "</h3>" +
-      '<p class="meta">' + ic("clock") + p.h + '<span class="sep"></span>' + ic("pin") + esc(a.ville) + (d ? " · " + d + " km" : "") + '</p></div><span class="price-pill">' + priceLabel(a) + "</span></div>" +
+      '<div class="act-main">' + dbox(a.date) + '<div class="act-body"><div class="ctop"><span class="cat">' + esc(a.cat) + "</span>" + ambTag(a) + '<span class="price-pill">' + priceLabel(a) + "</span></div><h3>" + esc(a.titre) + "</h3>" +
+      '<p class="meta">' + ic("clock") + p.h + '<span class="sep"></span>' + ic("pin") + esc(a.ville) + (d ? " · " + d + " km" : "") + "</p></div></div>" +
       '<div class="act-foot">' + stackHtml(a) + '<div class="seats"><span>' + (left === 0 ? "Complet" : left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "")) + '</span><i><b style="width:' + pct + '%"></b></i></div></div>' + btn + "</article>";
   }
   function filteredActs() {
@@ -420,7 +453,7 @@
     var ambs = [["", "Tout"], ["amis", "Entre amis"], ["rencontres", "Rencontres"]].map(function (o) {
       return '<button class="chip' + ((f.amb || "") === o[0] ? " on" : "") + '" data-action="filter-amb" data-v="' + o[0] + '">' + o[1] + "</button>";
     }).join("");
-    return '<header class="pagehead"><p class="eyebrow">Bonjour ' + esc(st().me.prenom) + "</p><h1>Sorties près de chez vous</h1></header>" + banner +
+    return '<header class="pagehead"><p class="eyebrow">Bonjour ' + esc(st().me.prenom) + "</p><h1>Sorties près de chez vous</h1></header>" + installBar() + banner +
       '<div class="filters"><div class="selrow"><label class="selpill">' + ic("pin") + '<span class="sr">Ma ville</span><select id="f-ville" data-filter="ville">' + cities + "</select></label>" +
       '<label class="selpill narrow">' + ic("route") + '<span class="sr">Distance</span><select id="f-rayon" data-filter="rayon">' + rayons + "</select></label></div>" +
       '<div class="searchbox">' + ic("search") + '<label for="f-q" class="sr">Rechercher</label><input id="f-q" data-filter="q" type="text" placeholder="Marche, danse, repas…" value="' + esc(f.q) + '"></div>' +
@@ -573,7 +606,7 @@
     if (!ids.length) return h + (fresh.length ? "" : '<div class="card center"><p><b>Aucune conversation pour l\'instant.</b></p><p class="muted">Likez des profils dans « Découvrir » : dès que c\'est réciproque, vous pouvez discuter.</p><a class="btn primary block" href="#/decouvrir">Découvrir des profils</a></div>');
     return h + '<div class="card">' + ids.map(function (id) {
       var u = userById(id), th = st().conversations[id], last = th[th.length - 1];
-      return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + " " + catTag(id) + (st().unread[id] ? ' <span class="tag">nouveau</span>' : "") + '</b><span class="small muted">' + esc(last.from === "them" && last.risk === 3 && !last.shown ? "⚠️ Message masqué (arnaque probable)" : last.text.slice(0, 60)) + "</span></span></a>";
+      return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + " " + catTag(id) + (st().unread[id] ? ' <span class="tag">nouveau</span>' : "") + '</b><span class="small muted preview">' + esc(last.from === "them" && last.risk === 3 && !last.shown ? "⚠️ Message masqué (arnaque probable)" : last.text) + "</span></span></a>";
     }).join("") + "</div>";
   };
   function whyTxt(m) { return m.why && m.why.length ? " (" + esc(m.why.join(", ")) + ")" : ""; }
@@ -614,11 +647,13 @@
     var shift = st().shiftDays ? " (démo : +" + st().shiftDays + " j)" : "";
     return '<section class="card center">' + avatar(me, { big: true }) + '<h1 style="margin-top:10px">' + esc(nameAge(me)) + "</h1><p>📍 " + esc(me.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
       "<p>" + esc(me.bio || "") + '</p><a class="btn ghost block" href="#/profil/modifier">Modifier mon profil</a></section>' +
+      installCard() +
       (function () { var n = answeredCount(me), pc = Math.round(n / QUESTIONS.length * 100);
-        return '<section class="card"><h2>Mon profil complété à ' + pc + ' %</h2><div class="qbar"><i style="width:' + pc + '%"></i></div><p class="small muted">' + n + " réponse" + (n > 1 ? "s" : "") + " sur " + QUESTIONS.length + ". Plus votre profil est complet, plus on vous propose des personnes qui vous ressemblent.</p>" + answersList(me, "Mes réponses") +
+        return '<section class="card"><h2 class="pcth"><span>Profil complété</span><span class="pct">' + pc + ' %</span></h2><div class="qbar"><i style="width:' + pc + '%"></i></div><p class="small muted">' + n + " réponse" + (n > 1 ? "s" : "") + " sur " + QUESTIONS.length + ". Plus votre profil est complet, plus on vous propose des personnes qui vous ressemblent.</p>" + answersList(me, "Mes réponses") +
           '<button class="btn primary block" style="margin-top:12px" data-action="q-start">' + (n ? "Modifier mes réponses" : "Répondre aux questions") + "</button></section>"; })() +
       '<section class="card"><h2>Mon abonnement</h2><p>' + esc(label) + '</p><a class="btn primary block" href="#/abonnement">Gérer mon abonnement</a></section>' +
       '<section class="card"><h2>Votre avis sur le site</h2><p class="small muted">Qu\'est-ce qui vous a plu ? Qu\'est-ce qui vous a gêné ou paru compliqué ?</p><label for="fb" class="sr">Votre avis</label><textarea id="fb" placeholder="Écrivez ici…"></textarea><button class="btn navy block" style="margin-top:10px" data-action="copy-fb">Copier mon avis</button><p class="small muted">Collez-le ensuite dans un message à la personne qui vous a envoyé ce lien.</p></section>' +
+      '<section class="card"><h2>Besoin d\'aide ?</h2><p class="small muted">Questions fréquentes, sécurité, abonnement.</p><a class="btn ghost block" href="#/aide">Ouvrir l\'aide</a></section>' +
       '<section class="card"><h2>Confort de lecture</h2><button class="btn ghost block" data-action="toggle-size">' + (st().bigText ? "Texte normal" : "Agrandir le texte") + "</button></section>" +
       '<section class="card"><h2>Outils de démonstration</h2><p class="small muted">Pour tester les sorties passées et la limite de J\'aime du jour' + esc(shift) + ".</p>" +
       '<div class="row"><button class="btn small ghost" data-action="shift" data-d="1">Avancer d\'1 jour</button><button class="btn small ghost" data-action="shift" data-d="7">Avancer de 7 jours</button></div>' +
@@ -644,6 +679,20 @@
       '<h2>Avec l\'abonnement</h2><p class="small">✔ Voir les profils complets (photo, âge, présentation)<br>✔ Messages illimités<br>✔ J\'aime illimités et voir qui vous a aimé(e)<br>✔ Alertes anti-arnaque sur vos conversations<br>✔ Assistance par téléphone</p></section>' +
       '<section class="card"><h2>Choisir ma formule</h2><div class="plans">' + plans + "</div>" + cta +
       '<p class="small muted" style="margin-top:12px">Résiliable en un clic, à tout moment. Droit de rétractation de 14 jours. Paiement sécurisé (dans la vraie version : carte ou Bancontact via Stripe).</p></section>';
+  };
+
+  V.aide = function () {
+    var q = function (t, body) { return '<details class="faq"><summary>' + t + "</summary><div>" + body + "</div></details>"; };
+    return '<a class="back" href="#" data-action="back">' + ic("arrowL") + " Retour</a><h1>Aide</h1><p class=\"muted\">Les réponses aux questions les plus fréquentes.</p>" +
+      q("Comment ça marche ?", "<p>Choisissez une sortie près de chez vous et inscrivez-vous. Dans <b>Découvrir</b>, aimez des profils : si l'autre personne vous aime aussi, vous pouvez discuter.</p>") +
+      q("Amitié ou amour : quelle différence ?", "<p>Ce sont deux listes séparées. Vos « J'aime » ne se mélangent jamais, et chaque discussion garde sa catégorie. Vous choisissez ce que vous cherchez dans votre profil, et vous pouvez le changer à tout moment.</p>") +
+      q("Qu'est-ce qui est gratuit ?", "<p>Gratuit : parcourir les sorties et les profils, vous inscrire aux sorties, envoyer 4 J'aime par jour et écrire 2 messages par discussion.</p><p>Avec l'abonnement (19,99 € par mois, sans engagement) : messages illimités, profils complets, J'aime illimités et la liste de ceux qui vous ont aimé(e).</p>") +
+      q("Comment me protéger des arnaques ?", "<p>Ne donnez jamais d'argent, de coordonnées bancaires ni de code reçu par SMS, même à quelqu'un de sympathique. Retrouvez-vous toujours dans un lieu public. Les messages sont analysés automatiquement, et le bouton <b>Signaler</b> est toujours disponible.</p>") +
+      q("Comment résilier ou supprimer mon compte ?", "<p>Abonnement : <b>Mon profil → Gérer mon abonnement → Résilier</b>. Compte : <b>Mon profil → Supprimer mon compte</b>. Vos données sont alors effacées.</p>") +
+      q("Comment installer l'application ?", "<p><b>Android</b> : touchez « Installer » quand Convivia le propose, ou le menu ⋮ du navigateur puis « Installer l'application ».</p><p><b>iPhone</b> : dans Safari, touchez Partager puis « Sur l'écran d'accueil ».</p>") +
+      q("Le texte est trop petit", "<p>Touchez le bouton <b>A</b> en haut à droite de l'écran pour agrandir tout le texte.</p>") +
+      '<section class="card" style="margin-top:14px"><h3>Une autre question ?</h3><p class="small muted">L\'assistance par téléphone et par e-mail sera disponible au lancement.</p></section>' +
+      '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a></p>';
   };
 
   V.cgu = function () {
@@ -696,7 +745,7 @@
   };
 
   /* ---------- Routage ---------- */
-  var OPEN = ["bienvenue", "connexion", "code", "cgu", "confidentialite", "admin", "creer-profil"];
+  var OPEN = ["bienvenue", "connexion", "code", "cgu", "confidentialite", "admin", "creer-profil", "aide"];
   function refreshDot() {
     var d = $("#msgdot"); if (d) d.hidden = !Object.keys(st().unread).length;
   }
@@ -713,6 +762,7 @@
     var navOff = OPEN.indexOf(r) > -1 && !st().me || r === "admin";
     document.body.classList.toggle("noNav", navOff);
     $("#app").innerHTML = emo(html);
+    var ap = $("#app"); ap.classList.remove("enter"); void ap.offsetWidth; ap.classList.add("enter");
     var tab = r === "activite" ? "activites" : r === "membre" ? "decouvrir" : r;
     [].forEach.call(document.querySelectorAll("#tabbar a"), function (a) { a.classList.toggle("on", a.dataset.tab === tab); });
     refreshDot();
@@ -778,6 +828,14 @@
 
   var actions = {
     "back": function () { back(); },
+    "install": function () {
+      if (deferredInstall) {
+        var ev = deferredInstall; ev.prompt();
+        if (ev.userChoice && ev.userChoice.then) ev.userChoice.then(function (c) { if (c && c.outcome === "accepted") toast("Installation en cours…"); deferredInstall = null; render(); });
+        else { deferredInstall = null; render(); }
+      } else iosModal();
+    },
+    "install-later": function () { st().installLater = Date.now(); persist(); render(); },
     "disc-cat": function (el) { st().disc.cat = el.dataset.v; st().disc.view = "decouvrir"; persist(); render(); },
     "disc-view": function (el) { st().disc.view = el.dataset.v; persist(); render(); },
     "like": function (el, ev) { ev.stopPropagation(); doLike(el.dataset.id, el.dataset.cat); },
@@ -966,4 +1024,24 @@
   $("#textsize").addEventListener("click", function () { st().bigText = !st().bigText; applySize(); persist(); });
   applySize();
   render();
+
+  /* écran de lancement (une fois par session) */
+  (function () {
+    var sp = $("#splash"); if (!sp) return;
+    var seen = false; try { seen = sessionStorage.getItem("convivia_splash") === "1"; sessionStorage.setItem("convivia_splash", "1"); } catch (e) { /* ignoré */ }
+    if (seen) { sp.remove(); return; }
+    setTimeout(function () { sp.classList.add("hide"); setTimeout(function () { sp.remove(); }, 450); }, 750);
+  })();
+
+  /* hors connexion */
+  (function () {
+    var bar = $("#offline"); if (!bar) return;
+    var upd = function () { bar.hidden = navigator.onLine !== false; };
+    window.addEventListener("online", upd); window.addEventListener("offline", upd); upd();
+  })();
+
+  /* service worker : l'appli s'ouvre aussi sans réseau */
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !inIframe()) {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () { /* ignoré */ }); });
+  }
 })();
