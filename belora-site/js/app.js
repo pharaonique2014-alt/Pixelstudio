@@ -50,7 +50,7 @@
     clearTimeout(toast._t); toast._t = setTimeout(function () { t.hidden = true; }, 3600);
   }
   function openModal(html) {
-    var m = $("#modal"); $("#modalbox").innerHTML = html; m.hidden = false;
+    var m = $("#modal"); $("#modalbox").innerHTML = emo(html); m.hidden = false;
     var f = $("#modalbox").querySelector("button,input,select,textarea,a"); if (f) f.focus();
   }
   function closeModal() { $("#modal").hidden = true; $("#modalbox").innerHTML = ""; }
@@ -95,7 +95,7 @@
   function avatar(u, o) {
     o = o || {};
     var inner = u.photo ? '<img alt="" src="' + esc(u.photo) + '">' : esc((u.prenom || "?").charAt(0).toUpperCase());
-    return '<span class="avatar' + (o.blur ? " blur" : "") + (o.big ? " big" : "") + '" style="background:' + esc(u.color || "#1F3A5F") + '" aria-hidden="true">' + inner + "</span>";
+    return '<span class="avatar' + (o.blur ? " blur" : "") + (o.big ? " big" : "") + '" style="' + (o.s ? "--s:" + o.s + ";" : "") + 'background:' + esc(u.color || "#1F3A5F") + '" aria-hidden="true">' + inner + "</span>";
   }
   function addReport(type, id, reason, text) {
     st().reports.push({ id: "r" + Date.now(), type: type, target: id, reason: reason, text: text || "", at: S.now() });
@@ -106,19 +106,44 @@
     persist();
   }
 
+
+  /* ---------- Icônes et aides d'affichage ---------- */
+  var ICONS = {
+    cal: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21z"/><circle cx="12" cy="9.500" r="2.500"/>',
+    euro: '<path d="M18 7a7 7 0 1 0 0 10M4 10h9M4 14h9"/>',
+    users: '<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><path d="M16 5a3.500 3.500 0 0 1 0 7M18 14.500c2.200.8 3.500 2.700 3.500 5.500"/>',
+    lock: '<rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+    shield: '<path d="M12 3l8 3v6c0 4.500-3.200 8-8 9-4.800-1-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    check: '<path d="M5 12.500l4.500 4.500L19 7.500"/>',
+    gift: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3 0-4.500-4-2-4.500 2-.3 2 2.500 2 4.500zM12 9c3 0 4.500-4 2-4.500-2-.3-2 2.500-2 4.500z"/>',
+    route: '<circle cx="6" cy="18" r="2.500"/><circle cx="18" cy="6" r="2.500"/><path d="M8.500 18H15a3.500 3.500 0 0 0 0-7H9a3.500 3.500 0 0 1 0-7h6"/>',
+    alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.500v.01"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+    arrow: '<path d="M9 6l6 6-6 6"/>',
+    arrowL: '<path d="M15 6l-6 6 6 6"/>'
+  };
+  function ic(n, c) { return '<svg class="ic' + (c ? " " + c : "") + '" viewBox="0 0 24 24" aria-hidden="true">' + ICONS[n] + "</svg>"; }
+  var EMO = { "🔒": "lock", "📍": "pin", "🗓": "cal", "💶": "euro", "👥": "users", "🛡": "shield", "🎁": "gift", "⚠": "alert", "🚶": "route", "🤝": "users", "✔": "check" };
+  function emo(h) { return h.replace(/(🔒|📍|🗓|💶|👥|🛡|🎁|⚠|🚶|🤝|✔|🎉|👋|😀|🙂|🙁|👤|📅)️?/g, function (m, k) { return EMO[k] ? ic(EMO[k]) : ""; }); }
+  var CATC = { Marche: "#2E7D5B", Repas: "#D9503A", Culture: "#2B4C7A", Danse: "#B8407A", Jeux: "#A86B0A", Voyage: "#1F8A9A" };
+  var fmtWd = new Intl.DateTimeFormat("fr-BE", { weekday: "short" }), fmtMo = new Intl.DateTimeFormat("fr-BE", { month: "short" });
+  function dparts(iso) { var d = new Date(iso); return { wd: fmtWd.format(d).replace(".", ""), day: d.getDate(), mo: fmtMo.format(d).replace(".", ""), h: fmtHour.format(d).replace(":", "h") }; }
+  function dbox(iso, big) { var p = dparts(iso); return '<div class="datebox' + (big ? " big" : "") + '"><span>' + p.wd + "</span><b>" + p.day + "</b><span>" + p.mo + "</span></div>"; }
+
   /* ---------- Vues ---------- */
   var V = {};
 
   V.bienvenue = function () {
-    return '<section class="hero"><img src="assets/belora-icone-arrondie.svg" alt="Belora"><h1>Belora</h1>' +
-      '<p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
-      '<ul class="points">' +
-      '<li><span class="ico">🚶</span><div><b>Des sorties près de chez vous</b>Marches, repas, thés dansants, visites… choisissez ce qui vous plaît.</div></li>' +
-      '<li><span class="ico">🤝</span><div><b>On se retrouve en petit groupe</b>Dans des lieux publics, sans pression. Vous voyez qui participe.</div></li>' +
-      '<li><span class="ico">🛡️</span><div><b>Votre sécurité d\'abord</b>Numéro de GSM vérifié, alertes contre les arnaques, signalement en un clic.</div></li>' +
-      '<li><span class="ico">🎁</span><div><b>7 jours gratuits</b>Puis 19,99 € par mois, sans engagement, résiliable en un clic.</div></li>' +
-      '</ul>' +
-      '<a class="btn primary block" href="#/connexion">Commencer</a>' +
+    var pts = [["route", "Des sorties près de chez vous", "Marches, repas, thés dansants, visites : choisissez ce qui vous plaît."],
+      ["users", "En petit groupe, en lieu public", "Vous voyez qui participe avant de vous inscrire."],
+      ["shield", "Votre sécurité d'abord", "Numéro de GSM vérifié, alertes contre les arnaques, signalement en un geste."],
+      ["gift", "7 jours gratuits", "Puis 19,99 € par mois, sans engagement, résiliable en un clic."]];
+    return '<section class="wpanel"><svg class="wbg" viewBox="0 0 300 260" aria-hidden="true"><path transform="translate(90,120) scale(2.2)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".13"/><path transform="translate(205,150) scale(2.6)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".10"/></svg>' +
+      '<img src="assets/belora-icone-arrondie.svg" alt="" width="84" height="84"><h1>Belora</h1><p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
+      '<ul class="pts">' + pts.map(function (x) { return '<li><span class="pi">' + ic(x[0]) + "</span><div><b>" + x[1] + "</b><span>" + x[2] + "</span></div></li>"; }).join("") + "</ul>" +
+      '<a class="btn primary block big" href="#/connexion">Commencer</a>' +
       '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
   };
 
@@ -170,16 +195,21 @@
   };
   V["profil-modifier"] = function () { return profileForm(true); };
 
+  function stackHtml(a) {
+    var ppl = participants(a), acc = hasAccess();
+    if (!ppl.length) return '<span class="small muted">Soyez le premier</span>';
+    return '<span class="stack">' + ppl.slice(0, 4).map(function (id) { return avatar(userById(id), { blur: !acc && id !== "me", s: "32px" }); }).join("") +
+      (ppl.length > 4 ? '<span class="more">+' + (ppl.length - 4) + "</span>" : "") + "</span>";
+  }
   function actCard(a, d) {
-    var joined = isJoined(a.id), left = seatsLeft(a), n = participants(a).length;
-    var btn = joined ? '<button class="btn ghost block" data-action="open-act" data-id="' + a.id + '">✔ Je suis inscrit(e) – voir</button>' :
+    var joined = isJoined(a.id), left = seatsLeft(a), n = participants(a).length, pct = Math.min(100, Math.round(n / a.places * 100)), p = dparts(a.date);
+    var btn = joined ? '<button class="btn ok block" data-action="open-act" data-id="' + a.id + '">' + ic("check") + " Inscrit(e) · voir</button>" :
       left === 0 ? '<button class="btn block" disabled>Complet</button>' :
       '<button class="btn primary block" data-action="join" data-id="' + a.id + '">Je participe</button>';
-    return '<article class="card act" data-action="open-act" data-id="' + a.id + '">' +
-      '<div class="top"><span class="tag">' + esc(a.cat) + '</span><span class="small muted">' + (d ? "à " + d + " km" : "dans votre ville") + "</span></div>" +
-      "<h3>" + esc(a.titre) + "</h3>" +
-      '<p class="line">🗓 ' + esc(when(a.date)) + '</p><p class="line">📍 ' + esc(a.lieu) + ", " + esc(a.ville) + "</p>" +
-      '<div class="foot"><span class="price">' + priceLabel(a) + "</span><span>👥 " + n + " inscrit" + (n > 1 ? "s" : "") + " · " + left + " place" + (left > 1 ? "s" : "") + "</span></div>" + btn + "</article>";
+    return '<article class="act" style="--cat:' + (CATC[a.cat] || "#1F3A5F") + '" data-action="open-act" data-id="' + a.id + '">' +
+      '<div class="act-main">' + dbox(a.date) + '<div class="act-body"><span class="cat">' + esc(a.cat) + "</span><h3>" + esc(a.titre) + "</h3>" +
+      '<p class="meta">' + ic("clock") + p.h + '<span class="sep"></span>' + ic("pin") + esc(a.ville) + (d ? " · " + d + " km" : "") + '</p></div><span class="price-pill">' + priceLabel(a) + "</span></div>" +
+      '<div class="act-foot">' + stackHtml(a) + '<div class="seats"><span>' + (left === 0 ? "Complet" : left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "")) + '</span><i><b style="width:' + pct + '%"></b></i></div></div>' + btn + "</article>";
   }
   function filteredActs() {
     var f = st().filters, ville = f.ville || st().me.ville, now = S.now();
@@ -194,11 +224,11 @@
   function listHtml() {
     var r = filteredActs();
     if (!r.length) return '<div class="card center"><p><b>Aucune activité trouvée.</b></p><p class="muted">Essayez d\'élargir la distance ou de changer de ville.</p></div>';
-    return '<p class="muted small" aria-live="polite">' + r.length + " activité" + (r.length > 1 ? "s" : "") + " près de chez vous</p>" + r.map(function (x) { return actCard(x.a, x.d); }).join("");
+    return '<p class="count" aria-live="polite">' + r.length + " activité" + (r.length > 1 ? "s" : "") + " à découvrir</p>" + r.map(function (x) { return actCard(x.a, x.d); }).join("");
   }
   V.activites = function () {
     var f = st().filters, ville = f.ville || st().me.ville, ss = subState(), banner = "";
-    if (ss === "trial") banner = '<div class="success">🎁 Essai gratuit : encore ' + trialLeft() + " jour" + (trialLeft() > 1 ? "s" : "") + ' <a href="#/abonnement">Voir l\'abonnement</a></div>';
+    if (ss === "trial") banner = '<a class="trialbar" href="#/abonnement">' + ic("gift") + "<span><b>Essai gratuit</b> · encore " + trialLeft() + " jour" + (trialLeft() > 1 ? "s" : "") + "</span>" + ic("arrow") + "</a>";
     if (ss === "expired") banner = '<div class="card paywall"><h3>Votre essai est terminé</h3><p>Abonnez-vous pour revoir les profils et écrire aux autres participants.</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></div>';
     var cities = Object.keys(BELORA_CITIES).map(function (c) { return "<option" + (c === ville ? " selected" : "") + ">" + esc(c) + "</option>"; }).join("");
     var rayons = [[10, "10 km"], [25, "25 km"], [50, "50 km"], [100, "100 km"], [999, "Partout"]].map(function (r) {
@@ -207,35 +237,38 @@
     var cats = ['<button class="chip' + (!f.cat ? " on" : "") + '" data-action="filter-cat" data-v="">Toutes</button>'].concat(BELORA_CATS.map(function (c) {
       return '<button class="chip' + (f.cat === c ? " on" : "") + '" data-action="filter-cat" data-v="' + c + '">' + c + "</button>";
     })).join("");
-    return "<h1>Bonjour " + esc(st().me.prenom) + " 👋</h1><p>Voici les sorties proposées près de chez vous.</p>" + banner +
-      '<div class="filters"><div class="row"><div style="flex:2;min-width:150px"><label for="f-ville" class="small" style="margin:0 0 4px">Ma ville</label><select id="f-ville" data-filter="ville">' + cities + '</select></div>' +
-      '<div style="flex:1;min-width:110px"><label for="f-rayon" class="small" style="margin:0 0 4px">Distance</label><select id="f-rayon" data-filter="rayon">' + rayons + "</select></div></div>" +
-      '<label for="f-q" class="small" style="margin:10px 0 4px">Rechercher</label><input id="f-q" data-filter="q" type="text" placeholder="Marche, danse, repas…" value="' + esc(f.q) + '">' +
-      '<div class="chips" style="margin-top:10px">' + cats + "</div></div>" +
-      '<div id="actlist" style="margin-top:12px">' + listHtml() + "</div>";
+    return '<header class="pagehead"><p class="eyebrow">Bonjour ' + esc(st().me.prenom) + "</p><h1>Sorties près de chez vous</h1></header>" + banner +
+      '<div class="filters"><div class="selrow"><label class="selpill">' + ic("pin") + '<span class="sr">Ma ville</span><select id="f-ville" data-filter="ville">' + cities + "</select></label>" +
+      '<label class="selpill narrow">' + ic("route") + '<span class="sr">Distance</span><select id="f-rayon" data-filter="rayon">' + rayons + "</select></label></div>" +
+      '<div class="searchbox">' + ic("search") + '<label for="f-q" class="sr">Rechercher</label><input id="f-q" data-filter="q" type="text" placeholder="Marche, danse, repas…" value="' + esc(f.q) + '"></div>' +
+      '<div class="chips scroll">' + cats + "</div></div>" +
+      '<div id="actlist">' + listHtml() + "</div>";
   };
 
   V.activite = function (id) {
     var a = actById(id); if (!a) { go("activites"); return ""; }
     var acc = hasAccess(), joined = isJoined(a.id), left = seatsLeft(a), ppl = participants(a), d = dist(st().me.ville, a.ville);
-    var btn = isPast(a) ? '<button class="btn block" disabled>Cette sortie est terminée</button>' : joined ?
-      '<button class="btn danger block" data-action="leave" data-id="' + a.id + '">Me désinscrire</button>' :
-      left === 0 ? '<button class="btn block" disabled>Complet</button>' : '<button class="btn primary block" data-action="join" data-id="' + a.id + '">Je participe</button>';
+    var btn = isPast(a) ? '<button class="btn" disabled>Terminée</button>' : joined ?
+      '<button class="btn danger" data-action="leave" data-id="' + a.id + '">Me désinscrire</button>' :
+      left === 0 ? '<button class="btn" disabled>Complet</button>' : '<button class="btn primary" data-action="join" data-id="' + a.id + '">Je participe</button>';
     var list = ppl.length ? ppl.map(function (pid) {
       var u = userById(pid), me = pid === "me";
       return '<a class="person" href="#/membre/' + pid + '">' + avatar(u, { blur: !acc && !me }) +
         '<span class="meta"><b>' + esc(u.prenom) + (me ? " (vous)" : "") + "</b>" +
-        (me || acc ? '<span class="small muted">' + esc(u.age) + " ans · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + "</span><span aria-hidden=\"true\">›</span></a>";
+        (me || acc ? '<span class="small muted">' + esc(u.age) + " ans · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
     }).join("") : "<p>Personne pour l'instant. Soyez le premier ou la première à vous inscrire !</p>";
-    var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets – 7 jours gratuits</a>' : "";
-    return '<a class="back" href="#/activites">← Retour aux activités</a><article class="card">' +
-      '<span class="tag">' + esc(a.cat) + "</span><h1 style=\"margin-top:8px\">" + esc(a.titre) + "</h1>" +
-      "<p>🗓 <b>" + esc(when(a.date)) + "</b></p><p>📍 " + esc(a.lieu) + ", " + esc(a.ville) + (d ? " · à " + d + " km" : "") + "</p>" +
-      "<p>💶 " + priceLabel(a) + "</p><p>👥 " + ppl.length + " inscrit" + (ppl.length > 1 ? "s" : "") + " · " + left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "") + "</p>" +
-      "<p>" + esc(a.desc) + '</p><p class="small muted">Organisé par ' + esc(a.orga) + " · Source : " + esc(a.source) + "</p>" + btn + "</article>" +
+    var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets · 7 jours gratuits</a>' : "";
+    var fact = function (i, t, sub) { return "<li>" + ic(i) + "<span><b>" + t + "</b>" + (sub ? "<small>" + sub + "</small>" : "") + "</span></li>"; };
+    return '<a class="back" href="#" data-action="back">' + ic("arrowL") + " Retour</a>" +
+      '<article class="detail" style="--cat:' + (CATC[a.cat] || "#1F3A5F") + '"><div class="dhead">' + dbox(a.date, true) + '<div><span class="cat">' + esc(a.cat) + "</span><h1>" + esc(a.titre) + "</h1></div></div>" +
+      '<ul class="facts">' + fact("clock", esc(when(a.date))) + fact("pin", esc(a.lieu), esc(a.ville) + (d ? " · à " + d + " km" : "")) +
+      fact("euro", priceLabel(a), a.prix ? "par personne" : "Chacun règle ses consommations") +
+      fact("users", ppl.length + " inscrit" + (ppl.length > 1 ? "s" : ""), left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "")) + "</ul>" +
+      '<p class="desc">' + esc(a.desc) + '</p><p class="small muted">Organisé par ' + esc(a.orga) + " · Source : " + esc(a.source) + "</p></article>" +
       '<section class="card"><h2>Qui participe ?</h2>' + list + cta + "</section>" +
       '<aside class="card info"><h3>🛡️ Pour votre sécurité</h3><p class="small">Rendez-vous toujours dans un lieu public. Ne donnez jamais d\'argent ni de coordonnées bancaires. Si quelque chose vous gêne, signalez-le : on s\'en occupe.</p></aside>' +
-      '<p class="center"><a href="#" data-action="report-act" data-id="' + a.id + '">Signaler cette activité</a></p>';
+      '<p class="center"><a href="#" data-action="report-act" data-id="' + a.id + '">Signaler cette activité</a></p>' +
+      '<div class="actionbar"><div class="ab-info"><b>' + priceLabel(a) + "</b><small>" + esc(dparts(a.date).wd) + " " + dparts(a.date).day + " " + esc(dparts(a.date).mo) + " · " + dparts(a.date).h + "</small></div>" + btn + "</div>";
   };
 
   V.membre = function (id) {
@@ -412,7 +445,7 @@
     if (html === "") return;
     var navOff = OPEN.indexOf(r) > -1 && !st().me || r === "admin";
     document.body.classList.toggle("noNav", navOff);
-    $("#app").innerHTML = html;
+    $("#app").innerHTML = emo(html);
     var tab = r === "activite" || r === "membre" ? "activites" : r;
     [].forEach.call(document.querySelectorAll("#tabbar a"), function (a) { a.classList.toggle("on", a.dataset.tab === tab); });
     refreshDot();
@@ -462,7 +495,7 @@
       if (seatsLeft(a) === 0) { toast("Cette sortie est complète."); return; }
       if (!isJoined(a.id)) { st().joined.push(a.id); a.inscrits.push("me"); }
       var trial = startTrialIfNeeded(); persist();
-      if (!trial) toast("✔ Vous êtes inscrit(e) !");
+      if (!trial) toast("Vous êtes inscrit(e) !");
       render();
     },
     "leave": function (el) {
@@ -482,7 +515,7 @@
       var p = PLANS[el.dataset.plan]; if (!p) return;
       var s = st().sub; s.status = "active"; s.plan = el.dataset.plan; s.startedAt = S.now(); s.endsAt = S.now() + p.days * DAY;
       if (!s.trialStart) s.trialStart = null;
-      persist(); closeModal(); toast("✔ Merci ! Votre abonnement est actif."); render();
+      persist(); closeModal(); toast("Merci ! Votre abonnement est actif."); render();
     },
     "cancel-sub": function () { confirmModal("Résilier l'abonnement ?", "Vous gardez l'accès jusqu'à la fin de la période déjà payée.", "Oui, résilier", "cancel-sub-ok"); },
     "cancel-sub-ok": function () { st().sub.status = "cancelled"; persist(); closeModal(); toast("Abonnement résilié."); render(); },
@@ -583,11 +616,11 @@
     var t = ev.target; if (!t.dataset || !t.dataset.filter) return;
     var k = t.dataset.filter; st().filters[k] = k === "rayon" ? +t.value : t.value; persist();
     if (k === "ville") st().filters.ville = t.value;
-    var l = $("#actlist"); if (l) l.innerHTML = listHtml();
+    var l = $("#actlist"); if (l) l.innerHTML = emo(listHtml());
   });
   document.addEventListener("change", function (ev) {
     var t = ev.target;
-    if (t.dataset && t.dataset.filter) { var l = $("#actlist"); if (l) l.innerHTML = listHtml(); return; }
+    if (t.dataset && t.dataset.filter) { var l = $("#actlist"); if (l) l.innerHTML = emo(listHtml()); return; }
     if (t.id === "photo" && t.files && t.files[0]) {
       var rd = new FileReader();
       rd.onload = function () {
@@ -596,7 +629,7 @@
           var c = document.createElement("canvas"), s = 240; c.width = c.height = s;
           var m = Math.min(img.width, img.height), ctx = c.getContext("2d");
           ctx.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, s, s);
-          tmpPhoto = c.toDataURL("image/jpeg", 0.8); toast("Photo prête ✔");
+          tmpPhoto = c.toDataURL("image/jpeg", 0.8); toast("Photo prête");
         };
         img.src = rd.result;
       };
