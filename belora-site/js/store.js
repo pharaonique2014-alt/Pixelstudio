@@ -1,6 +1,6 @@
 /* Stockage local de la démo (navigateur). Remplaçable plus tard par Supabase. */
 window.Store = (function () {
-  var KEY = "belora_test_v2";
+  var KEY = "belora_test_v3";
   var DAY = 864e5;
   var Store = { state: null };
 
@@ -13,7 +13,7 @@ window.Store = (function () {
       return {
         id: a.id, ambiance: a.ambiance || "tous", titre: a.titre, cat: a.cat, ville: a.ville, lieu: a.lieu,
         date: d.toISOString(), prix: a.prix, places: a.places, desc: a.desc,
-        orga: a.orga, source: a.source, lien: "", inscrits: a.inscrits.slice()
+        orga: a.orga, source: a.source, lien: "", inscrits: a.inscrits.slice(), parts: Object.assign({}, a.parts || {})
       };
     });
     return {
@@ -21,6 +21,7 @@ window.Store = (function () {
       pending: null,
       sub: { trialStart: null, status: "none", plan: null, endsAt: null, startedAt: null },
       joined: [],
+      party: {},
       users: window.BELORA_USERS.map(function (u) { return Object.assign({ suspended: false }, u); }),
       activities: acts,
       conversations: {},

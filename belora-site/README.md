@@ -37,3 +37,15 @@ Accessibilité : gros boutons, texte agrandissable (bouton « A » en haut), con
 | Activités | saisie manuelle | saisie manuelle + import d'agendas ouverts (OpenAgenda, DATAtourisme) avec l'accord des organisateurs |
 
 Les textes « Conditions » et « Confidentialité » sont des brouillons à faire valider par un juriste.
+
+## Mettre le site en ligne pour un testeur
+
+Le dossier `dist/` contient le site en **un seul fichier** (`index.html`, tout est inclus) et un `vercel.json`
+qui demande aux moteurs de recherche de ne pas l'indexer. Trois façons d'obtenir un lien public :
+
+- **Vercel** : importer ce dépôt (GitHub) et choisir `belora-site/dist` comme « Root Directory », sans commande de build.
+- **Netlify Drop** (app.netlify.com/drop) : glisser le fichier `dist/index.html` (ou le dossier `dist`), le lien est créé tout de suite.
+- **GitHub Pages** : activer Pages sur le dépôt et publier le dossier `belora-site/dist`.
+
+Chaque testeur a ses propres données (elles restent dans son navigateur) : rien n'est partagé entre testeurs.
+Pour reconstruire `dist/index.html` après une modification : minifier et assembler `css/style.css`, `js/*.js` et le logo.

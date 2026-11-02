@@ -14,7 +14,21 @@
     t: { label: "3 mois", price: 49, days: 90, unit: "pour 3 mois", note: "Soit 16,33 € par mois · économisez 18 %" },
     a: { label: "12 mois", price: 149, days: 365, unit: "pour 12 mois", note: "Soit 12,42 € par mois · économisez 38 %" }
   };
-  var SCAM_RE = /(virement|western\s*union|iban|\brib\b|bitcoin|crypto|whats\s*app|telegram|carte\s*cadeau|paysafe|mandat|envoyer?\s+(de\s+l')?argent|prêt d'argent|avance|colis bloqué)/i;
+  /* Analyse automatique : chaque message reçu ou envoyé est noté (0 à 3+) */
+  var SCAM_RULES = [
+    { re: /(virement|western\s*union|\biban\b|\brib\b|bitcoin|crypto|carte\s*cadeau|paysafe|mandat|envoy\w*\s+(moi\s+)?(de\s+l'|des\s+|un\s+peu\s+d')?(argent|sous|euros?)|pr[eê]t\s+d'argent|rembourserai|petit\s+service\s+financier)/i, w: 3, why: "demande d'argent" },
+    { re: /(code\s+(re[cç]u|sms)|num[eé]ro\s+de\s+carte|mot\s+de\s+passe|carte\s+d'identit[eé]|photo\s+de\s+votre\s+carte)/i, w: 3, why: "demande d'informations personnelles" },
+    { re: /(whats\s*app|telegram|snap(chat)?|messenger|mon\s+(num[eé]ro|gsm|mail)|[\w.+-]+@[\w-]+\.\w+|\+?\d[\d\s.]{8,}\d)/i, w: 2, why: "invite à quitter Belora" },
+    { re: /(urgent|urgence|h[oô]pital|accident|h[eé]ritage|douane|colis|bloqu[eé]|dettes?|facture\s+impay)/i, w: 2, why: "histoire dramatique ou pression" },
+    { re: /(https?:\/\/|www\.|\.ru\b|\.xyz\b)/i, w: 2, why: "lien suspect" },
+    { re: /(je\s+t'aime|mon\s+amour|[aâ]me\s+s[oœ]ur|je\s+n'ai\s+jamais\s+ressenti)/i, w: 1, why: "déclaration très rapide" }
+  ];
+  function scamScan(text) {
+    var score = 0, why = [];
+    SCAM_RULES.forEach(function (r) { if (r.re.test(text)) { score += r.w; why.push(r.why); } });
+    return { level: score >= 3 ? 3 : score >= 2 ? 2 : 0, why: why };
+  }
+  var pendingMsg = null;
   var NORMAL_REPLIES = [
     "Bonjour {p} ! Ravi(e) de vous lire. Vous venez à une sortie prochainement ?",
     "Avec plaisir ! J'adore ce genre d'activité. Et vous, qu'est-ce que vous aimez faire d'autre ?",
@@ -22,7 +36,8 @@
   ];
   var SUSPECT_REPLIES = [
     "Bonjour, vous avez un très joli profil. Écrivez-moi sur WhatsApp, ce sera plus simple.",
-    "Je traverse une période difficile, pourriez-vous me faire un petit virement ? Je vous rembourserai."
+    "Je traverse une période difficile, pourriez-vous me faire un petit virement ? Je vous rembourserai.",
+    "C'est très urgent, un colis est bloqué à la douane. Voici mon IBAN pour que vous m'avanciez la somme."
   ];
   var REPORT_REASONS = ["Demande d'argent ou arnaque", "Faux profil / photo qui n'est pas la sienne", "Comportement irrespectueux ou harcèlement", "Contenu inapproprié", "Autre"];
 
@@ -90,18 +105,22 @@
   }
   function isJoined(id) { return st().joined.indexOf(id) > -1; }
   function isPast(a) { return new Date(a.date).getTime() + 2 * HOUR <= S.now(); }
-  function weight(id) { var u = userById(id); return u && u.situation === "couple" ? 2 : 1; }
-  function seatsUsed(a) { return participants(a).reduce(function (n, id) { return n + weight(id); }, 0); }
+  function weight(id, a) {
+    if (id === "me") return isCouple(st().me) ? ((st().party || {})[a.id] || 2) : 1;
+    var u = userById(id); if (!u) return 1;
+    if (a && a.parts && a.parts[id]) return a.parts[id];
+    return isCouple(u) ? 2 : 1;
+  }
+  function seatsUsed(a) { return participants(a).reduce(function (n, id) { return n + weight(id, a); }, 0); }
   function seatsLeft(a) { return Math.max(0, a.places - seatsUsed(a)); }
   function isCouple(u) { return !!u && u.situation === "couple"; }
   function ageTxt(u) { return isCouple(u) ? "Couple" : u.age + " ans"; }
   function nameAge(u) { return isCouple(u) ? u.prenom : u.prenom + ", " + u.age + " ans"; }
   function butLabel(u) { return isCouple(u) ? "Des amis et des sorties à deux" : BUT[u.but || "ouvert"].label; }
   function cannotJoin(a) {
-    var me = st().me, need = isCouple(me) ? 2 : 1, left = seatsLeft(a);
+    var me = st().me, left = seatsLeft(a);
     if (isCouple(me) && a.ambiance === "rencontres") return "Réservé aux personnes seules";
     if (left === 0) return "Complet";
-    if (left < need) return "Il faut 2 places";
     return "";
   }
   function priceLabel(a) { return a.prix ? eur(a.prix) : "Gratuit"; }
@@ -110,8 +129,8 @@
     var inner = u.photo ? '<img alt="" src="' + esc(u.photo) + '">' : esc((u.prenom || "?").charAt(0).toUpperCase());
     return '<span class="avatar' + (o.blur ? " blur" : "") + (o.big ? " big" : "") + '" style="' + (o.s ? "--s:" + o.s + ";" : "") + 'background:' + esc(u.color || "#1F3A5F") + '" aria-hidden="true">' + inner + "</span>";
   }
-  function addReport(type, id, reason, text) {
-    st().reports.push({ id: "r" + Date.now(), type: type, target: id, reason: reason, text: text || "", at: S.now() });
+  function addReport(type, id, reason, text, auto) {
+    st().reports.push({ id: "r" + Date.now() + Math.floor(Math.random() * 1000), type: type, target: id, reason: reason, text: text || "", at: S.now(), auto: !!auto });
     if (type === "user") {
       var n = st().reports.filter(function (r) { return r.type === "user" && r.target === id; }).length;
       var u = userById(id); if (u && n >= 3) u.suspended = true;
@@ -161,6 +180,7 @@
     return '<section class="wpanel"><svg class="wbg" viewBox="0 0 300 260" aria-hidden="true"><path transform="translate(90,120) scale(2.2)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".13"/><path transform="translate(205,150) scale(2.6)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".10"/></svg>' +
       '<img src="assets/belora-icone-arrondie.svg" alt="" width="84" height="84"><h1>Belora</h1><p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
       '<ul class="pts">' + pts.map(function (x) { return '<li><span class="pi">' + ic(x[0]) + "</span><div><b>" + x[1] + "</b><span>" + x[2] + "</span></div></li>"; }).join("") + "</ul>" +
+      '<div class="info small"><b>Vous testez Belora ?</b> Aucun SMS ni paiement réel : le code de vérification est <b>123456</b>. Vos données restent sur votre téléphone. Essayez de vous inscrire, de rejoindre une sortie, de regarder qui participe et d\'écrire un message. Dites-nous ce qui vous semble confus.</div>' +
       '<a class="btn primary block big" href="#/connexion">Commencer</a>' +
       '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
   };
@@ -210,7 +230,7 @@
       '<div class="info small" style="margin-top:12px"><b>Facultatif.</b> Ces deux informations servent à mieux vous proposer des sorties et des personnes. Elles ne sont montrées qu\'aux membres abonnés, et vous pouvez les laisser vides.</div>' +
       '<div class="row"><div style="flex:1;min-width:150px"><label for="genre">Je suis</label><select id="genre" name="genre"><option value="">Je préfère ne pas dire</option><option value="F"' + (me.genre === "F" ? " selected" : "") + '>Une femme</option><option value="H"' + (me.genre === "H" ? " selected" : "") + '>Un homme</option></select></div>' +
       '<div style="flex:1;min-width:150px"><label for="cherche">Je souhaite rencontrer</label><select id="cherche" name="cherche"><option value="">Peu importe</option><option value="femmes"' + (me.cherche === "femmes" ? " selected" : "") + '>Des femmes</option><option value="hommes"' + (me.cherche === "hommes" ? " selected" : "") + '>Des hommes</option></select></div></div></div>' +
-      '<div class="info small" id="couplenote"' + ((me.situation || "seul") === "couple" ? "" : " hidden") + '>Les couples cherchent des amis et des sorties à deux. Vous prenez deux places par sortie et vous n\'avez pas accès aux soirées réservées aux célibataires.</div>' +
+      '<div class="info small" id="couplenote"' + ((me.situation || "seul") === "couple" ? "" : " hidden") + '>Les couples cherchent des amis et des sorties à deux. Pour chaque sortie, vous choisissez si vous venez à deux ou si un seul de vous deux vient. Les soirées réservées aux célibataires ne vous sont pas proposées.</div>' +
       '<div class="label">Vos centres d\'intérêt</div><div class="chips">' + chips + "</div>" +
       '<label for="bio">Quelques mots sur vous (facultatif)</label><textarea id="bio" name="bio" maxlength="280" placeholder="Ce que vous aimez, ce que vous cherchez…">' + esc(me.bio || "") + "</textarea>" +
       '<label for="photo">Votre photo (facultatif)</label><div class="row">' + avatar(me.prenom ? me : { prenom: "?", color: "#9AA5B8" }, {}) +
@@ -288,7 +308,7 @@
       var u = userById(pid), me = pid === "me";
       return '<a class="person" href="#/membre/' + pid + '">' + avatar(u, { blur: !acc && !me }) +
         '<span class="meta"><b>' + esc(u.prenom) + (me ? " (vous)" : "") + " " + butTag(u) + "</b>" +
-        (me || acc ? '<span class="small muted">' + esc(ageTxt(u)) + " · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
+        (me || acc ? '<span class="small muted">' + esc(ageTxt(u)) + (isCouple(u) ? (weight(pid, a) === 2 ? " · à deux" : " · un seul des deux") : "") + " · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
     }).join("") : "<p>Personne pour l'instant. Soyez le premier ou la première à vous inscrire !</p>";
     var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets · 7 jours gratuits</a>' : "";
     var fact = function (i, t, sub) { return "<li>" + ic(i) + "<span><b>" + t + "</b>" + (sub ? "<small>" + sub + "</small>" : "") + "</span></li>"; };
@@ -299,7 +319,7 @@
       fact("euro", priceLabel(a), a.prix ? "par personne" : "Chacun règle ses consommations") +
       fact("users", ppl.length + " inscrit" + (ppl.length > 1 ? "s" : ""), left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "")) + "</ul>" +
       '<p class="desc">' + esc(a.desc) + '</p><p class="small muted">Organisé par ' + esc(a.orga) + " · Source : " + esc(a.source) + "</p></article>" +
-      '<section class="card"><h2>Qui participe ?</h2>' + list + cta + "</section>" +
+      '<section class="card"><h2>Qui participe ?</h2>' + (joined && isCouple(st().me) ? '<p class="small">Vous venez ' + (weight("me", a) === 2 ? "à deux" : "seul(e) (un seul de vous deux)") + ' · <a href="#" data-action="change-party" data-id="' + a.id + '">Modifier</a></p>' : "") + list + cta + "</section>" +
       '<aside class="card info"><h3>🛡️ Pour votre sécurité</h3><p class="small">Rendez-vous toujours dans un lieu public. Ne donnez jamais d\'argent ni de coordonnées bancaires. Si quelque chose vous gêne, signalez-le : on s\'en occupe.</p></aside>' +
       '<p class="center"><a href="#" data-action="report-act" data-id="' + a.id + '">Signaler cette activité</a></p>' +
       '<div class="actionbar"><div class="ab-info"><b>' + priceLabel(a) + "</b><small>" + esc(dparts(a.date).wd) + " " + dparts(a.date).day + " " + esc(dparts(a.date).mo) + " · " + dparts(a.date).h + "</small></div>" + btn + "</div>";
@@ -358,12 +378,18 @@
     if (!ids.length) return h + '<div class="card center"><p><b>Aucune conversation pour l\'instant.</b></p><p class="muted">Ouvrez la fiche d\'une personne qui participe à une sortie pour lui écrire.</p><a class="btn primary block" href="#/activites">Voir les activités</a></div>';
     return h + '<div class="card">' + ids.map(function (id) {
       var u = userById(id), th = st().conversations[id], last = th[th.length - 1];
-      return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + (st().unread[id] ? ' <span class="tag">nouveau</span>' : "") + '</b><span class="small muted">' + esc(last.text.slice(0, 60)) + "</span></span></a>";
+      return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + (st().unread[id] ? ' <span class="tag">nouveau</span>' : "") + '</b><span class="small muted">' + esc(last.from === "them" && last.risk === 3 && !last.shown ? "⚠️ Message masqué (arnaque probable)" : last.text.slice(0, 60)) + "</span></span></a>";
     }).join("") + "</div>";
   };
-  function bubble(m) {
-    var warn = m.warn ? '<div class="scam" role="alert">⚠️ Attention : ce message parle d\'argent ou vous invite à quitter Belora. Ne donnez jamais d\'argent ni vos coordonnées bancaires.</div>' : "";
-    return '<div class="bubble' + (m.from === "me" ? " me" : "") + '">' + esc(m.text) + "<time>" + fmtShort.format(new Date(m.at)) + "</time></div>" + warn;
+  function whyTxt(m) { return m.why && m.why.length ? " (" + esc(m.why.join(", ")) + ")" : ""; }
+  function bubble(m, i, uid) {
+    var time = "<time>" + fmtShort.format(new Date(m.at)) + "</time>";
+    if (m.from === "them" && m.risk === 3 && !m.shown)
+      return '<div class="bubble masked"><b>⚠️ Message masqué par Belora</b><br><span class="small">Il ressemble à une tentative d\'arnaque' + whyTxt(m) + '. Ne répondez pas et ne donnez ni argent ni coordonnées.</span>' +
+        '<div class="row" style="margin-top:8px"><button class="btn small ghost" data-action="show-msg" data-id="' + uid + '" data-i="' + i + '">Afficher quand même</button></div></div>';
+    var warn = "";
+    if (m.risk >= 2) warn = '<div class="scam" role="alert">⚠️ ' + (m.from === "them" ? "Attention : ce message est suspect" : "Ce message contient des éléments sensibles") + whyTxt(m) + '. Ne donnez jamais d\'argent ni vos coordonnées bancaires.</div>';
+    return '<div class="bubble' + (m.from === "me" ? " me" : "") + '">' + esc(m.text) + time + "</div>" + warn;
   }
   V.conv = function (id) {
     if (!hasAccess()) { go("abonnement"); return ""; }
@@ -376,7 +402,7 @@
       hint = '<div class="info small">' + (theirs === "amitie" ? esc(u.prenom) + " cherche surtout des amis pour sortir. Soyez clair(e) sur vos intentions, avec respect." : esc(u.prenom) + " cherche une relation amoureuse, alors que vous cherchez des amis. Dites-le simplement dès le début.") + "</div>";
     return '<a class="back" href="#/messages">← Messages</a><div class="row between"><a class="person" style="border:0" href="#/membre/' + id + '">' + avatar(u) + "<b>" + esc(u.prenom) + " " + butTag(u) + '</b></a>' +
       '<button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button></div>' +
-      hint + '<div class="bubbles" id="thread">' + (th.length ? th.map(bubble).join("") : '<p class="muted">Dites bonjour à ' + esc(u.prenom) + " !</p>") + "</div>" +
+      hint + '<p class="shield small"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.500-3.200 8-8 9-4.800-1-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg> Protection anti-arnaque active : les messages sont analysés automatiquement par une machine.</p><div class="bubbles" id="thread">' + (th.length ? th.map(function (m, i) { return bubble(m, i, id); }).join("") : '<p class="muted">Dites bonjour à ' + esc(u.prenom) + " !</p>") + "</div>" +
       '<form class="composer" data-form="send" data-id="' + id + '"><label for="msg" class="sr" style="position:absolute;left:-9999px">Votre message</label><input id="msg" name="msg" type="text" autocomplete="off" placeholder="Votre message…" maxlength="500"><button class="btn primary" type="submit">Envoyer</button></form>';
   };
 
@@ -389,6 +415,7 @@
     return '<section class="card center">' + avatar(me, { big: true }) + '<h1 style="margin-top:10px">' + esc(nameAge(me)) + "</h1><p>📍 " + esc(me.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
       "<p>" + esc(me.bio || "") + '</p><a class="btn ghost block" href="#/profil/modifier">Modifier mon profil</a></section>' +
       '<section class="card"><h2>Mon abonnement</h2><p>' + esc(label) + '</p><a class="btn primary block" href="#/abonnement">Gérer mon abonnement</a></section>' +
+      '<section class="card"><h2>Votre avis sur le site</h2><p class="small muted">Qu\'est-ce qui vous a plu ? Qu\'est-ce qui vous a gêné ou paru compliqué ?</p><label for="fb" class="sr">Votre avis</label><textarea id="fb" placeholder="Écrivez ici…"></textarea><button class="btn navy block" style="margin-top:10px" data-action="copy-fb">Copier mon avis</button><p class="small muted">Collez-le ensuite dans un message à la personne qui vous a envoyé ce lien.</p></section>' +
       '<section class="card"><h2>Confort de lecture</h2><button class="btn ghost block" data-action="toggle-size">' + (st().bigText ? "Texte normal" : "Agrandir le texte") + "</button></section>" +
       '<section class="card"><h2>Outils de démonstration</h2><p class="small muted">Pour tester l\'essai gratuit et les sorties passées' + esc(shift) + ".</p>" +
       '<div class="row"><button class="btn small ghost" data-action="shift" data-d="1">Avancer d\'1 jour</button><button class="btn small ghost" data-action="shift" data-d="7">Avancer de 7 jours</button></div>' +
@@ -429,6 +456,7 @@
     return '<a class="back" href="#" data-action="back">← Retour</a><h1>Confidentialité</h1><div class="info">Texte de démonstration, à faire valider avant lancement (RGPD).</div>' +
       '<div class="card"><h3>Données collectées</h3><p class="small">Numéro de GSM, prénom, âge, ville, centres d\'intérêt, présentation, photo (facultative) et messages.</p>' +
       '<h3>Pourquoi ?</h3><p class="small">Vérifier votre identité par SMS, vous proposer des sorties proches, permettre les échanges et protéger la communauté contre les arnaques.</p>' +
+      '<h3>Protection contre les arnaques</h3><p class="small">Vos messages sont analysés automatiquement par une machine pour repérer les demandes d\'argent et les tentatives d\'arnaque. Personne ne les lit, sauf si un message est signalé.</p>' +
       '<h3>Vos droits</h3><p class="small">Accès, rectification, suppression de vos données à tout moment (bouton « Supprimer mon compte » dans votre profil). Vos données ne sont jamais vendues.</p>' +
       '<h3>Dans cette démo</h3><p class="small">Tout reste dans votre navigateur. Rien n\'est envoyé sur un serveur.</p></div>';
   };
@@ -441,7 +469,7 @@
     var rep = s.reports.length ? "<table><tr><th>Date</th><th>Cible</th><th>Motif</th><th></th></tr>" + s.reports.map(function (r) {
       var u = r.type === "user" ? userById(r.target) : actById(r.target);
       var name = u ? esc(u.prenom || u.titre) : "(supprimé)";
-      return "<tr><td>" + fmtShort.format(new Date(r.at)) + "</td><td>" + (r.type === "user" ? "👤 " : "📅 ") + name + "</td><td>" + esc(r.reason) + "</td><td><button class=\"btn small ghost\" data-action=\"admin-dismiss\" data-id=\"" + r.id + "\">Classer</button></td></tr>";
+      return "<tr><td>" + fmtShort.format(new Date(r.at)) + "</td><td>" + (r.type === "user" ? "👤 " : "📅 ") + name + "</td><td>" + (r.auto ? '<span class="tag navy">Auto</span> ' : "") + esc(r.reason) + "</td><td><button class=\"btn small ghost\" data-action=\"admin-dismiss\" data-id=\"" + r.id + "\">Classer</button></td></tr>";
     }).join("") + "</table>" : '<p class="muted">Aucun signalement.</p>';
     var users = "<table><tr><th>Membre</th><th>Ville</th><th></th></tr>" + s.users.map(function (u) {
       return "<tr><td>" + esc(u.prenom) + (u.suspect ? ' <span class="tag warn">suspect</span>' : "") + (u.suspended ? ' <span class="tag warn">suspendu</span>' : "") + "</td><td>" + esc(u.ville) + '</td><td><button class="btn small ghost" data-action="admin-suspend" data-id="' + u.id + '">' + (u.suspended ? "Rétablir" : "Suspendre") + "</button></td></tr>";
@@ -453,7 +481,7 @@
     var cats = BELORA_CATS.map(function (c) { return "<option>" + c + "</option>"; }).join("");
     var today = new Date(S.now() + DAY).toISOString().slice(0, 10);
     return '<a class="back" href="#/bienvenue">← Quitter l\'admin</a><h1>Tableau de bord</h1>' +
-      '<div class="stats"><div class="stat"><b>' + (s.users.length + (s.me ? 1 : 0)) + '</b>membres</div><div class="stat"><b>' + s.activities.length + '</b>activités</div><div class="stat"><b>' + insc + '</b>inscriptions</div><div class="stat"><b>' + s.reports.length + "</b>signalements</div></div>" +
+      '<div class="stats"><div class="stat"><b>' + (s.users.length + (s.me ? 1 : 0)) + '</b>membres</div><div class="stat"><b>' + s.activities.length + '</b>activités</div><div class="stat"><b>' + insc + '</b>inscriptions</div><div class="stat"><b>' + s.reports.length + "</b>signalements<br><small>dont " + s.reports.filter(function (r) { return r.auto; }).length + " automatiques</small></div></div>" +
       '<section class="card" style="margin-top:14px"><h2>Signalements</h2>' + rep + "</section>" +
       '<section class="card"><h2>Ajouter une activité</h2><p class="small muted">Copiez ici les sorties trouvées dans les groupes ou agendas locaux (avec l\'accord de l\'organisateur).</p>' +
       '<form data-form="admin-add"><label for="n-t">Titre</label><input id="n-t" name="titre" type="text" required>' +
@@ -503,6 +531,22 @@
     }
     return false;
   }
+  function doJoin(a, n) {
+    if (!isJoined(a.id)) { st().joined.push(a.id); a.inscrits.push("me"); }
+    if (isCouple(st().me)) st().party[a.id] = n;
+    closeModal();
+    var trial = startTrialIfNeeded(); persist();
+    if (!trial) toast("Vous êtes inscrit(e) !");
+    render();
+  }
+  function partyModal(a, change) {
+    var left = seatsLeft(a) + (change && isJoined(a.id) ? weight("me", a) : 0);
+    openModal('<h2>Qui vient à cette sortie ?</h2><p class="muted small">' + esc(a.titre) + '</p>' +
+      '<div class="vstack"><button class="btn primary block" data-action="party" data-id="' + a.id + '" data-n="2"' + (left < 2 ? " disabled" : "") + '>Nous venons tous les deux · 2 places</button>' +
+      '<button class="btn ghost block" data-action="party" data-id="' + a.id + '" data-n="1">Un seul de nous deux · 1 place</button>' +
+      (left < 2 ? '<p class="small muted">Il ne reste qu\'une place : seul l\'un de vous deux peut venir.</p>' : '') +
+      '<button class="btn block" data-action="close">Annuler</button></div>');
+  }
   function confirmModal(title, text, actionLabel, action, data) {
     openModal("<h2>" + esc(title) + "</h2><p>" + esc(text) + '</p><div class="row"><button class="btn danger" data-action="' + action + '" ' + (data || "") + ">" + esc(actionLabel) + '</button><button class="btn ghost" data-action="close">Annuler</button></div>');
   }
@@ -511,14 +555,29 @@
       REPORT_REASONS.map(function (r, i) { return '<label class="plan"><input type="radio" name="reason" value="' + esc(r) + '"' + (i === 0 ? " checked" : "") + '><span class="box">' + esc(r) + "</span></label>"; }).join('<div style="height:8px"></div>') +
       '<label for="rtxt">Précisions (facultatif)</label><textarea id="rtxt" name="text"></textarea><div class="row" style="margin-top:12px"><button class="btn primary" type="submit">Envoyer le signalement</button><button class="btn ghost" type="button" data-action="close">Annuler</button></div></form>');
   }
+  function pushMine(id, txt) {
+    var th = st().conversations[id] = st().conversations[id] || [], sc = scamScan(txt);
+    th.push({ from: "me", text: txt, at: S.now(), risk: sc.level, why: sc.why });
+    persist(); render(); scheduleReply(id);
+  }
   function scheduleReply(uid) {
     var u = userById(uid); if (!u) return;
     var t = setTimeout(function () {
       var th = st().conversations[uid] = st().conversations[uid] || [];
       var n = th.filter(function (m) { return m.from === "them"; }).length;
       var txt = u.suspect ? SUSPECT_REPLIES[n % SUSPECT_REPLIES.length] : NORMAL_REPLIES[n % NORMAL_REPLIES.length].replace("{p}", st().me ? st().me.prenom : "");
-      th.push({ from: "them", text: txt, at: S.now(), warn: SCAM_RE.test(txt) });
+      var sc = scamScan(txt), m = { from: "them", text: txt, at: S.now(), risk: sc.level, why: sc.why };
+      th.push(m);
       var viewing = current === "messages/" + uid;
+      if (sc.level === 3) {
+        st().strikes = st().strikes || {}; st().strikes[uid] = (st().strikes[uid] || 0) + 1;
+        addReport("user", uid, "Détection automatique : " + sc.why.join(", "), txt, true);
+        if (st().strikes[uid] >= 2 && !u.suspended) {
+          u.suspended = true; persist();
+          toast(u.prenom + " a été suspendu(e) automatiquement après plusieurs messages d'arnaque.");
+          if (viewing) { go("messages"); return; }
+        }
+      }
       if (!viewing) st().unread[uid] = true;
       persist();
       if (viewing) render(); else refreshDot();
@@ -528,19 +587,31 @@
 
   var actions = {
     "back": function () { back(); },
+    "show-msg": function (el) { var th = st().conversations[el.dataset.id] || [], m = th[+el.dataset.i]; if (m) { m.shown = true; persist(); render(); } },
+    "send-anyway": function () { var pm = pendingMsg; pendingMsg = null; closeModal(); if (pm) pushMine(pm.id, pm.txt); },
     "open-act": function (el) { go("activite/" + el.dataset.id); },
     "join": function (el) {
       var a = actById(el.dataset.id); if (!a) return;
-      var why = cannotJoin(a); if (why && !isJoined(a.id)) { toast(why === "Complet" ? "Cette sortie est complète." : why === "Il faut 2 places" ? "Il ne reste qu'une place : un couple en demande deux." : "Cette sortie s'adresse aux personnes seules."); return; }
-      if (!isJoined(a.id)) { st().joined.push(a.id); a.inscrits.push("me"); }
-      var trial = startTrialIfNeeded(); persist();
-      if (!trial) toast("Vous êtes inscrit(e) !");
-      render();
+      var why = cannotJoin(a);
+      if (why && !isJoined(a.id)) { toast(why === "Complet" ? "Cette sortie est complète." : "Cette sortie s'adresse aux personnes seules."); return; }
+      if (isCouple(st().me) && !isJoined(a.id)) { partyModal(a, false); return; }
+      doJoin(a, 1);
+    },
+    "party": function (el) {
+      var a = actById(el.dataset.id); if (!a) return; var n = +el.dataset.n;
+      if (isJoined(a.id)) { st().party[a.id] = n; persist(); closeModal(); toast(n === 2 ? "C'est noté : vous venez à deux." : "C'est noté : un seul de vous deux vient."); render(); }
+      else doJoin(a, n);
+    },
+    "change-party": function (el, ev) { ev.preventDefault(); var a = actById(el.dataset.id); if (a) partyModal(a, true); },
+    "copy-fb": function () {
+      var t = $("#fb"), txt = (t.value || "").trim(); if (!txt) { toast("Écrivez d'abord votre avis."); return; }
+      var done = function () { toast("Avis copié : collez-le dans un message."); };
+      try { navigator.clipboard.writeText(txt).then(done, function () { t.select(); toast("Sélectionnez puis copiez le texte."); }); } catch (e) { t.select(); toast("Sélectionnez puis copiez le texte."); }
     },
     "leave": function (el) {
       var a = actById(el.dataset.id); if (!a) return;
       st().joined = st().joined.filter(function (x) { return x !== a.id; });
-      a.inscrits = a.inscrits.filter(function (x) { return x !== "me"; });
+      a.inscrits = a.inscrits.filter(function (x) { return x !== "me"; }); delete st().party[a.id];
       persist(); toast("Vous êtes désinscrit(e)."); render();
     },
     "filter-cat": function (el) { st().filters.cat = el.dataset.v; persist(); render(); },
@@ -603,9 +674,13 @@
     "profile-edit": function (f) { saveProfile(f, true); },
     send: function (f) {
       var id = f.dataset.id, txt = f.msg.value.trim(); if (!txt) return;
-      var th = st().conversations[id] = st().conversations[id] || [];
-      th.push({ from: "me", text: txt, at: S.now(), warn: SCAM_RE.test(txt) });
-      persist(); render(); scheduleReply(id);
+      var sc = scamScan(txt);
+      if (sc.level === 3) {
+        pendingMsg = { id: id, txt: txt };
+        openModal('<h2>⚠️ Attention avant d\'envoyer</h2><p>Votre message contient des éléments sensibles' + whyTxt({ why: sc.why }) + '.</p><p class="small">Ne donnez jamais d\'argent, de coordonnées bancaires ou de codes, même à une personne qui vous semble sincère.</p><div class="vstack"><button class="btn primary block" data-action="close">Modifier mon message</button><button class="btn ghost block" data-action="send-anyway">Envoyer quand même</button></div>');
+        return;
+      }
+      pushMine(id, txt);
     },
     feedback: function (f) {
       var note = (f.querySelector("input[name=note]:checked") || {}).value;

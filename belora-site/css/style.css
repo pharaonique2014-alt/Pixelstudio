@@ -35,7 +35,7 @@ main{max-width:760px;margin:0 auto;padding-block:6px 24px;padding-left:max(16px,
 .btn[disabled]{opacity:.55;cursor:not-allowed}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .row.between{justify-content:space-between}
-.stack>*+*{margin-top:12px}
+.vstack>*+*{margin-top:12px}
 .muted{color:var(--muted)} .small{font-size:.85rem} .center{text-align:center}
 label,.label{display:block;font-weight:700;margin:14px 0 6px}
 input[type=text],input[type=tel],input[type=number],input[type=date],input[type=time],input[type=url],input[type=password],select,textarea{width:100%;min-height:56px;font:inherit;padding:10px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
@@ -223,3 +223,8 @@ h1{font-size:1.65rem;font-weight:900;letter-spacing:-.01em;text-wrap:balance}
 .person b .tag{font-size:.62rem;margin-left:4px;vertical-align:1px}
 
 [hidden]{display:none!important}
+
+.bubble.masked{background:#FDECEA;color:var(--warn);border:2px solid var(--warn);max-width:92%}
+.shield{display:flex;align-items:center;gap:6px;color:var(--ok);font-weight:700;margin:6px 0 0}
+.shield .ic{width:1.1em;height:1.1em;flex:none}
+.vstack>*+*{margin-top:12px}
