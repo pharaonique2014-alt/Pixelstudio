@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="359 162 536 656" width="536" height="656" role="img" aria-label="Convivia"><rect x="359" y="162" width="536" height="656" fill="#1F3A5F"/><defs><clipPath id="pb"><path d="M436.7 604.3 A258 258 0 1 1 817.3 604.3 L646.2 791.1 Q627 812 607.8 791.1 Z"/></clipPath><clipPath id="ib"><circle cx="627" cy="430" r="212"/></clipPath></defs>
+<path d="M436.7 604.3 A258 258 0 1 1 817.3 604.3 L646.2 791.1 Q627 812 607.8 791.1 Z" fill="#FFFFFF"/>
+<circle cx="627" cy="430" r="212" fill="#1F3A5F"/>
+<g clip-path="url(#ib)">
+<circle cx="534" cy="380" r="63" fill="#F2705A"/><ellipse cx="520" cy="548" rx="94" ry="100" fill="#F2705A"/>
+<circle cx="715" cy="380" r="63" fill="#F7B267"/><ellipse cx="720" cy="548" rx="98" ry="100" fill="#F7B267"/>
+</g>
+<g clip-path="url(#pb)"><circle cx="627" cy="877" r="343" fill="#1F3A5F"/><circle cx="627" cy="877" r="329" fill="#FFFFFF"/></g></svg>
