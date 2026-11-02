@@ -3,7 +3,7 @@
   "use strict";
   var S = Store; S.load();
   var st = function () { return S.state; };
-  var DAY = 864e5, HOUR = 36e5, TRIAL_DAYS = 7;
+  var DAY = 864e5, HOUR = 36e5;
   var ADMIN_CODE = "belora-test";
   var SMS_CODE = "123456";
   var adminOk = false, tmpPhoto = null, replyTimers = [];
@@ -89,12 +89,10 @@
     var s = st().sub, now = S.now();
     if (s.status === "active" && s.endsAt > now) return "active";
     if (s.status === "cancelled" && s.endsAt > now) return "cancelled";
-    if (s.trialStart && now < s.trialStart + TRIAL_DAYS * DAY) return "trial";
-    if (s.trialStart || s.status !== "none") return "expired";
+    if (s.status !== "none") return "expired";
     return "none";
   }
-  function hasAccess() { return ["active", "cancelled", "trial"].indexOf(subState()) > -1; }
-  function trialLeft() { var s = st().sub; return Math.max(0, Math.ceil((s.trialStart + TRIAL_DAYS * DAY - S.now()) / DAY)); }
+  function hasAccess() { return ["active", "cancelled"].indexOf(subState()) > -1; }
   function actById(id) { return st().activities.filter(function (a) { return a.id === id; })[0]; }
   function userById(id) { return id === "me" ? st().me : st().users.filter(function (u) { return u.id === id; })[0]; }
   function participants(a) {
@@ -254,11 +252,6 @@
       return visibleUser(u) && u.likesMe && u.likesMe[cat] && canBeLiked(st().me, u, cat) && !st().matches[cat][u.id] && !st().passes[cat][u.id];
     });
   }
-  function startTrialQuiet() {
-    var sb = st().sub;
-    if (sb.status === "none" && !sb.trialStart) { sb.trialStart = S.now(); return true; }
-    return false;
-  }
   var FREE_LIKES = 4;
   function dayKey(t) { var d = new Date(t); return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); }
   function likesToday() {
@@ -274,7 +267,7 @@
       : "Il vous reste <b>" + left + "</b> J'aime aujourd'hui (" + FREE_LIKES + " par jour sans abonnement).") + "</p>";
   }
   function limitModal() {
-    openModal("<h2>Limite du jour atteinte</h2><p>Sans abonnement, vous pouvez envoyer " + FREE_LIKES + " J'aime par jour. Revenez demain, ou profitez de l'essai gratuit de 7 jours : J'aime illimités, photos visibles et messages.</p>" +
+    openModal("<h2>Limite du jour atteinte</h2><p>Sans abonnement, vous pouvez envoyer " + FREE_LIKES + " J'aime par jour. Revenez demain, ou abonnez-vous : J'aime illimités, photos visibles et messages.</p>" +
       '<div class="vstack"><a class="btn primary block" href="#/abonnement" data-action="close-go" data-to="abonnement">Voir l\'abonnement</a><button class="btn ghost block" data-action="close">Plus tard</button></div>');
   }
   function doLike(uid, cat) {
@@ -289,7 +282,7 @@
       openModal("<h2>C'est réciproque !</h2><p>" + (cat === "amour" ? "Vous et <b>" + esc(u.prenom) + "</b> vous plaisez mutuellement." : "Vous et <b>" + esc(u.prenom) + "</b> avez envie de devenir amis et de sortir ensemble.") + "</p>" +
         '<p class="small muted">Catégorie : ' + CATS[cat].label + ". Votre discussion restera dans cette catégorie.</p>" +
         (chat ? '<div class="vstack"><a class="btn primary block" href="#/messages/' + uid + '" data-action="close-go" data-to="messages/' + uid + '">Lui écrire</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>'
-          : '<div class="info small">Pour discuter, il faut l\'essai gratuit de 7 jours ou l\'abonnement. <b>L\'essai démarre dès votre première inscription à une sortie.</b></div><div class="vstack"><a class="btn primary block" href="#/activites" data-action="close-go" data-to="activites">Choisir une sortie</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>'));
+          : '<div class="info small">Pour discuter, il faut un abonnement : <b>19,99 € par mois, sans engagement</b>, résiliable en un clic.</div><div class="vstack"><a class="btn primary block" href="#/abonnement" data-action="close-go" data-to="abonnement">Voir l\'abonnement</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>'));
     } else {
       persist(); toast("J'aime envoyé à " + u.prenom + ". Vous serez prévenu(e) si c'est réciproque.");
     }
@@ -313,11 +306,11 @@
     var pts = [["route", "Des sorties près de chez vous", "Marches, repas, thés dansants, visites : choisissez ce qui vous plaît."],
       ["users", "Amis, sorties ou rencontre amoureuse", "Seul(e) ou en couple, vous indiquez ce que vous cherchez et trouvez les sorties qui vous correspondent."],
       ["shield", "Votre sécurité d'abord", "Numéro de GSM vérifié, alertes contre les arnaques, signalement en un geste."],
-      ["gift", "7 jours gratuits", "Puis 19,99 € par mois, sans engagement, résiliable en un clic."]];
+      ["gift", "Gratuit pour commencer", "Parcourez les sorties et les profils, envoyez 4 J'aime par jour. L'abonnement permet de discuter : 19,99 € par mois, sans engagement."]];
     return '<section class="wpanel"><svg class="wbg" viewBox="0 0 300 260" aria-hidden="true"><path transform="translate(90,120) scale(2.2)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".13"/><path transform="translate(205,150) scale(2.6)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".10"/></svg>' +
       '<img src="assets/belora-icone-arrondie.svg" alt="" width="84" height="84"><h1>Belora</h1><p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
       '<ul class="pts">' + pts.map(function (x) { return '<li><span class="pi">' + ic(x[0]) + "</span><div><b>" + x[1] + "</b><span>" + x[2] + "</span></div></li>"; }).join("") + "</ul>" +
-      '<div class="info small"><b>Vous testez Belora ?</b> Aucun SMS ni paiement réel : le code de vérification est <b>123456</b>. Vos données restent sur votre téléphone. Essayez de vous inscrire, de rejoindre une sortie, de regarder qui participe et d\'écrire un message. Dites-nous ce qui vous semble confus.</div>' +
+      '<div class="info small"><b>Vous testez Belora ?</b> Aucun SMS ni paiement réel : le code de vérification est <b>123456</b>. Vos données restent sur votre téléphone. Essayez de vous inscrire, de rejoindre une sortie, d\'aimer des profils dans « Découvrir » et, pour discuter, de simuler un abonnement (aucun paiement réel). Dites-nous ce qui vous semble confus.</div>' +
       '<a class="btn primary block big" href="#/connexion">Commencer</a>' +
       '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
   };
@@ -414,8 +407,7 @@
   }
   V.activites = function () {
     var f = st().filters, ville = f.ville || st().me.ville, ss = subState(), banner = "";
-    if (ss === "trial") banner = '<a class="trialbar" href="#/abonnement">' + ic("gift") + "<span><b>Essai gratuit</b> · encore " + trialLeft() + " jour" + (trialLeft() > 1 ? "s" : "") + "</span>" + ic("arrow") + "</a>";
-    if (ss === "expired") banner = '<div class="card paywall"><h3>Votre essai est terminé</h3><p>Abonnez-vous pour revoir les profils et écrire aux autres participants.</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></div>';
+    if (ss === "expired") banner = '<div class="card paywall"><h3>Votre abonnement est terminé</h3><p>Réabonnez-vous pour revoir les profils et écrire aux autres participants.</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></div>';
     var cities = Object.keys(BELORA_CITIES).map(function (c) { return "<option" + (c === ville ? " selected" : "") + ">" + esc(c) + "</option>"; }).join("");
     var rayons = [[10, "10 km"], [25, "25 km"], [50, "50 km"], [100, "100 km"], [999, "Partout"]].map(function (r) {
       return '<option value="' + r[0] + '"' + (f.rayon === r[0] ? " selected" : "") + ">" + r[1] + "</option>";
@@ -447,7 +439,7 @@
         '<span class="meta"><b>' + esc(u.prenom) + (me ? " (vous)" : "") + " " + butTag(u) + "</b>" +
         (me || acc ? '<span class="small muted">' + esc(ageTxt(u)) + (isCouple(u) ? (weight(pid, a) === 2 ? " · à deux" : " · un seul des deux") : "") + " · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + pubTags(u, !me && acc) + '</span><span class="chev" aria-hidden="true">' + ic("arrow") + "</span></a>";
     }).join("") : "<p>Personne pour l'instant. Soyez le premier ou la première à vous inscrire !</p>";
-    var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets · 7 jours gratuits</a>' : "";
+    var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets · S\'abonner</a>' : "";
     var fact = function (i, t, sub) { return "<li>" + ic(i) + "<span><b>" + t + "</b>" + (sub ? "<small>" + sub + "</small>" : "") + "</span></li>"; };
     return '<a class="back" href="#" data-action="back">' + ic("arrowL") + " Retour</a>" +
       '<article class="detail" style="--cat:' + (CATC[a.cat] || "#1F3A5F") + '"><div class="dhead">' + dbox(a.date, true) + '<div><span class="cat">' + esc(a.cat) + "</span>" + ambTag(a) + "<h1>" + esc(a.titre) + "</h1></div></div>" +
@@ -530,7 +522,7 @@
     var acc = hasAccess();
     if (!acc) return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true, blur: true }) +
       "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + '</h1><p>' + pubTags(u) + '</p><p>🔒 La photo, l\'âge, la présentation, la compatibilité et les autres réponses sont réservés aux abonnés.</p>' +
-      likeBlock(u) + '<a class="btn ghost block" style="margin-top:10px" href="#/abonnement">Voir les profils – 7 jours gratuits</a></section>';
+      likeBlock(u) + '<a class="btn ghost block" style="margin-top:10px" href="#/abonnement">Voir les profils · S\'abonner</a></section>';
     var common = st().activities.filter(function (a) { return a.inscrits.indexOf(id) > -1 && isJoined(a.id); });
     return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true }) +
       "<h1 style=\"margin-top:10px\">" + esc(nameAge(u)) + "</h1><p>📍 " + esc(u.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
@@ -567,7 +559,7 @@
 
   function paywall(txt) {
     var ss = subState();
-    return '<section class="card paywall"><h2>🔒 ' + esc(txt) + "</h2><p>" + (ss === "expired" ? "Votre essai est terminé. Abonnez-vous pour continuer : 19,99 € par mois, sans engagement." : "Essayez gratuitement pendant 7 jours : l'essai démarre dès votre première inscription à une sortie.") + '</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></section>';
+    return '<section class="card paywall"><h2>🔒 ' + esc(txt) + "</h2><p>" + (ss === "expired" ? "Votre abonnement est terminé. Réabonnez-vous pour continuer : 19,99 € par mois, sans engagement." : "Abonnez-vous pour discuter avec vos matchs : 19,99 € par mois, sans engagement, résiliable en un clic.") + '</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></section>';
   }
   V.messages = function () {
     if (!hasAccess()) return "<h1>Messages</h1>" + paywall("Les messages sont réservés aux abonnés");
@@ -611,8 +603,8 @@
 
   V.profil = function () {
     var me = st().me, ss = subState(), label = {
-      none: "Pas d'abonnement", trial: "Essai gratuit (" + (st().sub.trialStart ? trialLeft() : 0) + " j restants)", active: "Abonné(e) – " + (st().sub.plan ? PLANS[st().sub.plan].label : ""),
-      cancelled: "Résilié – actif jusqu'au " + (st().sub.endsAt ? new Date(st().sub.endsAt).toLocaleDateString("fr-BE") : ""), expired: "Essai ou abonnement terminé"
+      none: "Pas d'abonnement", active: "Abonné(e) – " + (st().sub.plan ? PLANS[st().sub.plan].label : ""),
+      cancelled: "Résilié – actif jusqu'au " + (st().sub.endsAt ? new Date(st().sub.endsAt).toLocaleDateString("fr-BE") : ""), expired: "Abonnement terminé"
     }[ss];
     var shift = st().shiftDays ? " (démo : +" + st().shiftDays + " j)" : "";
     return '<section class="card center">' + avatar(me, { big: true }) + '<h1 style="margin-top:10px">' + esc(nameAge(me)) + "</h1><p>📍 " + esc(me.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
@@ -623,7 +615,7 @@
       '<section class="card"><h2>Mon abonnement</h2><p>' + esc(label) + '</p><a class="btn primary block" href="#/abonnement">Gérer mon abonnement</a></section>' +
       '<section class="card"><h2>Votre avis sur le site</h2><p class="small muted">Qu\'est-ce qui vous a plu ? Qu\'est-ce qui vous a gêné ou paru compliqué ?</p><label for="fb" class="sr">Votre avis</label><textarea id="fb" placeholder="Écrivez ici…"></textarea><button class="btn navy block" style="margin-top:10px" data-action="copy-fb">Copier mon avis</button><p class="small muted">Collez-le ensuite dans un message à la personne qui vous a envoyé ce lien.</p></section>' +
       '<section class="card"><h2>Confort de lecture</h2><button class="btn ghost block" data-action="toggle-size">' + (st().bigText ? "Texte normal" : "Agrandir le texte") + "</button></section>" +
-      '<section class="card"><h2>Outils de démonstration</h2><p class="small muted">Pour tester l\'essai gratuit et les sorties passées' + esc(shift) + ".</p>" +
+      '<section class="card"><h2>Outils de démonstration</h2><p class="small muted">Pour tester les sorties passées et la limite de J\'aime du jour' + esc(shift) + ".</p>" +
       '<div class="row"><button class="btn small ghost" data-action="shift" data-d="1">Avancer d\'1 jour</button><button class="btn small ghost" data-action="shift" data-d="7">Avancer de 7 jours</button></div>' +
       '<div class="divider"></div><button class="btn small danger" data-action="reset-demo">Réinitialiser toute la démo</button></section>' +
       '<section class="card"><h2>Mes données</h2><p class="small muted">Vous pouvez supprimer votre compte et toutes vos données à tout moment.</p><button class="btn danger block" data-action="delete-account">Supprimer mon compte</button></section>' +
@@ -632,22 +624,19 @@
 
   V.abonnement = function () {
     var ss = subState(), s = st().sub, head;
-    if (ss === "trial") head = '<div class="success">🎁 Essai gratuit en cours : encore ' + trialLeft() + " jour" + (trialLeft() > 1 ? "s" : "") + ".</div>";
-    else if (ss === "active") head = '<div class="success">✔ Abonnement actif jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
+    if (ss === "active") head = '<div class="success">✔ Abonnement actif jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
     else if (ss === "cancelled") head = '<div class="info">Abonnement résilié. Vous gardez l\'accès jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
-    else if (ss === "expired") head = '<div class="error">Votre essai est terminé. Abonnez-vous pour retrouver les messages et les profils.</div>';
-    else head = '<div class="info">7 jours gratuits, sans carte bancaire. <b>L\'essai démarre dès votre première inscription à une sortie.</b></div>';
+    else if (ss === "expired") head = '<div class="error">Votre abonnement est terminé. Réabonnez-vous pour retrouver les messages et les profils.</div>';
+    else head = '<div class="info">Gratuit pour commencer : parcourir, envoyer 4 J\'aime par jour, s\'inscrire aux sorties. <b>L\'abonnement permet de discuter, de voir les profils complets et d\'envoyer des J\'aime sans limite.</b></div>';
     var plans = Object.keys(PLANS).map(function (k, i) {
       var p = PLANS[k];
       return '<label class="plan"><input type="radio" name="plan" value="' + k + '"' + (i === 0 ? " checked" : "") + '><span class="box"><span><b>' + p.label + '</b><br><span class="small muted">' + p.note + '</span></span><span class="p">' + eur(p.price) + "<small>" + p.unit + "</small></span></span></label>";
     }).join("");
-    var canTrial = ss === "none";
     var cta = ss === "active" ? '<button class="btn danger block" data-action="cancel-sub">Résilier mon abonnement</button>' :
-      (canTrial ? '<a class="btn primary block" href="#/activites">Choisir une sortie pour démarrer mon essai gratuit</a><div style="height:10px"></div>' : "") +
-      (ss === "cancelled" || ss === "active" ? "" : '<button class="btn ' + (canTrial ? "ghost" : "primary") + ' block" data-action="subscribe">S\'abonner maintenant</button>');
+      (ss === "cancelled" || ss === "active" ? "" : '<button class="btn ' + "primary" + ' block" data-action="subscribe">S\'abonner maintenant</button>');
     return '<a class="back" href="#" data-action="back">← Retour</a><h1>Mon abonnement</h1>' + head +
-      '<section class="card"><h2>Gratuit pour tous</h2><p class="small">✔ Voir toutes les activités<br>✔ S\'inscrire aux sorties<br>✔ Voir le prénom des participants</p>' +
-      '<h2>Avec l\'abonnement</h2><p class="small">✔ Voir les profils complets (photo, âge, présentation)<br>✔ Écrire et répondre aux messages<br>✔ Alertes anti-arnaque sur vos conversations<br>✔ Assistance par téléphone</p></section>' +
+      '<section class="card"><h2>Gratuit pour tous</h2><p class="small">✔ Voir toutes les activités<br>✔ S\'inscrire aux sorties<br>✔ Voir le prénom des participants<br>✔ Envoyer 4 J\'aime par jour</p>' +
+      '<h2>Avec l\'abonnement</h2><p class="small">✔ Voir les profils complets (photo, âge, présentation)<br>✔ Écrire et répondre aux messages<br>✔ J\'aime illimités et voir qui vous a aimé(e)<br>✔ Alertes anti-arnaque sur vos conversations<br>✔ Assistance par téléphone</p></section>' +
       '<section class="card"><h2>Choisir ma formule</h2><div class="plans">' + plans + "</div>" + cta +
       '<p class="small muted" style="margin-top:12px">Résiliable en un clic, à tout moment. Droit de rétractation de 14 jours. Paiement sécurisé (dans la vraie version : carte ou Bancontact via Stripe).</p></section>';
   };
@@ -655,7 +644,7 @@
   V.cgu = function () {
     return '<a class="back" href="#" data-action="back">← Retour</a><h1>Conditions d\'utilisation</h1><div class="info">Texte de démonstration, à faire valider par un juriste avant tout lancement.</div>' +
       '<div class="card"><h3>L\'essentiel</h3><p class="small">Belora est réservé aux personnes de 50 ans et plus. Vous vous engagez à fournir des informations exactes, à respecter les autres membres, et à ne jamais demander ni proposer d\'argent. Les sorties ont lieu dans des lieux publics.</p>' +
-      '<h3>Abonnement</h3><p class="small">7 jours d\'essai gratuit, puis 19,99 € par mois (ou 49 € pour 3 mois, 149 € pour 12 mois). Résiliation en un clic. Droit de rétractation de 14 jours.</p>' +
+      '<h3>Abonnement</h3><p class="small">Gratuit pour parcourir et envoyer 4 J\'aime par jour. Abonnement : 19,99 € par mois (ou 49 € pour 3 mois, 149 € pour 12 mois). Résiliation en un clic. Droit de rétractation de 14 jours.</p>' +
       '<h3>Modération</h3><p class="small">Les profils signalés plusieurs fois sont suspendus. Nous pouvons exclure toute personne qui ne respecte pas ces règles.</p></div>';
   };
   V.confidentialite = function () {
@@ -728,21 +717,12 @@
   window.addEventListener("hashchange", function () { var h = location.hash.replace(/^#\/?/, ""); if (h && h !== current) { current = h; render(); } });
 
   /* ---------- Actions ---------- */
-  function startTrialIfNeeded() {
-    var s = st().sub;
-    if (s.status === "none" && !s.trialStart) {
-      s.trialStart = S.now(); persist();
-      openModal('<h2>🎉 Bienvenue !</h2><p>Vos <b>7 jours gratuits</b> commencent maintenant. Vous pouvez voir les profils complets et écrire aux autres participants.</p><p class="small muted">Aucun paiement demandé. Ensuite : 19,99 € par mois, sans engagement, résiliable en un clic.</p><button class="btn primary block" data-action="close">Super, merci !</button>');
-      return true;
-    }
-    return false;
-  }
   function doJoin(a, n) {
     if (!isJoined(a.id)) { st().joined.push(a.id); a.inscrits.push("me"); }
     if (isCouple(st().me)) st().party[a.id] = n;
     closeModal();
-    var trial = startTrialIfNeeded(); persist();
-    if (!trial) toast("Vous êtes inscrit(e) !");
+    persist();
+    toast("Vous êtes inscrit(e) !");
     render();
   }
   function partyModal(a, change) {
@@ -839,7 +819,6 @@
     "filter-cat": function (el) { st().filters.cat = el.dataset.v; persist(); render(); },
     "filter-amb": function (el) { st().filters.amb = el.dataset.v; persist(); render(); },
     "close": function () { closeModal(); render(); },
-    "start-trial": function () { startTrialIfNeeded(); render(); },
     "subscribe": function () {
       var k = ($("input[name=plan]:checked") || {}).value || "m", p = PLANS[k];
       openModal('<h2>Confirmer mon abonnement</h2><p><b>' + p.label + "</b> – " + eur(p.price) + " " + p.unit + '.</p><div class="info">Mode test : aucun paiement réel. Dans la vraie version, vous paierez en toute sécurité par carte ou Bancontact.</div><div class="row"><button class="btn primary" data-action="pay" data-plan="' + k + '">Confirmer (paiement simulé)</button><button class="btn ghost" data-action="close">Annuler</button></div>');
@@ -847,7 +826,6 @@
     "pay": function (el) {
       var p = PLANS[el.dataset.plan]; if (!p) return;
       var s = st().sub; s.status = "active"; s.plan = el.dataset.plan; s.startedAt = S.now(); s.endsAt = S.now() + p.days * DAY;
-      if (!s.trialStart) s.trialStart = null;
       persist(); closeModal(); toast("Merci ! Votre abonnement est actif."); render();
     },
     "cancel-sub": function () { confirmModal("Résilier l'abonnement ?", "Vous gardez l'accès jusqu'à la fin de la période déjà payée.", "Oui, résilier", "cancel-sub-ok"); },

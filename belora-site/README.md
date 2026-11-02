@@ -14,8 +14,8 @@ toutes les données restent dans le navigateur (localStorage). Aucun SMS ni paie
 
 1. **Inscription** : GSM belge (04…) ou français (06/07…) → code SMS de démo `123456` → profil (50 ans minimum, CGU obligatoires).
 2. **Activités** : filtres par ville, distance, catégorie et recherche ; « Je participe ».
-3. **Essai gratuit 7 jours** : démarre à la première inscription à une sortie, sans carte bancaire.
-   Avant l'essai, les profils des participants sont floutés (seul le prénom est visible).
+3. **Gratuit pour commencer** : sans abonnement, on parcourt les sorties et les profils (photos floutées), on s'inscrit aux sorties et on envoie 4 J'aime par jour.
+   L'abonnement (paiement simulé) débloque la messagerie, les profils complets et les J'aime illimités. Il n'y a pas d'essai gratuit.
 4. **Messagerie** (abonnés/essai) : réponses automatiques ; alerte anti-arnaque si le message parle de virement, WhatsApp, IBAN, etc.
    Le membre « Gérard » envoie volontairement des messages suspects pour tester l'alerte.
 5. **Signaler / bloquer** une personne ou une activité.
