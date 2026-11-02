@@ -7,6 +7,7 @@
   var ADMIN_CODE = "belora-test";
   var SMS_CODE = "123456";
   var adminOk = false, tmpPhoto = null, replyTimers = [];
+  var current = (location.hash.replace(/^#\/?/, "") || ""), stack = [];
 
   var PLANS = {
     m: { label: "Mensuel", price: 19.99, days: 30, unit: "par mois", note: "Sans engagement" },
@@ -39,7 +40,9 @@
   var fmtHour = new Intl.DateTimeFormat("fr-BE", { hour: "2-digit", minute: "2-digit" });
   var fmtShort = new Intl.DateTimeFormat("fr-BE", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   function when(iso) { var d = new Date(iso); return cap(fmtDay.format(d)) + " à " + fmtHour.format(d).replace(":", "h"); }
-  function go(path) { location.hash = "#/" + path; }
+  function go(path) { if (current) stack.push(current); if (stack.length > 40) stack.shift(); current = path; render(); }
+  function back() { var p = stack.pop(); current = p === undefined ? (st().me ? "activites" : "bienvenue") : p; render(); }
+  window.__route = function () { return current; };
   function persist() { S.save(); }
 
   function toast(msg) {
@@ -240,11 +243,11 @@
     if (id === "me") { go("profil"); return ""; }
     if (u.suspended || st().blocked.indexOf(id) > -1) return '<a class="back" href="#/activites">← Retour</a><div class="card"><p>Ce profil n\'est plus disponible.</p></div>';
     var acc = hasAccess();
-    if (!acc) return '<a class="back" href="javascript:history.back()">← Retour</a><section class="card center">' + avatar(u, { big: true, blur: true }) +
+    if (!acc) return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true, blur: true }) +
       "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + '</h1><p>🔒 La photo, l\'âge et la présentation sont réservés aux abonnés.</p>' +
       '<a class="btn primary block" href="#/abonnement">Voir les profils – 7 jours gratuits</a></section>';
     var common = st().activities.filter(function (a) { return a.inscrits.indexOf(id) > -1 && isJoined(a.id); });
-    return '<a class="back" href="javascript:history.back()">← Retour</a><section class="card center">' + avatar(u, { big: true }) +
+    return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true }) +
       "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + ", " + esc(u.age) + " ans</h1><p>📍 " + esc(u.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
       '<div class="chips" style="justify-content:center">' + u.interets.map(function (i) { return '<span class="tag">' + esc(i) + "</span>"; }).join("") + "</div>" +
       '<p style="margin-top:12px">' + esc(u.bio) + "</p>" +
@@ -337,7 +340,7 @@
     var cta = ss === "active" ? '<button class="btn danger block" data-action="cancel-sub">Résilier mon abonnement</button>' :
       (canTrial ? '<button class="btn primary block" data-action="start-trial">Commencer mes 7 jours gratuits</button><div style="height:10px"></div>' : "") +
       (ss === "cancelled" || ss === "active" ? "" : '<button class="btn ' + (canTrial ? "ghost" : "primary") + ' block" data-action="subscribe">S\'abonner maintenant</button>');
-    return '<a class="back" href="javascript:history.back()">← Retour</a><h1>Mon abonnement</h1>' + head +
+    return '<a class="back" href="#" data-action="back">← Retour</a><h1>Mon abonnement</h1>' + head +
       '<section class="card"><h2>Gratuit pour tous</h2><p class="small">✔ Voir toutes les activités<br>✔ S\'inscrire aux sorties<br>✔ Voir le prénom des participants</p>' +
       '<h2>Avec l\'abonnement</h2><p class="small">✔ Voir les profils complets (photo, âge, présentation)<br>✔ Écrire et répondre aux messages<br>✔ Alertes anti-arnaque sur vos conversations<br>✔ Assistance par téléphone</p></section>' +
       '<section class="card"><h2>Choisir ma formule</h2><div class="plans">' + plans + "</div>" + cta +
@@ -345,13 +348,13 @@
   };
 
   V.cgu = function () {
-    return '<a class="back" href="javascript:history.back()">← Retour</a><h1>Conditions d\'utilisation</h1><div class="info">Texte de démonstration, à faire valider par un juriste avant tout lancement.</div>' +
+    return '<a class="back" href="#" data-action="back">← Retour</a><h1>Conditions d\'utilisation</h1><div class="info">Texte de démonstration, à faire valider par un juriste avant tout lancement.</div>' +
       '<div class="card"><h3>L\'essentiel</h3><p class="small">Belora est réservé aux personnes de 50 ans et plus. Vous vous engagez à fournir des informations exactes, à respecter les autres membres, et à ne jamais demander ni proposer d\'argent. Les sorties ont lieu dans des lieux publics.</p>' +
       '<h3>Abonnement</h3><p class="small">7 jours d\'essai gratuit, puis 19,99 € par mois (ou 49 € pour 3 mois, 149 € pour 12 mois). Résiliation en un clic. Droit de rétractation de 14 jours.</p>' +
       '<h3>Modération</h3><p class="small">Les profils signalés plusieurs fois sont suspendus. Nous pouvons exclure toute personne qui ne respecte pas ces règles.</p></div>';
   };
   V.confidentialite = function () {
-    return '<a class="back" href="javascript:history.back()">← Retour</a><h1>Confidentialité</h1><div class="info">Texte de démonstration, à faire valider avant lancement (RGPD).</div>' +
+    return '<a class="back" href="#" data-action="back">← Retour</a><h1>Confidentialité</h1><div class="info">Texte de démonstration, à faire valider avant lancement (RGPD).</div>' +
       '<div class="card"><h3>Données collectées</h3><p class="small">Numéro de GSM, prénom, âge, ville, centres d\'intérêt, présentation, photo (facultative) et messages.</p>' +
       '<h3>Pourquoi ?</h3><p class="small">Vérifier votre identité par SMS, vous proposer des sorties proches, permettre les échanges et protéger la communauté contre les arnaques.</p>' +
       '<h3>Vos droits</h3><p class="small">Accès, rectification, suppression de vos données à tout moment (bouton « Supprimer mon compte » dans votre profil). Vos données ne sont jamais vendues.</p>' +
@@ -398,7 +401,7 @@
     var d = $("#msgdot"); if (d) d.hidden = !Object.keys(st().unread).length;
   }
   function render() {
-    var parts = (location.hash.replace(/^#\/?/, "") || "").split("/");
+    var parts = (current || "").split("/");
     var r = parts[0] || "", arg = parts[1];
     var key = r === "profil" && arg === "modifier" ? "profil-modifier" : r === "messages" && arg ? "conv" : r;
     if (!r) { go(st().me ? "activites" : "bienvenue"); return; }
@@ -416,7 +419,7 @@
     window.scrollTo(0, 0);
     if (key === "conv") { var m = $("#msg"); if (m) m.focus(); var t = $("#thread"); if (t) t.lastElementChild && t.lastElementChild.scrollIntoView({ block: "end" }); }
   }
-  window.addEventListener("hashchange", render);
+  window.addEventListener("hashchange", function () { var h = location.hash.replace(/^#\/?/, ""); if (h && h !== current) { current = h; render(); } });
 
   /* ---------- Actions ---------- */
   function startTrialIfNeeded() {
@@ -443,7 +446,7 @@
       var n = th.filter(function (m) { return m.from === "them"; }).length;
       var txt = u.suspect ? SUSPECT_REPLIES[n % SUSPECT_REPLIES.length] : NORMAL_REPLIES[n % NORMAL_REPLIES.length].replace("{p}", st().me ? st().me.prenom : "");
       th.push({ from: "them", text: txt, at: S.now(), warn: SCAM_RE.test(txt) });
-      var viewing = location.hash === "#/messages/" + uid;
+      var viewing = current === "messages/" + uid;
       if (!viewing) st().unread[uid] = true;
       persist();
       if (viewing) render(); else refreshDot();
@@ -452,6 +455,7 @@
   }
 
   var actions = {
+    "back": function () { back(); },
     "open-act": function (el) { go("activite/" + el.dataset.id); },
     "join": function (el) {
       var a = actById(el.dataset.id); if (!a) return;
@@ -501,6 +505,8 @@
 
   document.addEventListener("click", function (ev) {
     if (ev.target.id === "modal") { closeModal(); return; }
+    var lk = ev.target.closest("a[href^=\"#/\"]");
+    if (lk && !lk.dataset.action) { ev.preventDefault(); go(lk.getAttribute("href").slice(2)); return; }
     var el = ev.target.closest("[data-action]"); if (!el) return;
     var fn = actions[el.dataset.action]; if (!fn) return;
     if (el.tagName === "A") ev.preventDefault();
