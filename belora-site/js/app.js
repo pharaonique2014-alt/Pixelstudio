@@ -252,7 +252,9 @@
       return visibleUser(u) && u.likesMe && u.likesMe[cat] && canBeLiked(st().me, u, cat) && !st().matches[cat][u.id] && !st().passes[cat][u.id];
     });
   }
-  var FREE_LIKES = 4;
+  var FREE_LIKES = 4, FREE_MSGS = 2;
+  function sentCount(uid) { return (st().conversations[uid] || []).filter(function (m) { return m.from === "me"; }).length; }
+  function msgsLeft(uid) { return hasAccess() ? Infinity : Math.max(0, FREE_MSGS - sentCount(uid)); }
   function dayKey(t) { var d = new Date(t); return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); }
   function likesToday() {
     var k = dayKey(S.now()), n = 0;
@@ -281,8 +283,8 @@
       var chat = hasAccess();
       openModal("<h2>C'est réciproque !</h2><p>" + (cat === "amour" ? "Vous et <b>" + esc(u.prenom) + "</b> vous plaisez mutuellement." : "Vous et <b>" + esc(u.prenom) + "</b> avez envie de devenir amis et de sortir ensemble.") + "</p>" +
         '<p class="small muted">Catégorie : ' + CATS[cat].label + ". Votre discussion restera dans cette catégorie.</p>" +
-        (chat ? '<div class="vstack"><a class="btn primary block" href="#/messages/' + uid + '" data-action="close-go" data-to="messages/' + uid + '">Lui écrire</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>'
-          : '<div class="info small">Pour discuter, il faut un abonnement : <b>19,99 € par mois, sans engagement</b>, résiliable en un clic.</div><div class="vstack"><a class="btn primary block" href="#/abonnement" data-action="close-go" data-to="abonnement">Voir l\'abonnement</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>'));
+        (!chat ? '<div class="info small">Sans abonnement : <b>' + FREE_MSGS + ' messages gratuits</b> par discussion. Ensuite, 19,99 € par mois, sans engagement.</div>' : "") +
+        (true ? '<div class="vstack"><a class="btn primary block" href="#/messages/' + uid + '" data-action="close-go" data-to="messages/' + uid + '">Lui écrire</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>' : '')) ;
     } else {
       persist(); toast("J'aime envoyé à " + u.prenom + ". Vous serez prévenu(e) si c'est réciproque.");
     }
@@ -306,7 +308,7 @@
     var pts = [["route", "Des sorties près de chez vous", "Marches, repas, thés dansants, visites : choisissez ce qui vous plaît."],
       ["users", "Amis, sorties ou rencontre amoureuse", "Seul(e) ou en couple, vous indiquez ce que vous cherchez et trouvez les sorties qui vous correspondent."],
       ["shield", "Votre sécurité d'abord", "Numéro de GSM vérifié, alertes contre les arnaques, signalement en un geste."],
-      ["gift", "Gratuit pour commencer", "Parcourez les sorties et les profils, envoyez 4 J'aime par jour. L'abonnement permet de discuter : 19,99 € par mois, sans engagement."]];
+      ["gift", "Gratuit pour commencer", "Parcourez les sorties et les profils, envoyez 4 J'aime par jour. 2 messages gratuits par discussion. L'abonnement : 19,99 € par mois, sans engagement."]];
     return '<section class="wpanel"><svg class="wbg" viewBox="0 0 300 260" aria-hidden="true"><path transform="translate(90,120) scale(2.2)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".13"/><path transform="translate(205,150) scale(2.6)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".10"/></svg>' +
       '<img src="assets/belora-icone-arrondie.svg" alt="" width="84" height="84"><h1>Belora</h1><p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
       '<ul class="pts">' + pts.map(function (x) { return '<li><span class="pi">' + ic(x[0]) + "</span><div><b>" + x[1] + "</b><span>" + x[2] + "</span></div></li>"; }).join("") + "</ul>" +
@@ -562,9 +564,8 @@
     return '<section class="card paywall"><h2>🔒 ' + esc(txt) + "</h2><p>" + (ss === "expired" ? "Votre abonnement est terminé. Réabonnez-vous pour continuer : 19,99 € par mois, sans engagement." : "Abonnez-vous pour discuter avec vos matchs : 19,99 € par mois, sans engagement, résiliable en un clic.") + '</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></section>';
   }
   V.messages = function () {
-    if (!hasAccess()) return "<h1>Messages</h1>" + paywall("Les messages sont réservés aux abonnés");
     var ids = Object.keys(st().conversations).filter(function (id) { return st().blocked.indexOf(id) < 0 && (st().conversations[id] || []).length; });
-    var h = "<h1>Messages</h1>";
+    var h = "<h1>Messages</h1>" + (hasAccess() ? "" : '<p class="small muted">Sans abonnement : ' + FREE_MSGS + " messages gratuits par discussion.</p>");
     var fresh = allMatchIds().filter(function (id) { return !(st().conversations[id] || []).length; });
     if (fresh.length) h += '<div class="card"><h3>Nouveaux matchs</h3>' + fresh.map(function (id) {
       var u = userById(id); return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + " " + catTag(id) + '</b><span class="small muted">Dites bonjour !</span></span><span class="chev">' + ic("arrow") + "</span></a>";
@@ -585,8 +586,10 @@
     if (m.risk >= 2) warn = '<div class="scam" role="alert">⚠️ ' + (m.from === "them" ? "Attention : ce message est suspect" : "Ce message contient des éléments sensibles") + whyTxt(m) + '. Ne donnez jamais d\'argent ni vos coordonnées bancaires.</div>';
     return '<div class="bubble' + (m.from === "me" ? " me" : "") + '">' + esc(m.text) + time + "</div>" + warn;
   }
+  function composerForm(id) {
+    return '<form class="composer" data-form="send" data-id="' + id + '"><label for="msg" class="sr" style="position:absolute;left:-9999px">Votre message</label><input id="msg" name="msg" type="text" autocomplete="off" placeholder="Votre message…" maxlength="500"><button class="btn primary" type="submit">Envoyer</button></form>';
+  }
   V.conv = function (id) {
-    if (!hasAccess()) { go("abonnement"); return ""; }
     var u = userById(id); if (!u || u.suspended || st().blocked.indexOf(id) > -1) { go("messages"); return ""; }
     if (!matchedCat(id)) { toast("Vous pourrez discuter dès que vous vous plairez mutuellement."); go("decouvrir"); return ""; }
     delete st().unread[id]; persist(); refreshDot();
@@ -598,7 +601,9 @@
     return '<a class="back" href="#/messages">← Messages</a><div class="row between"><a class="person" style="border:0" href="#/membre/' + id + '">' + avatar(u) + "<b>" + esc(u.prenom) + " " + catTag(id) + '</b></a>' +
       '<button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button></div>' +
       hint + '<p class="shield small"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.500-3.200 8-8 9-4.800-1-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg> Protection anti-arnaque active : les messages sont analysés automatiquement par une machine.</p><div class="bubbles" id="thread">' + (th.length ? th.map(function (m, i) { return bubble(m, i, id); }).join("") : '<p class="muted">Dites bonjour à ' + esc(u.prenom) + " !</p>") + "</div>" +
-      '<form class="composer" data-form="send" data-id="' + id + '"><label for="msg" class="sr" style="position:absolute;left:-9999px">Votre message</label><input id="msg" name="msg" type="text" autocomplete="off" placeholder="Votre message…" maxlength="500"><button class="btn primary" type="submit">Envoyer</button></form>';
+      (msgsLeft(id) > 0
+        ? (hasAccess() ? "" : '<p class="likecount">Messages gratuits restants : <b>' + msgsLeft(id) + "</b> sur " + FREE_MSGS + ".</p>") + composerForm(id)
+        : '<section class="card paywall" style="margin-top:12px"><h3>Vous avez utilisé vos ' + FREE_MSGS + ' messages gratuits</h3><p>Abonnez-vous pour continuer la discussion avec ' + esc(u.prenom) + ' : 19,99 € par mois, sans engagement.</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></section>');
   };
 
   V.profil = function () {
@@ -627,7 +632,7 @@
     if (ss === "active") head = '<div class="success">✔ Abonnement actif jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
     else if (ss === "cancelled") head = '<div class="info">Abonnement résilié. Vous gardez l\'accès jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
     else if (ss === "expired") head = '<div class="error">Votre abonnement est terminé. Réabonnez-vous pour retrouver les messages et les profils.</div>';
-    else head = '<div class="info">Gratuit pour commencer : parcourir, envoyer 4 J\'aime par jour, s\'inscrire aux sorties. <b>L\'abonnement permet de discuter, de voir les profils complets et d\'envoyer des J\'aime sans limite.</b></div>';
+    else head = '<div class="info">Gratuit pour commencer : parcourir, envoyer 4 J\'aime par jour, s\'inscrire aux sorties et écrire 2 messages par discussion. <b>L\'abonnement permet de discuter sans limite, de voir les profils complets et d\'envoyer des J\'aime sans limite.</b></div>';
     var plans = Object.keys(PLANS).map(function (k, i) {
       var p = PLANS[k];
       return '<label class="plan"><input type="radio" name="plan" value="' + k + '"' + (i === 0 ? " checked" : "") + '><span class="box"><span><b>' + p.label + '</b><br><span class="small muted">' + p.note + '</span></span><span class="p">' + eur(p.price) + "<small>" + p.unit + "</small></span></span></label>";
@@ -635,8 +640,8 @@
     var cta = ss === "active" ? '<button class="btn danger block" data-action="cancel-sub">Résilier mon abonnement</button>' :
       (ss === "cancelled" || ss === "active" ? "" : '<button class="btn ' + "primary" + ' block" data-action="subscribe">S\'abonner maintenant</button>');
     return '<a class="back" href="#" data-action="back">← Retour</a><h1>Mon abonnement</h1>' + head +
-      '<section class="card"><h2>Gratuit pour tous</h2><p class="small">✔ Voir toutes les activités<br>✔ S\'inscrire aux sorties<br>✔ Voir le prénom des participants<br>✔ Envoyer 4 J\'aime par jour</p>' +
-      '<h2>Avec l\'abonnement</h2><p class="small">✔ Voir les profils complets (photo, âge, présentation)<br>✔ Écrire et répondre aux messages<br>✔ J\'aime illimités et voir qui vous a aimé(e)<br>✔ Alertes anti-arnaque sur vos conversations<br>✔ Assistance par téléphone</p></section>' +
+      '<section class="card"><h2>Gratuit pour tous</h2><p class="small">✔ Voir toutes les activités<br>✔ S\'inscrire aux sorties<br>✔ Voir le prénom des participants<br>✔ Envoyer 4 J\'aime par jour<br>✔ 2 messages gratuits par discussion</p>' +
+      '<h2>Avec l\'abonnement</h2><p class="small">✔ Voir les profils complets (photo, âge, présentation)<br>✔ Messages illimités<br>✔ J\'aime illimités et voir qui vous a aimé(e)<br>✔ Alertes anti-arnaque sur vos conversations<br>✔ Assistance par téléphone</p></section>' +
       '<section class="card"><h2>Choisir ma formule</h2><div class="plans">' + plans + "</div>" + cta +
       '<p class="small muted" style="margin-top:12px">Résiliable en un clic, à tout moment. Droit de rétractation de 14 jours. Paiement sécurisé (dans la vraie version : carte ou Bancontact via Stripe).</p></section>';
   };
@@ -644,7 +649,7 @@
   V.cgu = function () {
     return '<a class="back" href="#" data-action="back">← Retour</a><h1>Conditions d\'utilisation</h1><div class="info">Texte de démonstration, à faire valider par un juriste avant tout lancement.</div>' +
       '<div class="card"><h3>L\'essentiel</h3><p class="small">Belora est réservé aux personnes de 50 ans et plus. Vous vous engagez à fournir des informations exactes, à respecter les autres membres, et à ne jamais demander ni proposer d\'argent. Les sorties ont lieu dans des lieux publics.</p>' +
-      '<h3>Abonnement</h3><p class="small">Gratuit pour parcourir et envoyer 4 J\'aime par jour. Abonnement : 19,99 € par mois (ou 49 € pour 3 mois, 149 € pour 12 mois). Résiliation en un clic. Droit de rétractation de 14 jours.</p>' +
+      '<h3>Abonnement</h3><p class="small">Gratuit pour parcourir, envoyer 4 J\'aime par jour et écrire 2 messages par discussion. Abonnement : 19,99 € par mois (ou 49 € pour 3 mois, 149 € pour 12 mois). Résiliation en un clic. Droit de rétractation de 14 jours.</p>' +
       '<h3>Modération</h3><p class="small">Les profils signalés plusieurs fois sont suspendus. Nous pouvons exclure toute personne qui ne respecte pas ces règles.</p></div>';
   };
   V.confidentialite = function () {
@@ -790,7 +795,7 @@
     "q-prev": function () { qState.i = Math.max(0, qState.i - 1); render(); window.scrollTo(0, 0); },
     "q-quit": function (el, ev) { ev.preventDefault(); finishQuestions(); },
     "show-msg": function (el) { var th = st().conversations[el.dataset.id] || [], m = th[+el.dataset.i]; if (m) { m.shown = true; persist(); render(); } },
-    "send-anyway": function () { var pm = pendingMsg; pendingMsg = null; closeModal(); if (pm) pushMine(pm.id, pm.txt); },
+    "send-anyway": function () { var pm = pendingMsg; pendingMsg = null; closeModal(); if (pm && msgsLeft(pm.id) > 0) pushMine(pm.id, pm.txt); },
     "open-act": function (el) { go("activite/" + el.dataset.id); },
     "join": function (el) {
       var a = actById(el.dataset.id); if (!a) return;
@@ -874,6 +879,7 @@
     "profile-edit": function (f) { saveProfile(f, true); },
     send: function (f) {
       var id = f.dataset.id, txt = f.msg.value.trim(); if (!txt) return;
+      if (msgsLeft(id) <= 0) { render(); return; }
       var sc = scamScan(txt);
       if (sc.level === 3) {
         pendingMsg = { id: id, txt: txt };
