@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220" role="img" aria-label="Belora">
+  <rect width="640" height="220" fill="#FFFFFF"/>
+  <defs>
+    <path id="h" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z"/>
+    <clipPath id="ca"><path d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" transform="translate(90,110) scale(1.25)"/></clipPath>
+  </defs>
+  <use href="#h" transform="translate(90,110) scale(1.25)" fill="#1F3A5F"/>
+  <use href="#h" transform="translate(135,110) scale(1.25)" fill="#F2705A"/>
+  <g clip-path="url(#ca)"><use href="#h" transform="translate(135,110) scale(1.25)" fill="#F7B267"/></g>
+  <text x="215" y="118" font-family="Nunito, 'Poppins', 'Arial Rounded MT Bold', Arial, sans-serif" font-size="82" font-weight="800" fill="#1F3A5F">Belora</text>
+  <text x="218" y="158" font-family="Nunito, 'Poppins', Arial, sans-serif" font-size="22" font-weight="600" fill="#F2705A" letter-spacing="1.5">Sorties &amp; rencontres 50+</text>
+</svg>

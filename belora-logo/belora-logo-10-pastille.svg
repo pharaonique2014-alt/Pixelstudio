@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220" role="img" aria-label="Belora">
+  <rect width="640" height="220" fill="#FFFFFF"/>
+  <defs><path id="h" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z"/></defs>
+  <circle cx="110" cy="110" r="80" fill="#1F3A5F"/>
+  <use href="#h" transform="translate(92,108) scale(0.95)" fill="#FFFFFF"/>
+  <use href="#h" transform="translate(130,108) scale(0.95)" fill="#F7B267" stroke="#1F3A5F" stroke-width="5" stroke-linejoin="round"/>
+  <text x="215" y="118" font-family="Nunito, 'Poppins', 'Arial Rounded MT Bold', Arial, sans-serif" font-size="82" font-weight="800" fill="#1F3A5F">Belora</text>
+  <text x="218" y="158" font-family="Nunito, 'Poppins', Arial, sans-serif" font-size="22" font-weight="600" fill="#F2705A" letter-spacing="1.5">Sorties &amp; rencontres 50+</text>
+</svg>
