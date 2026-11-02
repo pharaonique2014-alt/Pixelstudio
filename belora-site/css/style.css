@@ -269,3 +269,6 @@ h1{font-size:1.65rem;font-weight:900;letter-spacing:-.01em;text-wrap:balance}
 .seg3 .chip{justify-content:center;gap:6px;padding:6px 6px;font-size:.8rem;white-space:nowrap}
 .cnt{display:inline-grid;place-items:center;min-width:1.5em;height:1.5em;border-radius:99px;background:var(--coral);color:#fff;font-size:.78em;padding:0 5px}
 .chip.on .cnt{background:#fff;color:var(--coral-dark)}
+
+.likecount{margin:8px 0;padding:10px 14px;border-radius:16px;background:color-mix(in srgb,var(--gold) 25%,var(--card));color:var(--head);font-size:.88rem;font-weight:600}
+.likecount.zero{background:#FDECEA;color:var(--warn);font-weight:800}

@@ -259,9 +259,28 @@
     if (sb.status === "none" && !sb.trialStart) { sb.trialStart = S.now(); return true; }
     return false;
   }
+  var FREE_LIKES = 4;
+  function dayKey(t) { var d = new Date(t); return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); }
+  function likesToday() {
+    var k = dayKey(S.now()), n = 0;
+    ["amitie", "amour"].forEach(function (c) { var L = st().likes[c]; Object.keys(L).forEach(function (id) { if (dayKey(L[id]) === k) n++; }); });
+    return n;
+  }
+  function likesLeft() { return hasAccess() ? Infinity : Math.max(0, FREE_LIKES - likesToday()); }
+  function likeCounter() {
+    if (hasAccess()) return "";
+    var left = likesLeft();
+    return '<p class="likecount' + (left === 0 ? " zero" : "") + '">' + (left === 0 ? "Vous avez utilisé vos " + FREE_LIKES + " J'aime du jour. Revenez demain, ou abonnez-vous."
+      : "Il vous reste <b>" + left + "</b> J'aime aujourd'hui (" + FREE_LIKES + " par jour sans abonnement).") + "</p>";
+  }
+  function limitModal() {
+    openModal("<h2>Limite du jour atteinte</h2><p>Sans abonnement, vous pouvez envoyer " + FREE_LIKES + " J'aime par jour. Revenez demain, ou profitez de l'essai gratuit de 7 jours : J'aime illimités, photos visibles et messages.</p>" +
+      '<div class="vstack"><a class="btn primary block" href="#/abonnement" data-action="close-go" data-to="abonnement">Voir l\'abonnement</a><button class="btn ghost block" data-action="close">Plus tard</button></div>');
+  }
   function doLike(uid, cat) {
     var u = userById(uid); if (!u || st().likes[cat][uid] || st().matches[cat][uid]) return;
     if (!canBeLiked(st().me, u, cat)) return;
+    if (likesLeft() <= 0) { limitModal(); return; }
     st().likes[cat][uid] = S.now();
     if (u.likesMe && u.likesMe[cat]) {
       st().matches[cat][uid] = S.now();
@@ -279,7 +298,7 @@
   function likeBlock(u) {
     var cats = commonCats(u);
     if (!cats.length) return '<p class="small muted">Vous ne cherchez pas la même chose. L\'amitié et l\'amour restent séparés : pas de mise en relation ici.</p>';
-    return '<div class="likes">' + cats.map(function (c) {
+    return likeCounter() + '<div class="likes">' + cats.map(function (c) {
       if (st().matches[c][u.id]) return '<a class="btn primary block" href="#/messages/' + u.id + '">Discuter · ' + CATS[c].label + "</a>";
       if (st().likes[c][u.id]) return '<button class="btn block" disabled>' + CATS[c].label + " : envoyé, en attente de retour</button>";
       return '<button class="btn ' + (c === "amour" ? "primary" : "navy") + ' block" data-action="like" data-id="' + u.id + '" data-cat="' + c + '">' + CATS[c].like + "</button>";
@@ -475,7 +494,7 @@
     var body = "";
     if (view === "decouvrir") {
       var list = discUsers(cat);
-      body = '<label class="selpill" style="margin:8px 0"><span class="sr">Distance</span>' + ic("route") + '<select data-discrayon="1" aria-label="Distance">' + rayons + "</select></label>" +
+      body = likeCounter() + '<label class="selpill" style="margin:8px 0"><span class="sr">Distance</span>' + ic("route") + '<select data-discrayon="1" aria-label="Distance">' + rayons + "</select></label>" +
         (list.length ? '<p class="count">' + list.length + " profil" + (list.length > 1 ? "s" : "") + " · " + CATS[cat].label + "</p>" + list.map(function (u) { return pcard(u, cat, "new"); }).join("")
           : '<div class="card center"><p><b>Plus de profils pour l\'instant.</b></p><p class="muted small">Élargissez la distance ou revenez plus tard.</p></div>');
     } else if (view === "aiment") {
