@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Belora">
+  <defs><path id="h" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z"/><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2705A"/><stop offset="1" stop-color="#F7B267"/></linearGradient></defs>
+  <use href="#h" transform="translate(68,75) scale(1.05)" fill="#F7B267" fill-opacity="0.6"/>
+  <use href="#h" transform="translate(94,91) scale(1.05)" fill="url(#g)"/>
+</svg>

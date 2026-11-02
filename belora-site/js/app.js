@@ -1,0 +1,606 @@
+/* Belora – site de test (démo). Tout est stocké dans le navigateur. */
+(function () {
+  "use strict";
+  var S = Store; S.load();
+  var st = function () { return S.state; };
+  var DAY = 864e5, HOUR = 36e5, TRIAL_DAYS = 7;
+  var ADMIN_CODE = "belora-test";
+  var SMS_CODE = "123456";
+  var adminOk = false, tmpPhoto = null, replyTimers = [];
+
+  var PLANS = {
+    m: { label: "Mensuel", price: 19.99, days: 30, unit: "par mois", note: "Sans engagement" },
+    t: { label: "3 mois", price: 49, days: 90, unit: "pour 3 mois", note: "Soit 16,33 € par mois · économisez 18 %" },
+    a: { label: "12 mois", price: 149, days: 365, unit: "pour 12 mois", note: "Soit 12,42 € par mois · économisez 38 %" }
+  };
+  var SCAM_RE = /(virement|western\s*union|iban|\brib\b|bitcoin|crypto|whats\s*app|telegram|carte\s*cadeau|paysafe|mandat|envoyer?\s+(de\s+l')?argent|prêt d'argent|avance|colis bloqué)/i;
+  var NORMAL_REPLIES = [
+    "Bonjour {p} ! Ravi(e) de vous lire. Vous venez à une sortie prochainement ?",
+    "Avec plaisir ! J'adore ce genre d'activité. Et vous, qu'est-ce que vous aimez faire d'autre ?",
+    "Quelle bonne idée ! On se retrouve sur place alors. À bientôt !"
+  ];
+  var SUSPECT_REPLIES = [
+    "Bonjour, vous avez un très joli profil. Écrivez-moi sur WhatsApp, ce sera plus simple.",
+    "Je traverse une période difficile, pourriez-vous me faire un petit virement ? Je vous rembourserai."
+  ];
+  var REPORT_REASONS = ["Demande d'argent ou arnaque", "Faux profil / photo qui n'est pas la sienne", "Comportement irrespectueux ou harcèlement", "Contenu inapproprié", "Autre"];
+
+  /* ---------- Outils ---------- */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var esc = function (s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  };
+  var cap = function (s) { return s.charAt(0).toUpperCase() + s.slice(1); };
+  var norm = function (s) { return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+  var eur = function (n) { return n.toLocaleString("fr-BE", { style: "currency", currency: "EUR" }); };
+  var fmtDay = new Intl.DateTimeFormat("fr-BE", { weekday: "long", day: "numeric", month: "long" });
+  var fmtHour = new Intl.DateTimeFormat("fr-BE", { hour: "2-digit", minute: "2-digit" });
+  var fmtShort = new Intl.DateTimeFormat("fr-BE", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  function when(iso) { var d = new Date(iso); return cap(fmtDay.format(d)) + " à " + fmtHour.format(d).replace(":", "h"); }
+  function go(path) { location.hash = "#/" + path; }
+  function persist() { S.save(); }
+
+  function toast(msg) {
+    var t = $("#toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.hidden = true; }, 3600);
+  }
+  function openModal(html) {
+    var m = $("#modal"); $("#modalbox").innerHTML = html; m.hidden = false;
+    var f = $("#modalbox").querySelector("button,input,select,textarea,a"); if (f) f.focus();
+  }
+  function closeModal() { $("#modal").hidden = true; $("#modalbox").innerHTML = ""; }
+
+  /* ---------- Règles métier ---------- */
+  function normPhone(raw) {
+    var p = String(raw).replace(/[\s.\-()\/]/g, "");
+    if (p.indexOf("00") === 0) p = "+" + p.slice(2);
+    if (/^04\d{8}$/.test(p)) return "+32" + p.slice(1);
+    if (/^0[67]\d{8}$/.test(p)) return "+33" + p.slice(1);
+    if (/^\+324\d{8}$/.test(p) || /^\+33[67]\d{8}$/.test(p)) return p;
+    return null;
+  }
+  function dist(a, b) {
+    var A = BELORA_CITIES[a], B = BELORA_CITIES[b]; if (!A || !B) return 0;
+    var t = Math.PI / 180, dLat = (B[0] - A[0]) * t, dLon = (B[1] - A[1]) * t;
+    var x = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(A[0] * t) * Math.cos(B[0] * t) * Math.pow(Math.sin(dLon / 2), 2);
+    return Math.round(2 * 6371 * Math.asin(Math.sqrt(x)));
+  }
+  function subState() {
+    var s = st().sub, now = S.now();
+    if (s.status === "active" && s.endsAt > now) return "active";
+    if (s.status === "cancelled" && s.endsAt > now) return "cancelled";
+    if (s.trialStart && now < s.trialStart + TRIAL_DAYS * DAY) return "trial";
+    if (s.trialStart || s.status !== "none") return "expired";
+    return "none";
+  }
+  function hasAccess() { return ["active", "cancelled", "trial"].indexOf(subState()) > -1; }
+  function trialLeft() { var s = st().sub; return Math.max(0, Math.ceil((s.trialStart + TRIAL_DAYS * DAY - S.now()) / DAY)); }
+  function actById(id) { return st().activities.filter(function (a) { return a.id === id; })[0]; }
+  function userById(id) { return id === "me" ? st().me : st().users.filter(function (u) { return u.id === id; })[0]; }
+  function participants(a) {
+    return a.inscrits.filter(function (id) {
+      if (id === "me") return true;
+      var u = userById(id); return u && !u.suspended && st().blocked.indexOf(id) < 0;
+    });
+  }
+  function isJoined(id) { return st().joined.indexOf(id) > -1; }
+  function isPast(a) { return new Date(a.date).getTime() + 2 * HOUR <= S.now(); }
+  function seatsLeft(a) { return Math.max(0, a.places - participants(a).length); }
+  function priceLabel(a) { return a.prix ? eur(a.prix) : "Gratuit"; }
+  function avatar(u, o) {
+    o = o || {};
+    var inner = u.photo ? '<img alt="" src="' + esc(u.photo) + '">' : esc((u.prenom || "?").charAt(0).toUpperCase());
+    return '<span class="avatar' + (o.blur ? " blur" : "") + (o.big ? " big" : "") + '" style="background:' + esc(u.color || "#1F3A5F") + '" aria-hidden="true">' + inner + "</span>";
+  }
+  function addReport(type, id, reason, text) {
+    st().reports.push({ id: "r" + Date.now(), type: type, target: id, reason: reason, text: text || "", at: S.now() });
+    if (type === "user") {
+      var n = st().reports.filter(function (r) { return r.type === "user" && r.target === id; }).length;
+      var u = userById(id); if (u && n >= 3) u.suspended = true;
+    }
+    persist();
+  }
+
+  /* ---------- Vues ---------- */
+  var V = {};
+
+  V.bienvenue = function () {
+    return '<section class="hero"><img src="assets/belora-icone-arrondie.svg" alt="Belora"><h1>Belora</h1>' +
+      '<p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
+      '<ul class="points">' +
+      '<li><span class="ico">🚶</span><div><b>Des sorties près de chez vous</b>Marches, repas, thés dansants, visites… choisissez ce qui vous plaît.</div></li>' +
+      '<li><span class="ico">🤝</span><div><b>On se retrouve en petit groupe</b>Dans des lieux publics, sans pression. Vous voyez qui participe.</div></li>' +
+      '<li><span class="ico">🛡️</span><div><b>Votre sécurité d\'abord</b>Numéro de GSM vérifié, alertes contre les arnaques, signalement en un clic.</div></li>' +
+      '<li><span class="ico">🎁</span><div><b>7 jours gratuits</b>Puis 19,99 € par mois, sans engagement, résiliable en un clic.</div></li>' +
+      '</ul>' +
+      '<a class="btn primary block" href="#/connexion">Commencer</a>' +
+      '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
+  };
+
+  V.connexion = function () {
+    return '<a class="back" href="#/bienvenue">← Retour</a><h1>Votre numéro de GSM</h1>' +
+      '<p>Nous vous envoyons un code par SMS pour vérifier votre numéro. C\'est tout : pas de mot de passe à retenir.</p>' +
+      '<form data-form="phone" novalidate><label for="phone">Numéro de GSM</label>' +
+      '<input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0470 12 34 56" required>' +
+      '<p class="hint">Numéros belges (+32) et français (+33) uniquement.</p><div id="err"></div>' +
+      '<button class="btn primary block" type="submit">Recevoir mon code</button></form>';
+  };
+
+  V.code = function () {
+    var p = st().pending;
+    if (!p) { go("connexion"); return ""; }
+    return '<a class="back" href="#/connexion">← Changer de numéro</a><h1>Entrez votre code</h1>' +
+      '<p>Un SMS a été envoyé au <b>' + esc(p.phone) + '</b>.</p>' +
+      '<div class="info">Mode démo : aucun SMS n\'est réellement envoyé. Utilisez le code <b>' + SMS_CODE + "</b>.</div>" +
+      '<form data-form="code" novalidate><label for="code">Code à 6 chiffres</label>' +
+      '<input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" required>' +
+      '<div id="err"></div><button class="btn primary block" type="submit">Valider</button></form>';
+  };
+
+  function profileForm(edit) {
+    var me = edit ? st().me : {}, sel = me.interets || [];
+    tmpPhoto = null;
+    var cities = Object.keys(BELORA_CITIES).map(function (c) {
+      return '<option' + (me.ville === c ? " selected" : "") + ">" + esc(c) + "</option>";
+    }).join("");
+    var chips = BELORA_INTERESTS.map(function (i) {
+      return '<label class="chipbox"><input type="checkbox" name="interets" value="' + esc(i) + '"' + (sel.indexOf(i) > -1 ? " checked" : "") + "><span>" + esc(i) + "</span></label>";
+    }).join("");
+    return (edit ? '<a class="back" href="#/profil">← Retour</a>' : "") +
+      "<h1>" + (edit ? "Modifier mon profil" : "Créons votre profil") + "</h1>" +
+      '<form data-form="' + (edit ? "profile-edit" : "profile-new") + '" novalidate>' +
+      '<label for="prenom">Votre prénom</label><input id="prenom" name="prenom" type="text" autocomplete="given-name" maxlength="30" value="' + esc(me.prenom || "") + '" required>' +
+      '<label for="age">Votre âge</label><input id="age" name="age" type="number" inputmode="numeric" min="50" max="99" value="' + esc(me.age || "") + '" required>' +
+      '<label for="ville">Votre ville (pour trouver les sorties proches)</label><select id="ville" name="ville">' + cities + "</select>" +
+      '<div class="label">Vos centres d\'intérêt</div><div class="chips">' + chips + "</div>" +
+      '<label for="bio">Quelques mots sur vous (facultatif)</label><textarea id="bio" name="bio" maxlength="280" placeholder="Ce que vous aimez, ce que vous cherchez…">' + esc(me.bio || "") + "</textarea>" +
+      '<label for="photo">Votre photo (facultatif)</label><div class="row">' + avatar(me.prenom ? me : { prenom: "?", color: "#9AA5B8" }, {}) +
+      '<input id="photo" name="photo" type="file" accept="image/*"></div><p class="hint">Une vraie photo de vous inspire confiance.</p>' +
+      (edit ? "" : '<label class="chipbox" style="display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-weight:400"><input type="checkbox" name="cgu" style="position:static;opacity:1;width:28px;height:28px;flex:none"><span style="border:0;background:none;display:block;padding:0;font-weight:400;min-height:0;font-size:.85rem">J\'ai 50 ans ou plus et j\'accepte les <a href="#/cgu" target="_blank">conditions</a> et la <a href="#/confidentialite" target="_blank">politique de confidentialité</a>.</span></label>') +
+      '<div id="err"></div><button class="btn primary block" style="margin-top:14px" type="submit">' + (edit ? "Enregistrer" : "Terminer mon inscription") + "</button></form>";
+  }
+  V["creer-profil"] = function () {
+    if (!st().pending || !st().pending.verified) { go("connexion"); return ""; }
+    return profileForm(false);
+  };
+  V["profil-modifier"] = function () { return profileForm(true); };
+
+  function actCard(a, d) {
+    var joined = isJoined(a.id), left = seatsLeft(a), n = participants(a).length;
+    var btn = joined ? '<button class="btn ghost block" data-action="open-act" data-id="' + a.id + '">✔ Je suis inscrit(e) – voir</button>' :
+      left === 0 ? '<button class="btn block" disabled>Complet</button>' :
+      '<button class="btn primary block" data-action="join" data-id="' + a.id + '">Je participe</button>';
+    return '<article class="card act" data-action="open-act" data-id="' + a.id + '">' +
+      '<div class="top"><span class="tag">' + esc(a.cat) + '</span><span class="small muted">' + (d ? "à " + d + " km" : "dans votre ville") + "</span></div>" +
+      "<h3>" + esc(a.titre) + "</h3>" +
+      '<p class="line">🗓 ' + esc(when(a.date)) + '</p><p class="line">📍 ' + esc(a.lieu) + ", " + esc(a.ville) + "</p>" +
+      '<div class="foot"><span class="price">' + priceLabel(a) + "</span><span>👥 " + n + " inscrit" + (n > 1 ? "s" : "") + " · " + left + " place" + (left > 1 ? "s" : "") + "</span></div>" + btn + "</article>";
+  }
+  function filteredActs() {
+    var f = st().filters, ville = f.ville || st().me.ville, now = S.now();
+    return st().activities.filter(function (a) { return new Date(a.date).getTime() + 2 * HOUR > now; })
+      .map(function (a) { return { a: a, d: dist(ville, a.ville) }; })
+      .filter(function (x) {
+        return x.d <= f.rayon && (!f.cat || x.a.cat === f.cat) &&
+          (!f.q || norm(x.a.titre + " " + x.a.lieu + " " + x.a.ville + " " + x.a.cat).indexOf(norm(f.q)) > -1);
+      })
+      .sort(function (p, q) { return new Date(p.a.date) - new Date(q.a.date); });
+  }
+  function listHtml() {
+    var r = filteredActs();
+    if (!r.length) return '<div class="card center"><p><b>Aucune activité trouvée.</b></p><p class="muted">Essayez d\'élargir la distance ou de changer de ville.</p></div>';
+    return '<p class="muted small" aria-live="polite">' + r.length + " activité" + (r.length > 1 ? "s" : "") + " près de chez vous</p>" + r.map(function (x) { return actCard(x.a, x.d); }).join("");
+  }
+  V.activites = function () {
+    var f = st().filters, ville = f.ville || st().me.ville, ss = subState(), banner = "";
+    if (ss === "trial") banner = '<div class="success">🎁 Essai gratuit : encore ' + trialLeft() + " jour" + (trialLeft() > 1 ? "s" : "") + ' <a href="#/abonnement">Voir l\'abonnement</a></div>';
+    if (ss === "expired") banner = '<div class="card paywall"><h3>Votre essai est terminé</h3><p>Abonnez-vous pour revoir les profils et écrire aux autres participants.</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></div>';
+    var cities = Object.keys(BELORA_CITIES).map(function (c) { return "<option" + (c === ville ? " selected" : "") + ">" + esc(c) + "</option>"; }).join("");
+    var rayons = [[10, "10 km"], [25, "25 km"], [50, "50 km"], [100, "100 km"], [999, "Partout"]].map(function (r) {
+      return '<option value="' + r[0] + '"' + (f.rayon === r[0] ? " selected" : "") + ">" + r[1] + "</option>";
+    }).join("");
+    var cats = ['<button class="chip' + (!f.cat ? " on" : "") + '" data-action="filter-cat" data-v="">Toutes</button>'].concat(BELORA_CATS.map(function (c) {
+      return '<button class="chip' + (f.cat === c ? " on" : "") + '" data-action="filter-cat" data-v="' + c + '">' + c + "</button>";
+    })).join("");
+    return "<h1>Bonjour " + esc(st().me.prenom) + " 👋</h1><p>Voici les sorties proposées près de chez vous.</p>" + banner +
+      '<div class="filters"><div class="row"><div style="flex:2;min-width:150px"><label for="f-ville" class="small" style="margin:0 0 4px">Ma ville</label><select id="f-ville" data-filter="ville">' + cities + '</select></div>' +
+      '<div style="flex:1;min-width:110px"><label for="f-rayon" class="small" style="margin:0 0 4px">Distance</label><select id="f-rayon" data-filter="rayon">' + rayons + "</select></div></div>" +
+      '<label for="f-q" class="small" style="margin:10px 0 4px">Rechercher</label><input id="f-q" data-filter="q" type="text" placeholder="Marche, danse, repas…" value="' + esc(f.q) + '">' +
+      '<div class="chips" style="margin-top:10px">' + cats + "</div></div>" +
+      '<div id="actlist" style="margin-top:12px">' + listHtml() + "</div>";
+  };
+
+  V.activite = function (id) {
+    var a = actById(id); if (!a) { go("activites"); return ""; }
+    var acc = hasAccess(), joined = isJoined(a.id), left = seatsLeft(a), ppl = participants(a), d = dist(st().me.ville, a.ville);
+    var btn = isPast(a) ? '<button class="btn block" disabled>Cette sortie est terminée</button>' : joined ?
+      '<button class="btn danger block" data-action="leave" data-id="' + a.id + '">Me désinscrire</button>' :
+      left === 0 ? '<button class="btn block" disabled>Complet</button>' : '<button class="btn primary block" data-action="join" data-id="' + a.id + '">Je participe</button>';
+    var list = ppl.length ? ppl.map(function (pid) {
+      var u = userById(pid), me = pid === "me";
+      return '<a class="person" href="#/membre/' + pid + '">' + avatar(u, { blur: !acc && !me }) +
+        '<span class="meta"><b>' + esc(u.prenom) + (me ? " (vous)" : "") + "</b>" +
+        (me || acc ? '<span class="small muted">' + esc(u.age) + " ans · " + esc(u.ville) + "</span>" : '<span class="lock">🔒 Profil complet réservé aux abonnés</span>') + "</span><span aria-hidden=\"true\">›</span></a>";
+    }).join("") : "<p>Personne pour l'instant. Soyez le premier ou la première à vous inscrire !</p>";
+    var cta = !acc && ppl.length ? '<a class="btn navy block" style="margin-top:10px" href="#/abonnement">Voir les profils complets – 7 jours gratuits</a>' : "";
+    return '<a class="back" href="#/activites">← Retour aux activités</a><article class="card">' +
+      '<span class="tag">' + esc(a.cat) + "</span><h1 style=\"margin-top:8px\">" + esc(a.titre) + "</h1>" +
+      "<p>🗓 <b>" + esc(when(a.date)) + "</b></p><p>📍 " + esc(a.lieu) + ", " + esc(a.ville) + (d ? " · à " + d + " km" : "") + "</p>" +
+      "<p>💶 " + priceLabel(a) + "</p><p>👥 " + ppl.length + " inscrit" + (ppl.length > 1 ? "s" : "") + " · " + left + " place" + (left > 1 ? "s" : "") + " restante" + (left > 1 ? "s" : "") + "</p>" +
+      "<p>" + esc(a.desc) + '</p><p class="small muted">Organisé par ' + esc(a.orga) + " · Source : " + esc(a.source) + "</p>" + btn + "</article>" +
+      '<section class="card"><h2>Qui participe ?</h2>' + list + cta + "</section>" +
+      '<aside class="card info"><h3>🛡️ Pour votre sécurité</h3><p class="small">Rendez-vous toujours dans un lieu public. Ne donnez jamais d\'argent ni de coordonnées bancaires. Si quelque chose vous gêne, signalez-le : on s\'en occupe.</p></aside>' +
+      '<p class="center"><a href="#" data-action="report-act" data-id="' + a.id + '">Signaler cette activité</a></p>';
+  };
+
+  V.membre = function (id) {
+    var u = userById(id); if (!u) { go("activites"); return ""; }
+    if (id === "me") { go("profil"); return ""; }
+    if (u.suspended || st().blocked.indexOf(id) > -1) return '<a class="back" href="#/activites">← Retour</a><div class="card"><p>Ce profil n\'est plus disponible.</p></div>';
+    var acc = hasAccess();
+    if (!acc) return '<a class="back" href="javascript:history.back()">← Retour</a><section class="card center">' + avatar(u, { big: true, blur: true }) +
+      "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + '</h1><p>🔒 La photo, l\'âge et la présentation sont réservés aux abonnés.</p>' +
+      '<a class="btn primary block" href="#/abonnement">Voir les profils – 7 jours gratuits</a></section>';
+    var common = st().activities.filter(function (a) { return a.inscrits.indexOf(id) > -1 && isJoined(a.id); });
+    return '<a class="back" href="javascript:history.back()">← Retour</a><section class="card center">' + avatar(u, { big: true }) +
+      "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + ", " + esc(u.age) + " ans</h1><p>📍 " + esc(u.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
+      '<div class="chips" style="justify-content:center">' + u.interets.map(function (i) { return '<span class="tag">' + esc(i) + "</span>"; }).join("") + "</div>" +
+      '<p style="margin-top:12px">' + esc(u.bio) + "</p>" +
+      (common.length ? '<p class="small muted">Vous participez aussi à : ' + common.map(function (a) { return esc(a.titre); }).join(", ") + "</p>" : "") +
+      '<a class="btn primary block" href="#/messages/' + id + '">Écrire à ' + esc(u.prenom) + "</a>" +
+      '<div class="row" style="justify-content:center;margin-top:10px"><button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button><button class="btn small ghost" data-action="block" data-id="' + id + '">Bloquer</button></div></section>';
+  };
+
+  V.sorties = function () {
+    var mine = st().joined.map(actById).filter(Boolean).sort(function (p, q) { return new Date(p.date) - new Date(q.date); });
+    var up = mine.filter(function (a) { return !isPast(a); }), past = mine.filter(isPast);
+    var h = "<h1>Mes sorties</h1>";
+    if (!mine.length) return h + '<div class="card center"><p><b>Vous n\'êtes inscrit(e) à aucune sortie.</b></p><p class="muted">Choisissez une activité qui vous plaît !</p><a class="btn primary block" href="#/activites">Voir les activités</a></div>';
+    if (up.length) h += "<h2>À venir</h2>" + up.map(function (a) { return actCard(a, 0); }).join("");
+    if (past.length) {
+      h += "<h2>Terminées</h2>" + past.map(function (a) {
+        var fb = st().feedback[a.id];
+        if (fb) return '<div class="card"><h3>' + esc(a.titre) + '</h3><p class="success">Merci pour votre retour !</p></div>';
+        var others = participants(a).filter(function (p) { return p !== "me"; }).map(function (p) {
+          var u = userById(p); return '<label class="chipbox"><input type="checkbox" name="revoir" value="' + p + '"><span>' + esc(u.prenom) + "</span></label>";
+        }).join("");
+        return '<form class="card" data-form="feedback" data-id="' + a.id + '"><h3>' + esc(a.titre) + '</h3><p class="muted small">' + esc(when(a.date)) + "</p>" +
+          '<div class="label">Comment s\'est passée la sortie ?</div><div class="chips">' +
+          [["3", "😀 Très bien"], ["2", "🙂 Bien"], ["1", "🙁 Pas terrible"]].map(function (o) { return '<label class="chipbox"><input type="radio" name="note" value="' + o[0] + '"><span>' + o[1] + "</span></label>"; }).join("") + "</div>" +
+          (others ? '<div class="label">Souhaitez-vous revoir certaines personnes ?</div><div class="chips">' + others + "</div>" : "") +
+          '<button class="btn navy block" style="margin-top:14px" type="submit">Envoyer mon avis</button></form>';
+      }).join("");
+    }
+    return h;
+  };
+
+  function paywall(txt) {
+    var ss = subState();
+    return '<section class="card paywall"><h2>🔒 ' + esc(txt) + "</h2><p>" + (ss === "expired" ? "Votre essai est terminé. Abonnez-vous pour continuer : 19,99 € par mois, sans engagement." : "Essayez gratuitement pendant 7 jours : l'essai démarre dès votre première inscription à une sortie.") + '</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></section>';
+  }
+  V.messages = function () {
+    if (!hasAccess()) return "<h1>Messages</h1>" + paywall("Les messages sont réservés aux abonnés");
+    var ids = Object.keys(st().conversations).filter(function (id) { return st().blocked.indexOf(id) < 0 && (st().conversations[id] || []).length; });
+    var h = "<h1>Messages</h1>";
+    if (!ids.length) return h + '<div class="card center"><p><b>Aucune conversation pour l\'instant.</b></p><p class="muted">Ouvrez la fiche d\'une personne qui participe à une sortie pour lui écrire.</p><a class="btn primary block" href="#/activites">Voir les activités</a></div>';
+    return h + '<div class="card">' + ids.map(function (id) {
+      var u = userById(id), th = st().conversations[id], last = th[th.length - 1];
+      return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + (st().unread[id] ? ' <span class="tag">nouveau</span>' : "") + '</b><span class="small muted">' + esc(last.text.slice(0, 60)) + "</span></span></a>";
+    }).join("") + "</div>";
+  };
+  function bubble(m) {
+    var warn = m.warn ? '<div class="scam" role="alert">⚠️ Attention : ce message parle d\'argent ou vous invite à quitter Belora. Ne donnez jamais d\'argent ni vos coordonnées bancaires.</div>' : "";
+    return '<div class="bubble' + (m.from === "me" ? " me" : "") + '">' + esc(m.text) + "<time>" + fmtShort.format(new Date(m.at)) + "</time></div>" + warn;
+  }
+  V.conv = function (id) {
+    if (!hasAccess()) { go("abonnement"); return ""; }
+    var u = userById(id); if (!u || u.suspended || st().blocked.indexOf(id) > -1) { go("messages"); return ""; }
+    delete st().unread[id]; persist(); refreshDot();
+    var th = st().conversations[id] || [];
+    return '<a class="back" href="#/messages">← Messages</a><div class="row between"><a class="person" style="border:0" href="#/membre/' + id + '">' + avatar(u) + "<b>" + esc(u.prenom) + '</b></a>' +
+      '<button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button></div>' +
+      '<div class="bubbles" id="thread">' + (th.length ? th.map(bubble).join("") : '<p class="muted">Dites bonjour à ' + esc(u.prenom) + " !</p>") + "</div>" +
+      '<form class="composer" data-form="send" data-id="' + id + '"><label for="msg" class="sr" style="position:absolute;left:-9999px">Votre message</label><input id="msg" name="msg" type="text" autocomplete="off" placeholder="Votre message…" maxlength="500"><button class="btn primary" type="submit">Envoyer</button></form>';
+  };
+
+  V.profil = function () {
+    var me = st().me, ss = subState(), label = {
+      none: "Pas d'abonnement", trial: "Essai gratuit (" + (st().sub.trialStart ? trialLeft() : 0) + " j restants)", active: "Abonné(e) – " + (st().sub.plan ? PLANS[st().sub.plan].label : ""),
+      cancelled: "Résilié – actif jusqu'au " + (st().sub.endsAt ? new Date(st().sub.endsAt).toLocaleDateString("fr-BE") : ""), expired: "Essai ou abonnement terminé"
+    }[ss];
+    var shift = st().shiftDays ? " (démo : +" + st().shiftDays + " j)" : "";
+    return '<section class="card center">' + avatar(me, { big: true }) + '<h1 style="margin-top:10px">' + esc(me.prenom) + ", " + esc(me.age) + " ans</h1><p>📍 " + esc(me.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
+      "<p>" + esc(me.bio || "") + '</p><a class="btn ghost block" href="#/profil/modifier">Modifier mon profil</a></section>' +
+      '<section class="card"><h2>Mon abonnement</h2><p>' + esc(label) + '</p><a class="btn primary block" href="#/abonnement">Gérer mon abonnement</a></section>' +
+      '<section class="card"><h2>Confort de lecture</h2><button class="btn ghost block" data-action="toggle-size">' + (st().bigText ? "Texte normal" : "Agrandir le texte") + "</button></section>" +
+      '<section class="card"><h2>Outils de démonstration</h2><p class="small muted">Pour tester l\'essai gratuit et les sorties passées' + esc(shift) + ".</p>" +
+      '<div class="row"><button class="btn small ghost" data-action="shift" data-d="1">Avancer d\'1 jour</button><button class="btn small ghost" data-action="shift" data-d="7">Avancer de 7 jours</button></div>' +
+      '<div class="divider"></div><button class="btn small danger" data-action="reset-demo">Réinitialiser toute la démo</button></section>' +
+      '<section class="card"><h2>Mes données</h2><p class="small muted">Vous pouvez supprimer votre compte et toutes vos données à tout moment.</p><button class="btn danger block" data-action="delete-account">Supprimer mon compte</button></section>' +
+      '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
+  };
+
+  V.abonnement = function () {
+    var ss = subState(), s = st().sub, head;
+    if (ss === "trial") head = '<div class="success">🎁 Essai gratuit en cours : encore ' + trialLeft() + " jour" + (trialLeft() > 1 ? "s" : "") + ".</div>";
+    else if (ss === "active") head = '<div class="success">✔ Abonnement actif jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
+    else if (ss === "cancelled") head = '<div class="info">Abonnement résilié. Vous gardez l\'accès jusqu\'au ' + new Date(s.endsAt).toLocaleDateString("fr-BE") + ".</div>";
+    else if (ss === "expired") head = '<div class="error">Votre essai est terminé. Abonnez-vous pour retrouver les messages et les profils.</div>';
+    else head = '<div class="info">7 jours gratuits, sans carte bancaire. L\'essai démarre dès votre première inscription à une sortie.</div>';
+    var plans = Object.keys(PLANS).map(function (k, i) {
+      var p = PLANS[k];
+      return '<label class="plan"><input type="radio" name="plan" value="' + k + '"' + (i === 0 ? " checked" : "") + '><span class="box"><span><b>' + p.label + '</b><br><span class="small muted">' + p.note + '</span></span><span class="p">' + eur(p.price) + "<small>" + p.unit + "</small></span></span></label>";
+    }).join("");
+    var canTrial = ss === "none";
+    var cta = ss === "active" ? '<button class="btn danger block" data-action="cancel-sub">Résilier mon abonnement</button>' :
+      (canTrial ? '<button class="btn primary block" data-action="start-trial">Commencer mes 7 jours gratuits</button><div style="height:10px"></div>' : "") +
+      (ss === "cancelled" || ss === "active" ? "" : '<button class="btn ' + (canTrial ? "ghost" : "primary") + ' block" data-action="subscribe">S\'abonner maintenant</button>');
+    return '<a class="back" href="javascript:history.back()">← Retour</a><h1>Mon abonnement</h1>' + head +
+      '<section class="card"><h2>Gratuit pour tous</h2><p class="small">✔ Voir toutes les activités<br>✔ S\'inscrire aux sorties<br>✔ Voir le prénom des participants</p>' +
+      '<h2>Avec l\'abonnement</h2><p class="small">✔ Voir les profils complets (photo, âge, présentation)<br>✔ Écrire et répondre aux messages<br>✔ Alertes anti-arnaque sur vos conversations<br>✔ Assistance par téléphone</p></section>' +
+      '<section class="card"><h2>Choisir ma formule</h2><div class="plans">' + plans + "</div>" + cta +
+      '<p class="small muted" style="margin-top:12px">Résiliable en un clic, à tout moment. Droit de rétractation de 14 jours. Paiement sécurisé (dans la vraie version : carte ou Bancontact via Stripe).</p></section>';
+  };
+
+  V.cgu = function () {
+    return '<a class="back" href="javascript:history.back()">← Retour</a><h1>Conditions d\'utilisation</h1><div class="info">Texte de démonstration, à faire valider par un juriste avant tout lancement.</div>' +
+      '<div class="card"><h3>L\'essentiel</h3><p class="small">Belora est réservé aux personnes de 50 ans et plus. Vous vous engagez à fournir des informations exactes, à respecter les autres membres, et à ne jamais demander ni proposer d\'argent. Les sorties ont lieu dans des lieux publics.</p>' +
+      '<h3>Abonnement</h3><p class="small">7 jours d\'essai gratuit, puis 19,99 € par mois (ou 49 € pour 3 mois, 149 € pour 12 mois). Résiliation en un clic. Droit de rétractation de 14 jours.</p>' +
+      '<h3>Modération</h3><p class="small">Les profils signalés plusieurs fois sont suspendus. Nous pouvons exclure toute personne qui ne respecte pas ces règles.</p></div>';
+  };
+  V.confidentialite = function () {
+    return '<a class="back" href="javascript:history.back()">← Retour</a><h1>Confidentialité</h1><div class="info">Texte de démonstration, à faire valider avant lancement (RGPD).</div>' +
+      '<div class="card"><h3>Données collectées</h3><p class="small">Numéro de GSM, prénom, âge, ville, centres d\'intérêt, présentation, photo (facultative) et messages.</p>' +
+      '<h3>Pourquoi ?</h3><p class="small">Vérifier votre identité par SMS, vous proposer des sorties proches, permettre les échanges et protéger la communauté contre les arnaques.</p>' +
+      '<h3>Vos droits</h3><p class="small">Accès, rectification, suppression de vos données à tout moment (bouton « Supprimer mon compte » dans votre profil). Vos données ne sont jamais vendues.</p>' +
+      '<h3>Dans cette démo</h3><p class="small">Tout reste dans votre navigateur. Rien n\'est envoyé sur un serveur.</p></div>';
+  };
+
+  /* ----- Espace admin (démo) ----- */
+  V.admin = function () {
+    if (!adminOk) return '<a class="back" href="#/bienvenue">← Retour</a><h1>Espace admin</h1><div class="info">Démo : le code est <b>' + ADMIN_CODE + '</b>. Dans la vraie version, l\'accès sera protégé côté serveur.</div>' +
+      '<form data-form="admin-login"><label for="ac">Code d\'accès</label><input id="ac" name="code" type="password" autocomplete="off"><div id="err"></div><button class="btn navy block" style="margin-top:12px" type="submit">Entrer</button></form>';
+    var s = st(), insc = s.activities.reduce(function (n, a) { return n + a.inscrits.length; }, 0);
+    var rep = s.reports.length ? "<table><tr><th>Date</th><th>Cible</th><th>Motif</th><th></th></tr>" + s.reports.map(function (r) {
+      var u = r.type === "user" ? userById(r.target) : actById(r.target);
+      var name = u ? esc(u.prenom || u.titre) : "(supprimé)";
+      return "<tr><td>" + fmtShort.format(new Date(r.at)) + "</td><td>" + (r.type === "user" ? "👤 " : "📅 ") + name + "</td><td>" + esc(r.reason) + "</td><td><button class=\"btn small ghost\" data-action=\"admin-dismiss\" data-id=\"" + r.id + "\">Classer</button></td></tr>";
+    }).join("") + "</table>" : '<p class="muted">Aucun signalement.</p>';
+    var users = "<table><tr><th>Membre</th><th>Ville</th><th></th></tr>" + s.users.map(function (u) {
+      return "<tr><td>" + esc(u.prenom) + (u.suspect ? ' <span class="tag warn">suspect</span>' : "") + (u.suspended ? ' <span class="tag warn">suspendu</span>' : "") + "</td><td>" + esc(u.ville) + '</td><td><button class="btn small ghost" data-action="admin-suspend" data-id="' + u.id + '">' + (u.suspended ? "Rétablir" : "Suspendre") + "</button></td></tr>";
+    }).join("") + "</table>";
+    var acts = "<table><tr><th>Activité</th><th>Date</th><th></th></tr>" + s.activities.slice().sort(function (a, b) { return new Date(a.date) - new Date(b.date); }).map(function (a) {
+      return "<tr><td>" + esc(a.titre) + "<br><span class=\"muted\">" + esc(a.ville) + " · " + participants(a).length + "/" + a.places + "</span></td><td>" + fmtShort.format(new Date(a.date)) + '</td><td><button class="btn small danger" data-action="admin-del-act" data-id="' + a.id + '">Suppr.</button></td></tr>';
+    }).join("") + "</table>";
+    var cities = Object.keys(BELORA_CITIES).map(function (c) { return "<option>" + esc(c) + "</option>"; }).join("");
+    var cats = BELORA_CATS.map(function (c) { return "<option>" + c + "</option>"; }).join("");
+    var today = new Date(S.now() + DAY).toISOString().slice(0, 10);
+    return '<a class="back" href="#/bienvenue">← Quitter l\'admin</a><h1>Tableau de bord</h1>' +
+      '<div class="stats"><div class="stat"><b>' + (s.users.length + (s.me ? 1 : 0)) + '</b>membres</div><div class="stat"><b>' + s.activities.length + '</b>activités</div><div class="stat"><b>' + insc + '</b>inscriptions</div><div class="stat"><b>' + s.reports.length + "</b>signalements</div></div>" +
+      '<section class="card" style="margin-top:14px"><h2>Signalements</h2>' + rep + "</section>" +
+      '<section class="card"><h2>Ajouter une activité</h2><p class="small muted">Copiez ici les sorties trouvées dans les groupes ou agendas locaux (avec l\'accord de l\'organisateur).</p>' +
+      '<form data-form="admin-add"><label for="n-t">Titre</label><input id="n-t" name="titre" type="text" required>' +
+      '<div class="row"><div style="flex:1;min-width:140px"><label for="n-c">Catégorie</label><select id="n-c" name="cat">' + cats + '</select></div><div style="flex:1;min-width:140px"><label for="n-v">Ville</label><select id="n-v" name="ville">' + cities + "</select></div></div>" +
+      '<label for="n-l">Lieu précis</label><input id="n-l" name="lieu" type="text" required>' +
+      '<div class="row"><div style="flex:1;min-width:140px"><label for="n-d">Date</label><input id="n-d" name="date" type="date" value="' + today + '" required></div><div style="flex:1;min-width:120px"><label for="n-h">Heure</label><input id="n-h" name="heure" type="time" value="14:00" required></div></div>' +
+      '<div class="row"><div style="flex:1;min-width:120px"><label for="n-p">Prix (€)</label><input id="n-p" name="prix" type="number" min="0" step="0.5" value="0"></div><div style="flex:1;min-width:120px"><label for="n-n">Places</label><input id="n-n" name="places" type="number" min="1" value="12"></div></div>' +
+      '<label for="n-o">Organisateur</label><input id="n-o" name="orga" type="text" placeholder="Nom du groupe ou de l\'association">' +
+      '<label for="n-s">Source (lien du groupe ou de la page)</label><input id="n-s" name="source" type="text">' +
+      '<label for="n-x">Description</label><textarea id="n-x" name="desc"></textarea><div id="err"></div><button class="btn primary block" style="margin-top:12px" type="submit">Ajouter l\'activité</button></form></section>' +
+      '<section class="card"><h2>Activités</h2>' + acts + '</section><section class="card"><h2>Membres</h2>' + users + "</section>";
+  };
+
+  /* ---------- Routage ---------- */
+  var OPEN = ["bienvenue", "connexion", "code", "cgu", "confidentialite", "admin", "creer-profil"];
+  function refreshDot() {
+    var d = $("#msgdot"); if (d) d.hidden = !Object.keys(st().unread).length;
+  }
+  function render() {
+    var parts = (location.hash.replace(/^#\/?/, "") || "").split("/");
+    var r = parts[0] || "", arg = parts[1];
+    var key = r === "profil" && arg === "modifier" ? "profil-modifier" : r === "messages" && arg ? "conv" : r;
+    if (!r) { go(st().me ? "activites" : "bienvenue"); return; }
+    if (!st().me && OPEN.indexOf(r) < 0) { go("bienvenue"); return; }
+    if (st().me && ["bienvenue", "connexion", "code", "creer-profil"].indexOf(r) > -1) { go("activites"); return; }
+    if (!V[key]) { go(st().me ? "activites" : "bienvenue"); return; }
+    var html = V[key](arg);
+    if (html === "") return;
+    var navOff = OPEN.indexOf(r) > -1 && !st().me || r === "admin";
+    document.body.classList.toggle("noNav", navOff);
+    $("#app").innerHTML = html;
+    var tab = r === "activite" || r === "membre" ? "activites" : r;
+    [].forEach.call(document.querySelectorAll("#tabbar a"), function (a) { a.classList.toggle("on", a.dataset.tab === tab); });
+    refreshDot();
+    window.scrollTo(0, 0);
+    if (key === "conv") { var m = $("#msg"); if (m) m.focus(); var t = $("#thread"); if (t) t.lastElementChild && t.lastElementChild.scrollIntoView({ block: "end" }); }
+  }
+  window.addEventListener("hashchange", render);
+
+  /* ---------- Actions ---------- */
+  function startTrialIfNeeded() {
+    var s = st().sub;
+    if (s.status === "none" && !s.trialStart) {
+      s.trialStart = S.now(); persist();
+      openModal('<h2>🎉 Bienvenue !</h2><p>Vos <b>7 jours gratuits</b> commencent maintenant. Vous pouvez voir les profils complets et écrire aux autres participants.</p><p class="small muted">Aucun paiement demandé. Ensuite : 19,99 € par mois, sans engagement, résiliable en un clic.</p><button class="btn primary block" data-action="close">Super, merci !</button>');
+      return true;
+    }
+    return false;
+  }
+  function confirmModal(title, text, actionLabel, action, data) {
+    openModal("<h2>" + esc(title) + "</h2><p>" + esc(text) + '</p><div class="row"><button class="btn danger" data-action="' + action + '" ' + (data || "") + ">" + esc(actionLabel) + '</button><button class="btn ghost" data-action="close">Annuler</button></div>');
+  }
+  function reportModal(type, id) {
+    openModal('<h2>Signaler</h2><p class="muted small">Votre signalement est confidentiel. Merci de nous aider à protéger la communauté.</p><form data-form="report" data-type="' + type + '" data-id="' + id + '">' +
+      REPORT_REASONS.map(function (r, i) { return '<label class="plan"><input type="radio" name="reason" value="' + esc(r) + '"' + (i === 0 ? " checked" : "") + '><span class="box">' + esc(r) + "</span></label>"; }).join('<div style="height:8px"></div>') +
+      '<label for="rtxt">Précisions (facultatif)</label><textarea id="rtxt" name="text"></textarea><div class="row" style="margin-top:12px"><button class="btn primary" type="submit">Envoyer le signalement</button><button class="btn ghost" type="button" data-action="close">Annuler</button></div></form>');
+  }
+  function scheduleReply(uid) {
+    var u = userById(uid); if (!u) return;
+    var t = setTimeout(function () {
+      var th = st().conversations[uid] = st().conversations[uid] || [];
+      var n = th.filter(function (m) { return m.from === "them"; }).length;
+      var txt = u.suspect ? SUSPECT_REPLIES[n % SUSPECT_REPLIES.length] : NORMAL_REPLIES[n % NORMAL_REPLIES.length].replace("{p}", st().me ? st().me.prenom : "");
+      th.push({ from: "them", text: txt, at: S.now(), warn: SCAM_RE.test(txt) });
+      var viewing = location.hash === "#/messages/" + uid;
+      if (!viewing) st().unread[uid] = true;
+      persist();
+      if (viewing) render(); else refreshDot();
+    }, 1400);
+    replyTimers.push(t);
+  }
+
+  var actions = {
+    "open-act": function (el) { go("activite/" + el.dataset.id); },
+    "join": function (el) {
+      var a = actById(el.dataset.id); if (!a) return;
+      if (seatsLeft(a) === 0) { toast("Cette sortie est complète."); return; }
+      if (!isJoined(a.id)) { st().joined.push(a.id); a.inscrits.push("me"); }
+      var trial = startTrialIfNeeded(); persist();
+      if (!trial) toast("✔ Vous êtes inscrit(e) !");
+      render();
+    },
+    "leave": function (el) {
+      var a = actById(el.dataset.id); if (!a) return;
+      st().joined = st().joined.filter(function (x) { return x !== a.id; });
+      a.inscrits = a.inscrits.filter(function (x) { return x !== "me"; });
+      persist(); toast("Vous êtes désinscrit(e)."); render();
+    },
+    "filter-cat": function (el) { st().filters.cat = el.dataset.v; persist(); render(); },
+    "close": function () { closeModal(); render(); },
+    "start-trial": function () { startTrialIfNeeded(); render(); },
+    "subscribe": function () {
+      var k = ($("input[name=plan]:checked") || {}).value || "m", p = PLANS[k];
+      openModal('<h2>Confirmer mon abonnement</h2><p><b>' + p.label + "</b> – " + eur(p.price) + " " + p.unit + '.</p><div class="info">Mode test : aucun paiement réel. Dans la vraie version, vous paierez en toute sécurité par carte ou Bancontact.</div><div class="row"><button class="btn primary" data-action="pay" data-plan="' + k + '">Confirmer (paiement simulé)</button><button class="btn ghost" data-action="close">Annuler</button></div>');
+    },
+    "pay": function (el) {
+      var p = PLANS[el.dataset.plan]; if (!p) return;
+      var s = st().sub; s.status = "active"; s.plan = el.dataset.plan; s.startedAt = S.now(); s.endsAt = S.now() + p.days * DAY;
+      if (!s.trialStart) s.trialStart = null;
+      persist(); closeModal(); toast("✔ Merci ! Votre abonnement est actif."); render();
+    },
+    "cancel-sub": function () { confirmModal("Résilier l'abonnement ?", "Vous gardez l'accès jusqu'à la fin de la période déjà payée.", "Oui, résilier", "cancel-sub-ok"); },
+    "cancel-sub-ok": function () { st().sub.status = "cancelled"; persist(); closeModal(); toast("Abonnement résilié."); render(); },
+    "toggle-size": function () { st().bigText = !st().bigText; applySize(); persist(); render(); },
+    "shift": function (el) { st().shiftDays += +el.dataset.d; persist(); toast("Démo : +" + el.dataset.d + " jour(s)."); render(); },
+    "reset-demo": function () { confirmModal("Tout réinitialiser ?", "Le profil, les inscriptions et les messages de la démo seront effacés.", "Réinitialiser", "reset-ok"); },
+    "reset-ok": function () { replyTimers.forEach(clearTimeout); S.reset(); adminOk = false; closeModal(); applySize(); go("bienvenue"); render(); },
+    "delete-account": function () { confirmModal("Supprimer mon compte ?", "Toutes vos données seront effacées. Cette action est définitive.", "Supprimer", "reset-ok"); },
+    "report-user": function (el) { reportModal("user", el.dataset.id); },
+    "report-act": function (el, ev) { ev.preventDefault(); reportModal("activity", el.dataset.id); },
+    "block": function (el) { confirmModal("Bloquer cette personne ?", "Vous ne verrez plus son profil et elle ne pourra plus vous écrire.", "Bloquer", "block-ok", 'data-id="' + el.dataset.id + '"'); },
+    "block-ok": function (el) { st().blocked.push(el.dataset.id); persist(); closeModal(); toast("Personne bloquée."); go("activites"); },
+    "admin-dismiss": function (el) { st().reports = st().reports.filter(function (r) { return r.id !== el.dataset.id; }); persist(); render(); },
+    "admin-suspend": function (el) { var u = userById(el.dataset.id); if (u) { u.suspended = !u.suspended; persist(); render(); } },
+    "admin-del-act": function (el) {
+      var id = el.dataset.id; st().activities = st().activities.filter(function (a) { return a.id !== id; });
+      st().joined = st().joined.filter(function (x) { return x !== id; }); persist(); render();
+    }
+  };
+
+  document.addEventListener("click", function (ev) {
+    if (ev.target.id === "modal") { closeModal(); return; }
+    var el = ev.target.closest("[data-action]"); if (!el) return;
+    var fn = actions[el.dataset.action]; if (!fn) return;
+    if (el.tagName === "A") ev.preventDefault();
+    ev.stopPropagation(); fn(el, ev);
+  });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !$("#modal").hidden) closeModal(); });
+
+  /* ---------- Formulaires ---------- */
+  function showErr(msg, form) { var e = (form || document).querySelector("#err"); if (e) e.innerHTML = '<div class="error" role="alert">' + esc(msg) + "</div>"; }
+  var forms = {
+    phone: function (f) {
+      var p = normPhone(f.phone.value);
+      if (!p) return showErr("Ce numéro n'est pas valide. Seuls les numéros de GSM belges (04…) et français (06… ou 07…) sont acceptés.", f);
+      st().pending = { phone: p, verified: false }; persist(); go("code");
+    },
+    code: function (f) {
+      if (f.code.value.trim() !== SMS_CODE) return showErr("Ce code n'est pas correct. En démo, le code est " + SMS_CODE + ".", f);
+      st().pending.verified = true; persist(); go("creer-profil");
+    },
+    "profile-new": function (f) { saveProfile(f, false); },
+    "profile-edit": function (f) { saveProfile(f, true); },
+    send: function (f) {
+      var id = f.dataset.id, txt = f.msg.value.trim(); if (!txt) return;
+      var th = st().conversations[id] = st().conversations[id] || [];
+      th.push({ from: "me", text: txt, at: S.now(), warn: SCAM_RE.test(txt) });
+      persist(); render(); scheduleReply(id);
+    },
+    feedback: function (f) {
+      var note = (f.querySelector("input[name=note]:checked") || {}).value;
+      if (!note) { toast("Choisissez une note, s'il vous plaît."); return; }
+      var rev = [].map.call(f.querySelectorAll("input[name=revoir]:checked"), function (i) { return i.value; });
+      st().feedback[f.dataset.id] = { note: +note, revoir: rev }; persist();
+      toast(rev.length ? "Merci ! Nous prévenons ces personnes que vous aimeriez les revoir." : "Merci pour votre avis !"); render();
+    },
+    report: function (f) {
+      var reason = (f.querySelector("input[name=reason]:checked") || {}).value || "Autre";
+      addReport(f.dataset.type, f.dataset.id, reason, f.text.value); closeModal(); toast("Merci, votre signalement a bien été envoyé."); render();
+    },
+    "admin-login": function (f) {
+      if (f.code.value !== ADMIN_CODE) return showErr("Code incorrect.", f);
+      adminOk = true; render();
+    },
+    "admin-add": function (f) {
+      var titre = f.titre.value.trim(), lieu = f.lieu.value.trim();
+      if (!titre || !lieu || !f.date.value || !f.heure.value) return showErr("Titre, lieu, date et heure sont obligatoires.", f);
+      var d = new Date(f.date.value + "T" + f.heure.value);
+      st().activities.push({ id: "a" + Date.now(), titre: titre, cat: f.cat.value, ville: f.ville.value, lieu: lieu, date: d.toISOString(), prix: Math.max(0, +f.prix.value || 0), places: Math.max(1, +f.places.value || 1), desc: f.desc.value.trim(), orga: f.orga.value.trim() || "Belora", source: f.source.value.trim() || "Belora", lien: "", inscrits: [] });
+      persist(); toast("Activité ajoutée."); render();
+    }
+  };
+  function saveProfile(f, edit) {
+    var prenom = f.prenom.value.trim(), age = parseInt(f.age.value, 10);
+    if (!prenom) return showErr("Merci d'indiquer votre prénom.", f);
+    if (!(age >= 50)) return showErr("Belora est réservé aux personnes de 50 ans et plus.", f);
+    if (age > 99) return showErr("Merci de vérifier votre âge.", f);
+    if (!edit && !f.cgu.checked) return showErr("Merci de cocher la case pour accepter les conditions.", f);
+    var interets = [].map.call(f.querySelectorAll("input[name=interets]:checked"), function (i) { return i.value; });
+    var data = { prenom: prenom, age: age, ville: f.ville.value, bio: f.bio.value.trim(), interets: interets };
+    if (edit) { Object.assign(st().me, data); if (tmpPhoto) st().me.photo = tmpPhoto; persist(); toast("Profil enregistré."); go("profil"); return; }
+    var colors = ["#1F3A5F", "#D9503A", "#4F7F6A", "#6B4C9A", "#B5651D"];
+    st().me = Object.assign({ id: "me", phone: st().pending.phone, color: colors[prenom.length % colors.length], photo: tmpPhoto || "" }, data);
+    st().filters.ville = data.ville; st().pending = null; persist(); tmpPhoto = null;
+    go("activites");
+    openModal('<h2>Bienvenue sur Belora, ' + esc(prenom) + ' !</h2><p>Trois conseils pour des rencontres sereines :</p><ul class="small"><li>Rendez-vous toujours dans un lieu public.</li><li>Ne donnez jamais d\'argent, même à quelqu\'un de sympathique.</li><li>Un doute ? Utilisez le bouton « Signaler ».</li></ul><button class="btn primary block" data-action="close">J\'ai compris</button>');
+  }
+  document.addEventListener("submit", function (ev) {
+    var f = ev.target.closest("form[data-form]"); if (!f) return;
+    ev.preventDefault();
+    var fn = forms[f.dataset.form]; if (fn) fn(f);
+  });
+
+  /* Filtres et photo */
+  document.addEventListener("input", function (ev) {
+    var t = ev.target; if (!t.dataset || !t.dataset.filter) return;
+    var k = t.dataset.filter; st().filters[k] = k === "rayon" ? +t.value : t.value; persist();
+    if (k === "ville") st().filters.ville = t.value;
+    var l = $("#actlist"); if (l) l.innerHTML = listHtml();
+  });
+  document.addEventListener("change", function (ev) {
+    var t = ev.target;
+    if (t.dataset && t.dataset.filter) { var l = $("#actlist"); if (l) l.innerHTML = listHtml(); return; }
+    if (t.id === "photo" && t.files && t.files[0]) {
+      var rd = new FileReader();
+      rd.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          var c = document.createElement("canvas"), s = 240; c.width = c.height = s;
+          var m = Math.min(img.width, img.height), ctx = c.getContext("2d");
+          ctx.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, s, s);
+          tmpPhoto = c.toDataURL("image/jpeg", 0.8); toast("Photo prête ✔");
+        };
+        img.src = rd.result;
+      };
+      rd.readAsDataURL(t.files[0]);
+    }
+  });
+
+  /* ---------- Démarrage ---------- */
+  function applySize() { document.documentElement.dataset.size = st().bigText ? "big" : ""; }
+  $("#textsize").addEventListener("click", function () { st().bigText = !st().bigText; applySize(); persist(); });
+  applySize();
+  render();
+})();

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Belora – Sorties & rencontres 50+</title>
+  <meta name="description" content="Belora : des sorties près de chez vous et des rencontres bienveillantes pour les 50 ans et plus.">
+  <meta name="theme-color" content="#F2705A">
+  <link rel="icon" type="image/png" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/icone-app-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="demo-banner" role="note">Site de démonstration – aucun SMS ni paiement réel n'est envoyé.</div>
+  <header class="topbar" id="topbar">
+    <a href="#/activites" class="brand" aria-label="Belora, accueil">
+      <img src="assets/belora-icone-arrondie.svg" alt="" width="40" height="40">
+      <span>Belora</span>
+    </a>
+    <button class="textsize" id="textsize" type="button" aria-label="Agrandir ou réduire le texte">A<small>A</small></button>
+  </header>
+
+  <main id="app" tabindex="-1" aria-live="polite"></main>
+
+  <nav class="tabbar" id="tabbar" aria-label="Navigation principale">
+    <a href="#/activites" data-tab="activites">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v3M17 2v3M3 9h18M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+      <span>Activités</span>
+    </a>
+    <a href="#/sorties" data-tab="sorties">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.800-8 11-8 11z"/></svg>
+      <span>Mes sorties</span>
+    </a>
+    <a href="#/messages" data-tab="messages">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.500 7.200L3 21l1.800-5.500A8 8 0 1 1 21 12z"/></svg>
+      <span>Messages</span><i class="dot" id="msgdot" hidden></i>
+    </a>
+    <a href="#/profil" data-tab="profil">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.400 3.600-7 8-7s8 2.600 8 7"/></svg>
+      <span>Mon profil</span>
+    </a>
+  </nav>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div class="modal-back" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" id="modalbox"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
