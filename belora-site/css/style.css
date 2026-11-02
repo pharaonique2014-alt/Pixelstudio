@@ -247,3 +247,25 @@ h1{font-size:1.65rem;font-weight:900;letter-spacing:-.01em;text-wrap:balance}
 .qa{list-style:none;padding:0;margin:0;text-align:left}
 .qa li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.88rem}
 .qa li span{color:var(--muted)}.qa li b{text-align:right}
+
+/* Découvrir */
+.seg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 4px}
+.chip.big{justify-content:center;min-height:54px;font-size:1.05rem;border-width:3px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:14px;margin:0 0 14px;display:grid;gap:10px;cursor:pointer}
+.phead{display:flex;gap:14px;align-items:center}
+.pinfo{min-width:0;flex:1}.pinfo h3{margin:0 0 2px;font-size:1.1rem}
+.pinfo .meta{margin:0}
+.compat-sm{margin:2px 0 0;color:var(--ok);font-weight:800;font-size:.9rem}
+.chips.mini{gap:6px}.chips.mini .tag{font-size:.7rem}
+.pactions{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.pcard .btn{min-height:50px}
+.tag.cat-amitie{background:color-mix(in srgb,var(--ok) 15%,var(--card));color:var(--ok)}
+.tag.cat-amour{background:color-mix(in srgb,#B8407A 15%,var(--card));color:#B8407A}
+.likes{display:grid;gap:10px;margin-top:12px}
+.stack.row{display:flex}
+.tabbar a{font-size:.62rem;padding-left:2px;padding-right:2px}
+
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.seg3 .chip{justify-content:center;gap:6px;padding:6px 6px;font-size:.8rem;white-space:nowrap}
+.cnt{display:inline-grid;place-items:center;min-width:1.5em;height:1.5em;border-radius:99px;background:var(--coral);color:#fff;font-size:.78em;padding:0 5px}
+.chip.on .cnt{background:#fff;color:var(--coral-dark)}

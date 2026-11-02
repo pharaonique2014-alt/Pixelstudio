@@ -65,7 +65,7 @@
     clearTimeout(toast._t); toast._t = setTimeout(function () { t.hidden = true; }, 3600);
   }
   function openModal(html) {
-    var m = $("#modal"); $("#modalbox").innerHTML = emo(html); m.hidden = false;
+    var m = $("#modal"); $("#toast").hidden = true; $("#modalbox").innerHTML = emo(html); m.hidden = false;
     var f = $("#modalbox").querySelector("button,input,select,textarea,a"); if (f) f.focus();
   }
   function closeModal() { $("#modal").hidden = true; $("#modalbox").innerHTML = ""; }
@@ -211,6 +211,79 @@
     if (qState) { st().me.rep = qState.ans; persist(); }
     qState = null;
     if (signup) { go("activites"); showTips(st().me.prenom); } else { toast("Réponses enregistrées."); go("profil"); }
+  }
+
+
+  /* ---------- Découvrir : amitié et amour, deux catégories séparées ---------- */
+  var CATS = {
+    amitie: { label: "Amitié", like: "Proposer une amitié", done: "Amitié" },
+    amour: { label: "Amour", like: "J'aime (amour)", done: "Amour" }
+  };
+  function genreOK(a, b) {
+    var want = a.cherche; if (!want || !b.genre) return true;
+    return (want === "femmes" && b.genre === "F") || (want === "hommes" && b.genre === "H");
+  }
+  function eligibleCat(u, cat) {
+    if (cat === "amitie") return isCouple(u) || u.but === "amitie" || u.but === "ouvert";
+    return !isCouple(u) && (u.but === "couple" || u.but === "ouvert");
+  }
+  function canBeLiked(me, u, cat) {
+    if (!eligibleCat(me, cat) || !eligibleCat(u, cat)) return false;
+    return cat === "amour" ? genreOK(me, u) && genreOK(u, me) : true;
+  }
+  function commonCats(u) { return ["amitie", "amour"].filter(function (c) { return canBeLiked(st().me, u, c); }); }
+  function visibleUser(u) { return u && !u.suspended && st().blocked.indexOf(u.id) < 0; }
+  function matchedCat(uid) { return st().matches.amitie[uid] ? "amitie" : st().matches.amour[uid] ? "amour" : ""; }
+  function allMatchIds() {
+    var seen = {};
+    ["amitie", "amour"].forEach(function (c) { Object.keys(st().matches[c]).forEach(function (id) { seen[id] = 1; }); });
+    return Object.keys(seen).filter(function (id) { return visibleUser(userById(id)); });
+  }
+  function catTag(uid) { var c = matchedCat(uid); return c ? '<span class="tag cat-' + c + '">' + CATS[c].label + "</span>" : ""; }
+  function discUsers(cat) {
+    var me = st().me, rayon = st().filters.rayon;
+    return st().users.filter(function (u) {
+      return visibleUser(u) && canBeLiked(me, u, cat) && !st().passes[cat][u.id] && !st().matches[cat][u.id] && dist(me.ville, u.ville) <= rayon;
+    }).sort(function (a, b) {
+      var ca = compat(me, a), cb = compat(me, b);
+      return ((cb ? cb.pct : 0) - (ca ? ca.pct : 0)) || (dist(me.ville, a.ville) - dist(me.ville, b.ville));
+    });
+  }
+  function likedMeUsers(cat) {
+    return st().users.filter(function (u) {
+      return visibleUser(u) && u.likesMe && u.likesMe[cat] && canBeLiked(st().me, u, cat) && !st().matches[cat][u.id] && !st().passes[cat][u.id];
+    });
+  }
+  function startTrialQuiet() {
+    var sb = st().sub;
+    if (sb.status === "none" && !sb.trialStart) { sb.trialStart = S.now(); return true; }
+    return false;
+  }
+  function doLike(uid, cat) {
+    var u = userById(uid); if (!u || st().likes[cat][uid] || st().matches[cat][uid]) return;
+    if (!canBeLiked(st().me, u, cat)) return;
+    st().likes[cat][uid] = S.now();
+    if (u.likesMe && u.likesMe[cat]) {
+      st().matches[cat][uid] = S.now();
+      var started = startTrialQuiet(); persist();
+      openModal("<h2>C'est réciproque !</h2><p>" + (cat === "amour" ? "Vous et <b>" + esc(u.prenom) + "</b> vous plaisez mutuellement." : "Vous et <b>" + esc(u.prenom) + "</b> avez envie de devenir amis et de sortir ensemble.") + "</p>" +
+        '<p class="small muted">Catégorie : ' + CATS[cat].label + ". Votre discussion restera dans cette catégorie.</p>" +
+        (started ? '<div class="success">Votre essai gratuit de 7 jours démarre maintenant.</div>' : "") +
+        '<div class="vstack"><a class="btn primary block" href="#/messages/' + uid + '" data-action="close-go" data-to="messages/' + uid + '">Lui écrire</a><button class="btn ghost block" data-action="close">Continuer à découvrir</button></div>');
+    } else {
+      persist(); toast("J'aime envoyé à " + u.prenom + ". Vous serez prévenu(e) si c'est réciproque.");
+    }
+    render();
+  }
+  function doPass(uid, cat) { st().passes[cat][uid] = S.now(); persist(); render(); }
+  function likeBlock(u) {
+    var cats = commonCats(u);
+    if (!cats.length) return '<p class="small muted">Vous ne cherchez pas la même chose. L\'amitié et l\'amour restent séparés : pas de mise en relation ici.</p>';
+    return '<div class="likes">' + cats.map(function (c) {
+      if (st().matches[c][u.id]) return '<a class="btn primary block" href="#/messages/' + u.id + '">Discuter · ' + CATS[c].label + "</a>";
+      if (st().likes[c][u.id]) return '<button class="btn block" disabled>' + CATS[c].label + " : envoyé, en attente de retour</button>";
+      return '<button class="btn ' + (c === "amour" ? "primary" : "navy") + ' block" data-action="like" data-id="' + u.id + '" data-cat="' + c + '">' + CATS[c].like + "</button>";
+    }).join("") + "</div>";
   }
 
   /* ---------- Vues ---------- */
@@ -369,6 +442,52 @@
       '<div class="actionbar"><div class="ab-info"><b>' + priceLabel(a) + "</b><small>" + esc(dparts(a.date).wd) + " " + dparts(a.date).day + " " + esc(dparts(a.date).mo) + " · " + dparts(a.date).h + "</small></div>" + btn + "</div>";
   };
 
+  function pcard(u, cat, mode) {
+    var acc = hasAccess(), d = dist(st().me.ville, u.ville), done = st().likes[cat][u.id], c = acc ? compat(st().me, u) : null;
+    var bt = '';
+    if (mode === "match") bt = '<a class="btn primary block" href="#/messages/' + u.id + '">Discuter</a>';
+    else bt = '<div class="pactions"><button class="btn small ghost" data-action="pass" data-id="' + u.id + '" data-cat="' + cat + '">Passer</button>' +
+      (done ? '<button class="btn small" disabled>Envoyé</button>' : '<button class="btn small ' + (cat === "amour" ? "primary" : "navy") + '" data-action="like" data-id="' + u.id + '" data-cat="' + cat + '">' + (mode === "back" ? "J'aime aussi" : CATS[cat].like) + "</button>") + "</div>";
+    return '<article class="pcard" data-action="open-member" data-id="' + u.id + '"><div class="phead">' + avatar(u, { blur: !acc, s: "72px" }) +
+      '<div class="pinfo"><h3>' + esc(nameAge(u)) + " " + butTag(u) + '</h3><p class="meta">' + ic("pin") + esc(u.ville) + (d ? " · " + d + " km" : "") + "</p>" +
+      (acc && c ? '<p class="compat-sm">' + c.pct + " % compatible</p>" : "") + "</div></div>" +
+      '<div class="chips mini">' + u.interets.slice(0, 3).map(function (i) { return '<span class="tag">' + esc(i) + "</span>"; }).join("") + "</div>" + pubTags(u, false) +
+      (acc ? "" : '<p class="lock small">' + ic("lock") + " Photo et détails réservés aux abonnés</p>") + bt + "</article>";
+  }
+  V.decouvrir = function () {
+    var me = st().me, D = st().disc;
+    if (!D.cat) D.cat = me.but === "couple" ? "amour" : "amitie";
+    var cat = D.cat, view = D.view || "decouvrir", acc = hasAccess();
+    var catBtns = ["amitie", "amour"].map(function (c) { return '<button class="chip big' + (cat === c ? " on" : "") + '" data-action="disc-cat" data-v="' + c + '">' + CATS[c].label + "</button>"; }).join("");
+    var head = "<h1>Découvrir</h1><p class=\"muted small\">L'amitié et l'amour sont deux listes séparées : vos «&nbsp;J'aime&nbsp;» ne se mélangent pas.</p>" +
+      '<div class="seg2" role="tablist">' + catBtns + "</div>";
+    if (!eligibleCat(me, cat)) {
+      var msg = cat === "amour"
+        ? (isCouple(me) ? "Vous vous êtes inscrits en couple : les rencontres amoureuses ne vous sont pas proposées. Vous pouvez découvrir des amis dans la liste Amitié." : "Vous avez indiqué que vous cherchez des amis. Pour accéder aux rencontres amoureuses, modifiez ce que vous cherchez dans votre profil.")
+        : "Vous avez indiqué que vous cherchez une relation amoureuse. L'amitié est une autre catégorie : modifiez ce que vous cherchez pour y accéder.";
+      return head + '<div class="card center"><p>' + esc(msg) + '</p><a class="btn primary block" href="#/profil/modifier">Modifier ce que je cherche</a></div>';
+    }
+    var liked = likedMeUsers(cat), matches = Object.keys(st().matches[cat]).filter(function (id) { return visibleUser(userById(id)); });
+    var views = [["decouvrir", "Découvrir", 0], ["aiment", "Ils m'aiment", liked.length], ["matchs", "Matchs", matches.length]].map(function (o) {
+      return '<button class="chip' + (view === o[0] ? " on" : "") + '" data-action="disc-view" data-v="' + o[0] + '">' + o[1] + (o[2] ? ' <b class="cnt">' + o[2] + "</b>" : "") + "</button>";
+    }).join("");
+    var rayons = [[10, "10 km"], [25, "25 km"], [50, "50 km"], [100, "100 km"], [999, "Partout"]].map(function (r) { return '<option value="' + r[0] + '"' + (st().filters.rayon === r[0] ? " selected" : "") + ">" + r[1] + "</option>"; }).join("");
+    var body = "";
+    if (view === "decouvrir") {
+      var list = discUsers(cat);
+      body = '<label class="selpill" style="margin:8px 0"><span class="sr">Distance</span>' + ic("route") + '<select data-discrayon="1" aria-label="Distance">' + rayons + "</select></label>" +
+        (list.length ? '<p class="count">' + list.length + " profil" + (list.length > 1 ? "s" : "") + " · " + CATS[cat].label + "</p>" + list.map(function (u) { return pcard(u, cat, "new"); }).join("")
+          : '<div class="card center"><p><b>Plus de profils pour l\'instant.</b></p><p class="muted small">Élargissez la distance ou revenez plus tard.</p></div>');
+    } else if (view === "aiment") {
+      if (!liked.length) body = '<div class="card center"><p>Personne pour l\'instant. Continuez à découvrir des profils.</p></div>';
+      else if (!acc) body = '<div class="card paywall"><h2>' + liked.length + " personne" + (liked.length > 1 ? "s" : "") + " vous " + (liked.length > 1 ? "ont" : "a") + " aimé(e)</h2><div class=\"stack\">" + liked.slice(0, 4).map(function (u) { return avatar(u, { blur: true, s: "56px" }); }).join("") + '</div><p style="margin-top:12px">Abonnez-vous pour voir qui, et leur répondre.</p><a class="btn primary block" href="#/abonnement">Voir l\'abonnement</a></div>';
+      else body = liked.map(function (u) { return pcard(u, cat, "back"); }).join("");
+    } else {
+      body = matches.length ? matches.map(function (id) { return pcard(userById(id), cat, "match"); }).join("") : '<div class="card center"><p><b>Pas encore de match.</b></p><p class="muted small">Un match, c\'est quand vous vous plaisez mutuellement. Vous pouvez alors discuter.</p></div>';
+    }
+    return head + '<div class="seg3">' + views + "</div>" + body;
+  };
+
   V.questions = function () {
     if (!qState) qState = { i: 0, ans: JSON.parse(JSON.stringify(st().me.rep || {})), signup: false };
     var Q = QUESTIONS, i = qState.i, q = Q[i], cur = qState.ans[q.id], last = i === Q.length - 1;
@@ -391,7 +510,7 @@
     var acc = hasAccess();
     if (!acc) return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true, blur: true }) +
       "<h1 style=\"margin-top:10px\">" + esc(u.prenom) + '</h1><p>' + pubTags(u) + '</p><p>🔒 La photo, l\'âge, la présentation, la compatibilité et les autres réponses sont réservés aux abonnés.</p>' +
-      '<a class="btn primary block" href="#/abonnement">Voir les profils – 7 jours gratuits</a></section>';
+      likeBlock(u) + '<a class="btn ghost block" style="margin-top:10px" href="#/abonnement">Voir les profils – 7 jours gratuits</a></section>';
     var common = st().activities.filter(function (a) { return a.inscrits.indexOf(id) > -1 && isJoined(a.id); });
     return '<a class="back" href="#" data-action="back">← Retour</a><section class="card center">' + avatar(u, { big: true }) +
       "<h1 style=\"margin-top:10px\">" + esc(nameAge(u)) + "</h1><p>📍 " + esc(u.ville) + ' · <span class="tag ok">Numéro vérifié ✔</span></p>' +
@@ -399,7 +518,7 @@
       '<p class="small" style="margin:10px 0 0"><b>Cherche :</b> ' + esc(butLabel(u)) + (!isCouple(u) && u.but !== "amitie" && u.cherche ? " · souhaite rencontrer " + esc(u.cherche) : "") + "</p>" +
       '<p style="margin-top:8px">' + esc(u.bio) + "</p>" + memberAnswers(u) +
       (common.length ? '<p class="small muted">Vous participez aussi à : ' + common.map(function (a) { return esc(a.titre); }).join(", ") + "</p>" : "") +
-      '<a class="btn primary block" href="#/messages/' + id + '">Écrire à ' + esc(u.prenom) + "</a>" +
+      likeBlock(u) +
       '<div class="row" style="justify-content:center;margin-top:10px"><button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button><button class="btn small ghost" data-action="block" data-id="' + id + '">Bloquer</button></div></section>';
   };
 
@@ -434,10 +553,14 @@
     if (!hasAccess()) return "<h1>Messages</h1>" + paywall("Les messages sont réservés aux abonnés");
     var ids = Object.keys(st().conversations).filter(function (id) { return st().blocked.indexOf(id) < 0 && (st().conversations[id] || []).length; });
     var h = "<h1>Messages</h1>";
-    if (!ids.length) return h + '<div class="card center"><p><b>Aucune conversation pour l\'instant.</b></p><p class="muted">Ouvrez la fiche d\'une personne qui participe à une sortie pour lui écrire.</p><a class="btn primary block" href="#/activites">Voir les activités</a></div>';
+    var fresh = allMatchIds().filter(function (id) { return !(st().conversations[id] || []).length; });
+    if (fresh.length) h += '<div class="card"><h3>Nouveaux matchs</h3>' + fresh.map(function (id) {
+      var u = userById(id); return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + " " + catTag(id) + '</b><span class="small muted">Dites bonjour !</span></span><span class="chev">' + ic("arrow") + "</span></a>";
+    }).join("") + "</div>";
+    if (!ids.length) return h + (fresh.length ? "" : '<div class="card center"><p><b>Aucune conversation pour l\'instant.</b></p><p class="muted">Likez des profils dans « Découvrir » : dès que c\'est réciproque, vous pouvez discuter.</p><a class="btn primary block" href="#/decouvrir">Découvrir des profils</a></div>');
     return h + '<div class="card">' + ids.map(function (id) {
       var u = userById(id), th = st().conversations[id], last = th[th.length - 1];
-      return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + (st().unread[id] ? ' <span class="tag">nouveau</span>' : "") + '</b><span class="small muted">' + esc(last.from === "them" && last.risk === 3 && !last.shown ? "⚠️ Message masqué (arnaque probable)" : last.text.slice(0, 60)) + "</span></span></a>";
+      return '<a class="person" href="#/messages/' + id + '">' + avatar(u) + '<span class="meta"><b>' + esc(u.prenom) + " " + catTag(id) + (st().unread[id] ? ' <span class="tag">nouveau</span>' : "") + '</b><span class="small muted">' + esc(last.from === "them" && last.risk === 3 && !last.shown ? "⚠️ Message masqué (arnaque probable)" : last.text.slice(0, 60)) + "</span></span></a>";
     }).join("") + "</div>";
   };
   function whyTxt(m) { return m.why && m.why.length ? " (" + esc(m.why.join(", ")) + ")" : ""; }
@@ -453,13 +576,14 @@
   V.conv = function (id) {
     if (!hasAccess()) { go("abonnement"); return ""; }
     var u = userById(id); if (!u || u.suspended || st().blocked.indexOf(id) > -1) { go("messages"); return ""; }
+    if (!matchedCat(id)) { toast("Vous pourrez discuter dès que vous vous plairez mutuellement."); go("decouvrir"); return ""; }
     delete st().unread[id]; persist(); refreshDot();
     var th = st().conversations[id] || [];
     var mine = st().me.but, theirs = u.but, hint = "";
     if (isCouple(u)) hint = '<div class="info small">' + esc(u.prenom) + " est un couple qui cherche des amis et des sorties à deux.</div>";
     else if (mine !== theirs && (mine === "couple" || theirs === "couple") && (mine === "amitie" || theirs === "amitie"))
       hint = '<div class="info small">' + (theirs === "amitie" ? esc(u.prenom) + " cherche surtout des amis pour sortir. Soyez clair(e) sur vos intentions, avec respect." : esc(u.prenom) + " cherche une relation amoureuse, alors que vous cherchez des amis. Dites-le simplement dès le début.") + "</div>";
-    return '<a class="back" href="#/messages">← Messages</a><div class="row between"><a class="person" style="border:0" href="#/membre/' + id + '">' + avatar(u) + "<b>" + esc(u.prenom) + " " + butTag(u) + '</b></a>' +
+    return '<a class="back" href="#/messages">← Messages</a><div class="row between"><a class="person" style="border:0" href="#/membre/' + id + '">' + avatar(u) + "<b>" + esc(u.prenom) + " " + catTag(id) + '</b></a>' +
       '<button class="btn small ghost" data-action="report-user" data-id="' + id + '">Signaler</button></div>' +
       hint + '<p class="shield small"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.500-3.200 8-8 9-4.800-1-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg> Protection anti-arnaque active : les messages sont analysés automatiquement par une machine.</p><div class="bubbles" id="thread">' + (th.length ? th.map(function (m, i) { return bubble(m, i, id); }).join("") : '<p class="muted">Dites bonjour à ' + esc(u.prenom) + " !</p>") + "</div>" +
       '<form class="composer" data-form="send" data-id="' + id + '"><label for="msg" class="sr" style="position:absolute;left:-9999px">Votre message</label><input id="msg" name="msg" type="text" autocomplete="off" placeholder="Votre message…" maxlength="500"><button class="btn primary" type="submit">Envoyer</button></form>';
@@ -575,7 +699,7 @@
     var navOff = OPEN.indexOf(r) > -1 && !st().me || r === "admin";
     document.body.classList.toggle("noNav", navOff);
     $("#app").innerHTML = emo(html);
-    var tab = r === "activite" || r === "membre" ? "activites" : r;
+    var tab = r === "activite" ? "activites" : r === "membre" ? "decouvrir" : r;
     [].forEach.call(document.querySelectorAll("#tabbar a"), function (a) { a.classList.toggle("on", a.dataset.tab === tab); });
     refreshDot();
     if (lastCur !== current) { lastCur = current; window.scrollTo(0, 0); }
@@ -649,6 +773,12 @@
 
   var actions = {
     "back": function () { back(); },
+    "disc-cat": function (el) { st().disc.cat = el.dataset.v; st().disc.view = "decouvrir"; persist(); render(); },
+    "disc-view": function (el) { st().disc.view = el.dataset.v; persist(); render(); },
+    "like": function (el, ev) { ev.stopPropagation(); doLike(el.dataset.id, el.dataset.cat); },
+    "pass": function (el) { doPass(el.dataset.id, el.dataset.cat); },
+    "open-member": function (el) { go("membre/" + el.dataset.id); },
+    "close-go": function (el, ev) { ev.preventDefault(); var to = el.dataset.to; closeModal(); go(to); },
     "q-start": function () { startQuestions(false); },
     "q-pick": function (el) {
       var q = QUESTIONS[qState.i], v = el.dataset.v, a = qState.ans;
@@ -808,6 +938,7 @@
   });
   document.addEventListener("change", function (ev) {
     var t = ev.target;
+    if (t.dataset && t.dataset.discrayon) { st().filters.rayon = +t.value; persist(); render(); return; }
     if (t.name === "situation") { var c = t.value === "couple", r = $("#romance"), n = $("#couplenote"); if (r) r.hidden = c; if (n) n.hidden = !c; return; }
     if (t.dataset && t.dataset.filter) { var l = $("#actlist"); if (l) l.innerHTML = emo(listHtml()); return; }
     if (t.id === "photo" && t.files && t.files[0]) {

@@ -1,6 +1,6 @@
 /* Stockage local de la démo (navigateur). Remplaçable plus tard par Supabase. */
 window.Store = (function () {
-  var KEY = "belora_test_v4";
+  var KEY = "belora_test_v5";
   var DAY = 864e5;
   var Store = { state: null };
 
@@ -22,6 +22,10 @@ window.Store = (function () {
       sub: { trialStart: null, status: "none", plan: null, endsAt: null, startedAt: null },
       joined: [],
       party: {},
+      likes: { amitie: {}, amour: {} },
+      passes: { amitie: {}, amour: {} },
+      matches: { amitie: {}, amour: {} },
+      disc: { cat: "", view: "decouvrir" },
       users: window.BELORA_USERS.map(function (u) { return Object.assign({ suspended: false }, u); }),
       activities: acts,
       conversations: {},

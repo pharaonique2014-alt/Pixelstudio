@@ -81,6 +81,9 @@ window.BELORA_QUESTIONS = [
     return function () { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return (h >>> 0) / 4294967296; }; }
   window.BELORA_USERS.forEach(function (u) {
     var r = rng(u.id + "belora"); u.rep = {};
+    u.likesMe = { amitie: r() < 0.6, amour: r() < 0.55 };
+    if (u.id === "u1") u.likesMe = { amitie: true, amour: false };
+    if (u.id === "u9") u.likesMe = { amitie: false, amour: true };
     window.BELORA_QUESTIONS.forEach(function (q) {
       if (q.id === "famille" && r() < 0.2) return;
       if (q.multi) { var n = 1 + Math.floor(r() * Math.min(3, q.opts.length)), pool = q.opts.slice(), pick = [];
