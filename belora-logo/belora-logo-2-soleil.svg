@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220" role="img" aria-label="Belora">
+  <rect width="640" height="220" fill="#FFFFFF"/>
+  <g transform="translate(30,30)">
+    <path d="M10 110 A70 70 0 0 1 150 110Z" fill="#F7B267"/>
+    <path d="M30 110 A50 50 0 0 1 130 110Z" fill="#F2705A"/>
+    <path d="M0 125 Q80 95 160 125" fill="none" stroke="#1F3A5F" stroke-width="10" stroke-linecap="round"/>
+    <path d="M12 150 Q80 122 148 150" fill="none" stroke="#1F3A5F" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  </g>
+  <text x="220" y="118" font-family="Nunito, 'Poppins', 'Arial Rounded MT Bold', Arial, sans-serif" font-size="82" font-weight="800" fill="#1F3A5F">Belora</text>
+  <text x="223" y="158" font-family="Nunito, 'Poppins', Arial, sans-serif" font-size="22" font-weight="600" fill="#F2705A" letter-spacing="1.5">Sorties &amp; rencontres 50+</text>
+</svg>
