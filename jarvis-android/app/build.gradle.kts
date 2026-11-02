@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "be.pxlstudio.jarvis"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "be.pxlstudio.jarvis"
