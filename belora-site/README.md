@@ -1,6 +1,6 @@
-# Belora – site de test
+# Convivia – site de test
 
-Site de démonstration complet pour Belora (sorties et rencontres 50+). Il fonctionne sans serveur :
+Site de démonstration complet pour Convivia (sorties, amitiés et rencontres 50+). Il fonctionne sans serveur :
 toutes les données restent dans le navigateur (localStorage). Aucun SMS ni paiement réel.
 
 ## Lancer

@@ -1,4 +1,4 @@
-/* Belora – site de test (démo). Tout est stocké dans le navigateur. */
+/* Convivia – site de test (démo). Tout est stocké dans le navigateur. */
 (function () {
   "use strict";
   var S = Store; S.load();
@@ -18,7 +18,7 @@
   var SCAM_RULES = [
     { re: /(virement|western\s*union|\biban\b|\brib\b|bitcoin|crypto|carte\s*cadeau|paysafe|mandat|envoy\w*\s+(moi\s+)?(de\s+l'|des\s+|un\s+peu\s+d')?(argent|sous|euros?)|pr[eê]t\s+d'argent|rembourserai|petit\s+service\s+financier)/i, w: 3, why: "demande d'argent" },
     { re: /(code\s+(re[cç]u|sms)|num[eé]ro\s+de\s+carte|mot\s+de\s+passe|carte\s+d'identit[eé]|photo\s+de\s+votre\s+carte)/i, w: 3, why: "demande d'informations personnelles" },
-    { re: /(whats\s*app|telegram|snap(chat)?|messenger|mon\s+(num[eé]ro|gsm|mail)|[\w.+-]+@[\w-]+\.\w+|\+?\d[\d\s.]{8,}\d)/i, w: 2, why: "invite à quitter Belora" },
+    { re: /(whats\s*app|telegram|snap(chat)?|messenger|mon\s+(num[eé]ro|gsm|mail)|[\w.+-]+@[\w-]+\.\w+|\+?\d[\d\s.]{8,}\d)/i, w: 2, why: "invite à quitter Convivia" },
     { re: /(urgent|urgence|h[oô]pital|accident|h[eé]ritage|douane|colis|bloqu[eé]|dettes?|facture\s+impay)/i, w: 2, why: "histoire dramatique ou pression" },
     { re: /(https?:\/\/|www\.|\.ru\b|\.xyz\b)/i, w: 2, why: "lien suspect" },
     { re: /(je\s+t'aime|mon\s+amour|[aâ]me\s+s[oœ]ur|je\s+n'ai\s+jamais\s+ressenti)/i, w: 1, why: "déclaration très rapide" }
@@ -202,7 +202,7 @@
   }
   function startQuestions(signup) { qState = { i: 0, ans: JSON.parse(JSON.stringify(st().me.rep || {})), signup: !!signup }; go("questions"); }
   function showTips(prenom) {
-    openModal('<h2>Bienvenue sur Belora, ' + esc(prenom) + ' !</h2><p>Trois conseils pour des rencontres sereines :</p><ul class="small"><li>Rendez-vous toujours dans un lieu public.</li><li>Ne donnez jamais d\'argent, même à quelqu\'un de sympathique.</li><li>Un doute ? Utilisez le bouton « Signaler ».</li></ul><button class="btn primary block" data-action="close">J\'ai compris</button>');
+    openModal('<h2>Bienvenue sur Convivia, ' + esc(prenom) + ' !</h2><p>Trois conseils pour des rencontres sereines :</p><ul class="small"><li>Rendez-vous toujours dans un lieu public.</li><li>Ne donnez jamais d\'argent, même à quelqu\'un de sympathique.</li><li>Un doute ? Utilisez le bouton « Signaler ».</li></ul><button class="btn primary block" data-action="close">J\'ai compris</button>');
   }
   function finishQuestions() {
     var signup = qState && qState.signup;
@@ -309,10 +309,10 @@
       ["users", "Amis, sorties ou rencontre amoureuse", "Seul(e) ou en couple, vous indiquez ce que vous cherchez et trouvez les sorties qui vous correspondent."],
       ["shield", "Votre sécurité d'abord", "Numéro de GSM vérifié, alertes contre les arnaques, signalement en un geste."],
       ["gift", "Gratuit pour commencer", "Parcourez les sorties et les profils, envoyez 4 J'aime par jour. 2 messages gratuits par discussion. L'abonnement : 19,99 € par mois, sans engagement."]];
-    return '<section class="wpanel"><svg class="wbg" viewBox="0 0 300 260" aria-hidden="true"><path transform="translate(90,120) scale(2.2)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".13"/><path transform="translate(205,150) scale(2.6)" d="M0 40 C-54 4 -48 -44 -20 -46 C-8 -47 -2 -38 0 -31 C2 -38 8 -47 20 -46 C48 -44 54 4 0 40Z" fill="#fff" fill-opacity=".10"/></svg>' +
-      '<img src="assets/belora-icone-arrondie.svg" alt="" width="84" height="84"><h1>Belora</h1><p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
+    return '<section class="wpanel"><svg class="wbg" viewBox="0 0 300 260" aria-hidden="true"><circle cx="205" cy="115" r="32" fill="#fff" fill-opacity="0.13"/><circle cx="205" cy="33" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="263" cy="57" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="287" cy="115" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="263" cy="173" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="205" cy="197" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="147" cy="173" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="123" cy="115" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="147" cy="57" r="20" fill="#fff" fill-opacity="0.13"/><circle cx="70" cy="230" r="16" fill="#fff" fill-opacity="0.1"/><circle cx="70" cy="190" r="10" fill="#fff" fill-opacity="0.1"/><circle cx="98" cy="202" r="10" fill="#fff" fill-opacity="0.1"/><circle cx="110" cy="230" r="10" fill="#fff" fill-opacity="0.1"/><circle cx="98" cy="258" r="10" fill="#fff" fill-opacity="0.1"/><circle cx="70" cy="270" r="10" fill="#fff" fill-opacity="0.1"/><circle cx="42" cy="258" r="10" fill="#fff" fill-opacity="0.1"/><circle cx="30" cy="230" r="10" fill="#fff" fill-opacity="0.1"/><circle cx="42" cy="202" r="10" fill="#fff" fill-opacity="0.1"/></svg>' +
+      '<img src="assets/convivia-icone-arrondie.svg" alt="" width="84" height="84"><h1>Convivia</h1><p>Des sorties près de chez vous et des rencontres bienveillantes, pour les 50 ans et plus.</p></section>' +
       '<ul class="pts">' + pts.map(function (x) { return '<li><span class="pi">' + ic(x[0]) + "</span><div><b>" + x[1] + "</b><span>" + x[2] + "</span></div></li>"; }).join("") + "</ul>" +
-      '<div class="info small"><b>Vous testez Belora ?</b> Aucun SMS ni paiement réel : le code de vérification est <b>123456</b>. Vos données restent sur votre téléphone. Essayez de vous inscrire, de rejoindre une sortie, d\'aimer des profils dans « Découvrir » et, pour discuter, de simuler un abonnement (aucun paiement réel). Dites-nous ce qui vous semble confus.</div>' +
+      '<div class="info small"><b>Vous testez Convivia ?</b> Aucun SMS ni paiement réel : le code de vérification est <b>123456</b>. Vos données restent sur votre téléphone. Essayez de vous inscrire, de rejoindre une sortie, d\'aimer des profils dans « Découvrir » et, pour discuter, de simuler un abonnement (aucun paiement réel). Dites-nous ce qui vous semble confus.</div>' +
       '<a class="btn primary block big" href="#/connexion">Commencer</a>' +
       '<p class="footer-links"><a href="#/cgu">Conditions</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Espace admin (démo)</a></p>';
   };
@@ -580,7 +580,7 @@
   function bubble(m, i, uid) {
     var time = "<time>" + fmtShort.format(new Date(m.at)) + "</time>";
     if (m.from === "them" && m.risk === 3 && !m.shown)
-      return '<div class="bubble masked"><b>⚠️ Message masqué par Belora</b><br><span class="small">Il ressemble à une tentative d\'arnaque' + whyTxt(m) + '. Ne répondez pas et ne donnez ni argent ni coordonnées.</span>' +
+      return '<div class="bubble masked"><b>⚠️ Message masqué par Convivia</b><br><span class="small">Il ressemble à une tentative d\'arnaque' + whyTxt(m) + '. Ne répondez pas et ne donnez ni argent ni coordonnées.</span>' +
         '<div class="row" style="margin-top:8px"><button class="btn small ghost" data-action="show-msg" data-id="' + uid + '" data-i="' + i + '">Afficher quand même</button></div></div>';
     var warn = "";
     if (m.risk >= 2) warn = '<div class="scam" role="alert">⚠️ ' + (m.from === "them" ? "Attention : ce message est suspect" : "Ce message contient des éléments sensibles") + whyTxt(m) + '. Ne donnez jamais d\'argent ni vos coordonnées bancaires.</div>';
@@ -648,7 +648,7 @@
 
   V.cgu = function () {
     return '<a class="back" href="#" data-action="back">← Retour</a><h1>Conditions d\'utilisation</h1><div class="info">Texte de démonstration, à faire valider par un juriste avant tout lancement.</div>' +
-      '<div class="card"><h3>L\'essentiel</h3><p class="small">Belora est réservé aux personnes de 50 ans et plus. Vous vous engagez à fournir des informations exactes, à respecter les autres membres, et à ne jamais demander ni proposer d\'argent. Les sorties ont lieu dans des lieux publics.</p>' +
+      '<div class="card"><h3>L\'essentiel</h3><p class="small">Convivia est réservé aux personnes de 50 ans et plus. Vous vous engagez à fournir des informations exactes, à respecter les autres membres, et à ne jamais demander ni proposer d\'argent. Les sorties ont lieu dans des lieux publics.</p>' +
       '<h3>Abonnement</h3><p class="small">Gratuit pour parcourir, envoyer 4 J\'aime par jour et écrire 2 messages par discussion. Abonnement : 19,99 € par mois (ou 49 € pour 3 mois, 149 € pour 12 mois). Résiliation en un clic. Droit de rétractation de 14 jours.</p>' +
       '<h3>Modération</h3><p class="small">Les profils signalés plusieurs fois sont suspendus. Nous pouvons exclure toute personne qui ne respecte pas ces règles.</p></div>';
   };
@@ -907,14 +907,14 @@
       var titre = f.titre.value.trim(), lieu = f.lieu.value.trim();
       if (!titre || !lieu || !f.date.value || !f.heure.value) return showErr("Titre, lieu, date et heure sont obligatoires.", f);
       var d = new Date(f.date.value + "T" + f.heure.value);
-      st().activities.push({ id: "a" + Date.now(), ambiance: f.ambiance.value, titre: titre, cat: f.cat.value, ville: f.ville.value, lieu: lieu, date: d.toISOString(), prix: Math.max(0, +f.prix.value || 0), places: Math.max(1, +f.places.value || 1), desc: f.desc.value.trim(), orga: f.orga.value.trim() || "Belora", source: f.source.value.trim() || "Belora", lien: "", inscrits: [] });
+      st().activities.push({ id: "a" + Date.now(), ambiance: f.ambiance.value, titre: titre, cat: f.cat.value, ville: f.ville.value, lieu: lieu, date: d.toISOString(), prix: Math.max(0, +f.prix.value || 0), places: Math.max(1, +f.places.value || 1), desc: f.desc.value.trim(), orga: f.orga.value.trim() || "Convivia", source: f.source.value.trim() || "Convivia", lien: "", inscrits: [] });
       persist(); toast("Activité ajoutée."); render();
     }
   };
   function saveProfile(f, edit) {
     var prenom = f.prenom.value.trim(), age = parseInt(f.age.value, 10);
     if (!prenom) return showErr("Merci d'indiquer votre prénom.", f);
-    if (!(age >= 50)) return showErr("Belora est réservé aux personnes de 50 ans et plus.", f);
+    if (!(age >= 50)) return showErr("Convivia est réservé aux personnes de 50 ans et plus.", f);
     if (age > 99) return showErr("Merci de vérifier votre âge.", f);
     if (!edit && !f.cgu.checked) return showErr("Merci de cocher la case pour accepter les conditions.", f);
     var interets = [].map.call(f.querySelectorAll("input[name=interets]:checked"), function (i) { return i.value; });
